@@ -99,6 +99,7 @@ void GLUI_Control(int id);
 
 // Functions to help draw the object
 void drawSquare(float size);
+void drawCircle(float radius);
 
 
 // Return the current system clock (in seconds)
@@ -305,6 +306,7 @@ void display(void)
     const float BODY_LENGTH = 50.0f;
     const float ARM_LENGTH = 50.0f;
     const float ARM_WIDTH = 10.0f;
+    const float JOINT_RADIUS = 4.0f;
 
     // Push the current transformation matrix on the stack
     glPushMatrix();
@@ -320,24 +322,30 @@ void display(void)
             // Draw the square for the body
             drawSquare(1.0);
         glPopMatrix();
-        
+              
         // Draw the 'arm'
 
-        // Move the arm to the joint hinge
-        glTranslatef(0.0, -BODY_LENGTH/2 + ARM_WIDTH, 0.0);
+		// Move the arm to the joint hinge
+	    glTranslatef(0.0, -BODY_LENGTH/2 + ARM_WIDTH, 0.0);
+	    
+        glPushMatrix();
+		    // Rotate along the hinge
+		    glRotatef(joint_rot, 0.0, 0.0, 1.0);
 
-        // Rotate along the hinge
-        glRotatef(joint_rot, 0.0, 0.0, 1.0);
+		    // Scale the size of the arm
+		    glScalef(ARM_WIDTH, ARM_LENGTH, 1.0);
 
-        // Scale the size of the arm
-        glScalef(ARM_WIDTH, ARM_LENGTH, 1.0);
+		    // Move to center location of arm, under previous rotation
+		    glTranslatef(0.0, -0.5, 0.0);
 
-        // Move to center location of arm, under previous rotation
-        glTranslatef(0.0, -0.5, 0.0);
-
-        // Draw the square for the arm
-        glColor3f(1.0, 0.0, 0.0);
-        drawSquare(1.0);
+		    // Draw the square for the arm
+		    glColor3f(1.0, 0.0, 0.0);
+		    drawSquare(1.0);
+        glPopMatrix();
+        
+        // Draw joint hinge last so that it shows on top
+        glColor3f(0.6, 0.6, 0.6);
+		drawCircle(JOINT_RADIUS);
 
     // Retrieve the previous state of the transformation stack
     glPopMatrix();
@@ -362,5 +370,23 @@ void drawSquare(float width)
     glVertex2d(width/2, width/2);
     glVertex2d(-width/2, width/2);
     glEnd();
+}
+
+// Draw a circle (sides = 100 gon) of specified radius centered at current location
+void drawCircle(float radius)
+{
+
+	glBegin(GL_POLYGON);
+	// Use trig to calculate the values of each corner. Divide circle into 100 sides
+	int num_sides = 100;
+	float PI = 3.1415;
+	for(int i = 0; i < num_sides; i++){
+		float xPos = radius * cos(2*PI * i / num_sides);
+		float yPos = radius * sin(2*PI * i / num_sides);
+		glVertex2d(xPos, yPos);
+	}
+
+	glEnd();
+
 }
 
