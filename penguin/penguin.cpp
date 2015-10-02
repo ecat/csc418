@@ -104,6 +104,7 @@ void drawCircle(float radius);
 void drawJoint(float radius);
 void drawHead(float width, float height);
 void drawBody(float width, float height);
+void drawArm(float width, float height);
 
 // Return the current system clock (in seconds)
 double getTime();
@@ -305,30 +306,21 @@ void display(void)
     ///////////////////////////////////////////////////////////
 
     // Draw our hinged object
-    const float BODY_WIDTH = 30.0f;
-    const float BODY_LENGTH = 50.0f;
-    const float ARM_LENGTH = 50.0f;
+    const float BODY_WIDTH = 40.0f;
+    const float BODY_LENGTH = 60.0f;
+    const float ARM_LENGTH = 25.0f;
     const float ARM_WIDTH = 10.0f;
-    const float JOINT_RADIUS = 10.0f;
+    const float JOINT_RADIUS = 5.0f;
     const float HEAD_WIDTH = 25.0f;
     const float HEAD_HEIGHT = 20.0f;
 
 	// Make everything bigger so that can see more easily
-	float zoom = 1.5f;
+	float zoom = 2.0f;
 	glScalef(zoom, zoom, 1.0);
 
     // Push the current transformation matrix on the stack
     glPushMatrix();
 
-	    // Draw the 'head'        
-        glPushMatrix();
-        	glTranslatef(0.0, +BODY_LENGTH/2, 0.0);
-        
-        	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
-		    glColor3f(1.0, 1.0, 1.0);
-		    drawHead(1.0, 1.0);
-        glPopMatrix();
-        
         // Draw the 'body'
         glPushMatrix();
             // Scale square to size of body
@@ -341,11 +333,27 @@ void display(void)
             //drawSquare(1.0);
             drawBody(1.0, 1.0);
         glPopMatrix();
-              
+
+	    // Draw the 'head'        
+        glPushMatrix();
+        	glTranslatef(0.0, +BODY_LENGTH/2, 0.0);           	
+        	glPushMatrix();      
+        		glTranslatef(0.0, HEAD_HEIGHT/5, 0.0);
+		    	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
+				glColor3f(1.0, 1.0, 1.0);
+				drawHead(1.0, 1.0);
+		    glPopMatrix();
+		    
+		    // Draw joint between head and body
+	        glColor3f(0.6, 0.6, 0.6);
+		    drawJoint(JOINT_RADIUS);
+		    
+        glPopMatrix();
+                      
         // Draw the 'arm'
 
 		// Move the arm to the joint hinge
-	    glTranslatef(0.0, -BODY_LENGTH/2 + ARM_WIDTH, 0.0);
+	    glTranslatef(0.0, BODY_LENGTH/5, 0.0);
 	    
         glPushMatrix();
 		    // Rotate along the hinge
@@ -359,7 +367,8 @@ void display(void)
 
 		    // Draw the square for the arm
 		    glColor3f(1.0, 0.0, 0.0);
-		    drawSquare(1.0);
+		    //drawSquare(1.0);
+		    drawArm(1.0, 1.0);
         glPopMatrix();
         
         // Draw joint hinge last so that it shows on top
@@ -421,7 +430,7 @@ void drawJoint(float radius){
 // Draws the head shape
 void drawHead(float width, float height)
 {
-	glBegin(GL_POLYGON);
+	glBegin(GL_LINE_LOOP);
     glVertex2d(-width*3/8, height*1/4);
     glVertex2d(-width/8, height/2);
     glVertex2d(width*3/8, height * 1/4);
@@ -432,7 +441,7 @@ void drawHead(float width, float height)
 
 // Draws body shape
 void drawBody(float width, float height){
-	glBegin(GL_POLYGON);
+	glBegin(GL_LINE_LOOP);
 	// Start with the bottom trapezoid like part
 	glVertex2d(-width/2, -height/3);
 	glVertex2d(-width/6, -height/2);
@@ -445,4 +454,13 @@ void drawBody(float width, float height){
 	glEnd();
 }
 
+void drawArm(float width, float height){
+	glBegin(GL_LINE_LOOP);
+	// Arm is like an inverted trapezoid
+	glVertex2d(-width/2, height/2);// Start at top left
+	glVertex2d(width/2, height * 9/20); // top right
+	glVertex2d(width*1/5, -height/2);
+	glVertex2d(-width * 2/5, -height/2);
+	glEnd();
+}
 
