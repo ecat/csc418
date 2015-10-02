@@ -102,6 +102,7 @@ void GLUI_Control(int id);
 void drawSquare(float size);
 void drawCircle(float radius);
 void drawJoint(float radius);
+void drawHead(float width, float height);
 
 
 // Return the current system clock (in seconds)
@@ -309,9 +310,24 @@ void display(void)
     const float ARM_LENGTH = 50.0f;
     const float ARM_WIDTH = 10.0f;
     const float JOINT_RADIUS = 4.0f;
+    const float HEAD_WIDTH = 30.0f;
+    const float HEAD_HEIGHT = 50.0f;
+
+	// Make everything bigger so that can see more easily
+	float zoom = 1.5f;
+	glScalef(zoom, zoom, 1.0);
 
     // Push the current transformation matrix on the stack
     glPushMatrix();
+        
+        glPushMatrix();
+        	glTranslatef(0.0, +BODY_LENGTH/2, 0.0);
+        
+        	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
+		    // Draw the 'head'
+		    glColor3f(1.0, 1.0, 1.0);
+		    drawHead(1.0, 1.0);
+        glPopMatrix();
         
         // Draw the 'body'
         glPushMatrix();
@@ -400,4 +416,18 @@ void drawJoint(float radius){
 
 	glEnd();
 }
+
+// Draws the head shape
+void drawHead(float width, float height)
+{
+	glBegin(GL_POLYGON);
+    glVertex2d(-width*3/8, height*1/3);
+    glVertex2d(-width/6, height/2);
+    glVertex2d(width*3/8, height * 1/3);
+    glVertex2d(width/2, -height/2);
+    glVertex2d(-width/2, -height/2);
+    glEnd();
+}
+
+
 
