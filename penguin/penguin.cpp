@@ -72,6 +72,7 @@ int animation_frame = 0;      // Specify current frame of animation
 const float JOINT_MIN = -45.0f;
 const float JOINT_MAX =  45.0f;
 float joint_rot = 0.0f;
+int NUM_CIRCLE_SIDES = 100;
 
 //////////////////////////////////////////////////////
 // TODO: Add additional joint parameters here
@@ -100,6 +101,7 @@ void GLUI_Control(int id);
 // Functions to help draw the object
 void drawSquare(float size);
 void drawCircle(float radius);
+void drawJoint(float radius);
 
 
 // Return the current system clock (in seconds)
@@ -345,7 +347,7 @@ void display(void)
         
         // Draw joint hinge last so that it shows on top
         glColor3f(0.6, 0.6, 0.6);
-		drawCircle(JOINT_RADIUS);
+		drawJoint(JOINT_RADIUS * 10);
 
     // Retrieve the previous state of the transformation stack
     glPopMatrix();
@@ -372,21 +374,30 @@ void drawSquare(float width)
     glEnd();
 }
 
-// Draw a circle (sides = 100 gon) of specified radius centered at current location
+// Draw a circle of specified radius centered at current location
 void drawCircle(float radius)
 {
-
 	glBegin(GL_POLYGON);
-	// Use trig to calculate the values of each corner. Divide circle into 100 sides
-	int num_sides = 100;
-	float PI = 3.1415;
-	for(int i = 0; i < num_sides; i++){
-		float xPos = radius * cos(2*PI * i / num_sides);
-		float yPos = radius * sin(2*PI * i / num_sides);
+	// Use trig to calculate the values of each corner. Divide circle into n sides
+	for(int i = 0; i < NUM_CIRCLE_SIDES; i++){
+		float xPos = radius * cos(2*M_PI * i / NUM_CIRCLE_SIDES);
+		float yPos = radius * sin(2*M_PI * i / NUM_CIRCLE_SIDES);
 		glVertex2d(xPos, yPos);
 	}
 
 	glEnd();
+}
 
+// Draws a circle that is not filled in
+void drawJoint(float radius){
+	glBegin(GL_LINE_LOOP); // Use GL_LINE_LOOP instead of GL_LINES to make the circle continuous
+
+	for(int i = 0; i < NUM_CIRCLE_SIDES; i++){
+		float xPos = radius * cos(2*M_PI * i / NUM_CIRCLE_SIDES);
+		float yPos = radius * sin(2*M_PI * i / NUM_CIRCLE_SIDES);
+		glVertex2d(xPos, yPos);
+	}
+
+	glEnd();
 }
 
