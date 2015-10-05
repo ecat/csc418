@@ -94,6 +94,9 @@ const float HEAD_JOINT_MIN = -5.0f;
 const float HEAD_JOINT_MAX = 35.0f;
 float HEAD_JOINT_ROT = 0.0f;
 
+const float BEAK_TRANSLATE_MAX = 1.0f;
+const float BEAK_TRANSLATE_MIN = 0.0f;
+float BEAK_TRANSLATE = 0.0f;
 
 // ***********  FUNCTION HEADER DECLARATIONS ****************
 
@@ -235,6 +238,10 @@ void initGlui()
     joint_spinner = glui->add_spinner("Head Joint", GLUI_SPINNER_FLOAT, &HEAD_JOINT_ROT);
     joint_spinner->set_speed(0.6);
     joint_spinner->set_float_limits(HEAD_JOINT_MIN, HEAD_JOINT_MAX, GLUI_LIMIT_CLAMP);
+
+    joint_spinner = glui->add_spinner("Beak", GLUI_SPINNER_FLOAT, &BEAK_TRANSLATE);
+    joint_spinner->set_speed(0.8);
+    joint_spinner->set_float_limits(BEAK_TRANSLATE_MIN, BEAK_TRANSLATE_MAX, GLUI_LIMIT_CLAMP);
 
     // Add button to specify animation mode 
     glui->add_separator();
@@ -428,16 +435,18 @@ void display(void)
                 // Draw beak yellow
                 glColor3f(0.8, 0.8, 0.0); // Yellow
                 glPushMatrix();
-                    glTranslatef(-HEAD_WIDTH*0.45, HEAD_HEIGHT * 0.2, 0.0);
+                    glTranslatef(-HEAD_WIDTH*0.45, HEAD_HEIGHT * 0.15, 0.0);
 
                     // Draw beak bottom
                     glPushMatrix();
+                        // Animate the bottom beak by moving it up to reach the top beak                    
+                        glTranslatef(0.0f, HEAD_HEIGHT * 0.1 * BEAK_TRANSLATE, 0.0);
                         glScalef(BEAK_LENGTH, BEAK_WIDTH_BOTTOM, 1.0);
                         glTranslatef(-0.4, 0.0, 0.0);
                         drawSquare(1.0);
                     glPopMatrix();
 
-                    glTranslatef(0, HEAD_HEIGHT * 0.2, 0.0);
+                    glTranslatef(0, HEAD_HEIGHT * 0.25, 0.0);
                     // Draw beak top
                     glPushMatrix();
                         glScalef(BEAK_LENGTH, BEAK_WIDTH_TOP, 1.0);
