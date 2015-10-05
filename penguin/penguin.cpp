@@ -81,8 +81,8 @@ int NUM_CIRCLE_SIDES = 100;
 //////////////////////////////////////////////////////
 
 const float LEFT_LEG_HIP_JOINT_MIN = -35.0f; // Joint that connects body and top half of left leg
-const float LEFT_LEG_HIP_JOINT_MAX = 35.0f;
-float LEFT_LEG_HIP_JOINT_ROT = 0.0f;
+const float LEFT_LEG_HIP_JOINT_MAX = 15.0f;
+float LEFT_LEG_HIP_JOINT_ROT = -15.0f;
 
 // joint that connects left leg segments
 
@@ -117,10 +117,12 @@ void GLUI_Control(int id);
 void drawSquare(float size);
 void drawCircle(float radius);
 void drawJoint(float radius);
+void drawJoint(float radius, bool isWhite);
 void drawHead(float width, float height);
 void drawBody(float width, float height);
 void drawArm(float width, float height);
 void drawFoot(float size);
+void drawBeakTop(float width, float height);
 
 // Return the current system clock (in seconds)
 double getTime();
@@ -364,6 +366,9 @@ void display(void)
     const float LEG_LENGTH = 20.0f;
     const float FOOT_WIDTH = 6.0f;
     const float FOOT_LENGTH = 15.0f;
+    const float BEAK_WIDTH_BOTTOM = 1.0f;
+    const float BEAK_WIDTH_TOP = 4.0f;
+    const float BEAK_LENGTH = 15.0f;
 
 	// Make everything bigger so that can see more easily
 	float zoom = 4.0f;
@@ -377,15 +382,12 @@ void display(void)
             // Scale square to size of body
             glScalef(BODY_WIDTH, BODY_LENGTH, 1.0);
 
-            // Set the colour to green
+            // Draw body polygon
             glColor3f(0.0, 0.0, 0.0);
-
-            // Draw the square for the body
-            //drawSquare(1.0);
             drawBody(1.0, 1.0);
         glPopMatrix();
 
-	    // Draw the 'head'        
+	    // Draw the 'head joint'        
         glPushMatrix();
         	glTranslatef(0.0, +BODY_LENGTH*10/20 - JOINT_RADIUS, 0.0);
 	        glTranslatef(0.0, -JOINT_PADDING, 0.0);        	
@@ -393,13 +395,59 @@ void display(void)
 		    // Draw joint between head and body
 		    drawJoint(JOINT_RADIUS);        	
         	           	
+            // Draw head
         	glPushMatrix();      
                 glRotatef(HEAD_JOINT_ROT, 0.0, 0.0, 1.0);
-		    	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
-				glColor3f(0.0, 0.0, 0.0);
 
-                glTranslatef(0.0, 0.4, 0.0); // Translate to the pivot point of the head
-				drawHead(1.0, 1.0);
+                // Draw main head outline
+                glPushMatrix();
+    		    	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
+    				glColor3f(0.0, 0.0, 0.0);
+
+                    glTranslatef(0.0, 0.4, 0.0); // Translate to the pivot point of the head
+    				drawHead(1.0, 1.0);
+                glPopMatrix();
+
+                // Draw eyes
+
+                glPushMatrix();
+                    glTranslatef(-HEAD_WIDTH * 0.2f, HEAD_HEIGHT * 0.5, 0.0);
+
+                    glPushMatrix();
+                        glTranslatef(HEAD_WIDTH * 0.02f, 0.0, 0.0); // Offcenter eye
+                        glScalef(2.0f, 2.0f, 1.0f); // Draw outer eye
+                        drawJoint(1.0, false);
+                    glPopMatrix();
+
+                    // Draw inner eye
+                    glColor3f(0.0, 0.0, 0.0);
+                    drawCircle(1.0);
+
+                glPopMatrix();
+
+                // Draw beak yellow
+                glColor3f(0.8, 0.8, 0.0); // Yellow
+                glPushMatrix();
+                    glTranslatef(-HEAD_WIDTH*0.45, HEAD_HEIGHT * 0.2, 0.0);
+
+                    // Draw beak bottom
+                    glPushMatrix();
+                        glScalef(BEAK_LENGTH, BEAK_WIDTH_BOTTOM, 1.0);
+                        glTranslatef(-0.4, 0.0, 0.0);
+                        drawSquare(1.0);
+                    glPopMatrix();
+
+                    glTranslatef(0, HEAD_HEIGHT * 0.2, 0.0);
+                    // Draw beak top
+                    glPushMatrix();
+                        glScalef(BEAK_LENGTH, BEAK_WIDTH_TOP, 1.0);
+                        glTranslatef(-0.4, 0.0, 0.0);
+                        drawBeakTop(1.0, 1.0);
+                    glPopMatrix();
+                glPopMatrix();
+
+
+
 		    glPopMatrix();
         glPopMatrix();
                       
@@ -445,7 +493,7 @@ void display(void)
 				// Scale size of leg top part
 				glScalef(LEG_WIDTH, LEG_LENGTH, 1.0);
 				glTranslatef(0.0, -0.4, 0.0);						
-				glColor3f(1.0, 1.0, 0.0); // Yellow
+                glColor3f(0.8, 0.8, 0.0); // Yellow
 				drawSquare(1.0);
 			glPopMatrix();
 			
@@ -505,8 +553,16 @@ void drawCircle(float radius)
 
 // Draws a circle that is not filled in white
 void drawJoint(float radius){
+    drawJoint(radius, true);
+}
+
+// Draws a circle that is not filled in. If isWhite is set, the circle will be white
+// otherwise it will be whatever color was chosen on the stack
+void drawJoint(float radius, bool isWhite){
 	glBegin(GL_LINE_LOOP); // Use GL_LINE_LOOP instead of GL_LINES to make the circle continuous
-    glColor3f(1.0, 1.0, 1.0);
+    if(isWhite){
+        glColor3f(1.0, 1.0, 1.0);
+    }
 	for(int i = 0; i < NUM_CIRCLE_SIDES; i++){
 		float xPos = radius * cos(2*M_PI * i / NUM_CIRCLE_SIDES);
 		float yPos = radius * sin(2*M_PI * i / NUM_CIRCLE_SIDES);
@@ -543,9 +599,9 @@ void drawBody(float width, float height){
 	glEnd();
 }
 
+// Draws arm which is like an inverted trapezoid
 void drawArm(float width, float height){
 	glBegin(GL_LINE_LOOP);
-	// Arm is like an inverted trapezoid
 	glVertex2d(-width/2, height/2);// Start at top left
 	glVertex2d(width/2, height * 9/20); // top right
 	glVertex2d(width*1/5, -height/2);
@@ -556,13 +612,25 @@ void drawArm(float width, float height){
 // Draws a yellow square that is sheared for the foot
 void drawFoot(float width){
     glPushMatrix();
-        glColor3f(1.0, 1.0, 0.0); // Yellow
+        glColor3f(0.8, 0.8, 0.0); // Yellow
         glScalef(1.0, 1/1.8, 1.0);
         glRotatef(10, 0.0, 0.0, 1.0);
         glScalef(1.0, 1.8, 1.0);
         glRotatef(-10, 0.0, 0.0, 1.0);
         drawSquare(1.0);
     glPopMatrix();
-
-
 }
+
+void drawBeakTop(float width, float height){
+    glBegin(GL_LINE_LOOP);
+        // Beak is a quadrilateral
+        glVertex2d(width/2, -height/2);// Start at bottom right
+        glVertex2d(-width/2, -height/2); // Bottom left
+        glVertex2d(-width/2, -height/10); // Move up
+        glVertex2d(width/2, height/2); // Top right
+    glEnd();
+}
+
+
+
+
