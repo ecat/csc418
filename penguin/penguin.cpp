@@ -98,6 +98,12 @@ const float BEAK_TRANSLATE_MAX = 1.0f;
 const float BEAK_TRANSLATE_MIN = 0.0f;
 float BEAK_TRANSLATE = 0.0f;
 
+float PENGUIN_TRANSLATE_X = 0.0f;
+float PENGUIN_TRANSLATE_Y = 0.0f;
+
+float PENGUIN_TRANSLATE_X_MAX = 1.0f;
+float PENGUIN_TRANSLATE_Y_MAX = 1.0f;
+
 // ***********  FUNCTION HEADER DECLARATIONS ****************
 
 
@@ -243,6 +249,16 @@ void initGlui()
     joint_spinner->set_speed(0.8);
     joint_spinner->set_float_limits(BEAK_TRANSLATE_MIN, BEAK_TRANSLATE_MAX, GLUI_LIMIT_CLAMP);
 
+    glui->add_separator();
+
+    joint_spinner = glui->add_spinner("Translate X", GLUI_SPINNER_FLOAT, &PENGUIN_TRANSLATE_X);
+    joint_spinner->set_speed(0.8);
+    joint_spinner->set_float_limits(-1.0, 1.0, GLUI_LIMIT_CLAMP);
+
+    joint_spinner = glui->add_spinner("Translate Y", GLUI_SPINNER_FLOAT, &PENGUIN_TRANSLATE_Y);
+    joint_spinner->set_speed(0.8);
+    joint_spinner->set_float_limits(-1.0, 1.0, GLUI_LIMIT_CLAMP);
+
     // Add button to specify animation mode 
     glui->add_separator();
     glui->add_checkbox("Animate", &animate_mode, 0, animateButton);
@@ -298,6 +314,9 @@ void animate()
     const double HEAD_JOINT_ROT_speed = 0.2;
     HEAD_JOINT_ROT = getJointRotAngle(HEAD_JOINT_MAX, HEAD_JOINT_MIN, HEAD_JOINT_ROT_speed);
 
+    const double BEAK_TRANSLATE_speed = 0.3;
+    BEAK_TRANSLATE = getJointRotAngle(BEAK_TRANSLATE_MIN, BEAK_TRANSLATE_MAX, BEAK_TRANSLATE_speed);
+
     // Update user interface
     glui->sync_live();
 
@@ -323,6 +342,10 @@ void myReshape(int w, int h)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(-w/2, w/2, -h/2, h/2);
+
+    // Ensure that the penguin stays on the screen
+    PENGUIN_TRANSLATE_X_MAX = w/2;
+    PENGUIN_TRANSLATE_Y_MAX = h/2;
 
     // Update OpenGL viewport and internal variables
     glViewport(0,0, w,h);
@@ -379,6 +402,7 @@ void display(void)
 
 	// Make everything bigger so that can see more easily
 	float zoom = 4.0f;
+    glTranslatef(PENGUIN_TRANSLATE_X * PENGUIN_TRANSLATE_X_MAX, PENGUIN_TRANSLATE_Y * PENGUIN_TRANSLATE_Y_MAX, 0.0);
 	glScalef(zoom, zoom, 1.0);
 
     // Push the current transformation matrix on the stack
@@ -518,8 +542,6 @@ void display(void)
                 
 				drawFoot(1.0);				
 			glPopMatrix();
-	
-
 		glPopMatrix();
 
     // Retrieve the previous state of the transformation stack
