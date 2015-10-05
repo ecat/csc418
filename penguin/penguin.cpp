@@ -84,12 +84,21 @@ const float LEFT_LEG_HIP_JOINT_MIN = -35.0f; // Joint that connects body and top
 const float LEFT_LEG_HIP_JOINT_MAX = 15.0f;
 float LEFT_LEG_HIP_JOINT_ROT = -15.0f;
 
-// joint that connects left leg segments
-
+// Params for joint that connects left leg segments
 const float LEFT_FOOT_JOINT_MIN = -15.0f; 
 const float LEFT_FOOT_JOINT_MAX = 15.0f;
 float LEFT_FOOT_JOINT_ROT = 0.0f;
 
+const float RIGHT_LEG_HIP_JOINT_MIN = -25.0f; // Joint that connects body and top half of right leg
+const float RIGHT_LEG_HIP_JOINT_MAX = 25.0f;
+float RIGHT_LEG_HIP_JOINT_ROT = 15.0f;
+
+// Params for joint that connects right leg segments
+const float RIGHT_FOOT_JOINT_MIN = -5.0f; 
+const float RIGHT_FOOT_JOINT_MAX = 15.0f;
+float RIGHT_FOOT_JOINT_ROT = 0.0f;
+
+// Neck joint
 const float HEAD_JOINT_MIN = -5.0f;
 const float HEAD_JOINT_MAX = 35.0f;
 float HEAD_JOINT_ROT = 0.0f;
@@ -241,6 +250,14 @@ void initGlui()
 	joint_spinner->set_speed(0.6);
 	joint_spinner->set_float_limits(LEFT_FOOT_JOINT_MIN, LEFT_FOOT_JOINT_MAX, GLUI_LIMIT_CLAMP);
 
+    joint_spinner = glui->add_spinner("Right Leg Hip Joint", GLUI_SPINNER_FLOAT, &RIGHT_LEG_HIP_JOINT_ROT);
+    joint_spinner->set_speed(0.6);
+    joint_spinner->set_float_limits(RIGHT_LEG_HIP_JOINT_MIN, RIGHT_LEG_HIP_JOINT_MAX, GLUI_LIMIT_CLAMP);
+
+    joint_spinner = glui->add_spinner("Right Leg Knee Joint", GLUI_SPINNER_FLOAT, &RIGHT_FOOT_JOINT_ROT);
+    joint_spinner->set_speed(0.6);
+    joint_spinner->set_float_limits(RIGHT_FOOT_JOINT_MIN, RIGHT_FOOT_JOINT_MAX, GLUI_LIMIT_CLAMP);
+
     joint_spinner = glui->add_spinner("Head Joint", GLUI_SPINNER_FLOAT, &HEAD_JOINT_ROT);
     joint_spinner->set_speed(0.6);
     joint_spinner->set_float_limits(HEAD_JOINT_MIN, HEAD_JOINT_MAX, GLUI_LIMIT_CLAMP);
@@ -281,9 +298,9 @@ void initGl(void)
 }
 
 
-double getJointRotAngle(float max_angle, float min_angle, float rot_speed){
+double getJointRotAngle(float max_angle, float min_angle, float rot_speed, float phase_shift){
 
-    double animation_time = (sin(animation_frame * rot_speed) + 1.0)/ 2.0; // normalize to 0 < y < 1
+    double animation_time = (sin(animation_frame * rot_speed + phase_shift) + 1.0)/ 2.0; // normalize to 0 < y < 1
     float angle = animation_time * min_angle + (1 - animation_time) * max_angle;        
     return angle;
 }
@@ -305,17 +322,25 @@ void animate()
 
     // Animate left leg at hip joint
     const double LEFT_LEG_HIP_JOINT_ROT_speed = 0.1;
-    LEFT_LEG_HIP_JOINT_ROT = getJointRotAngle(LEFT_LEG_HIP_JOINT_MAX, LEFT_LEG_HIP_JOINT_MIN, LEFT_LEG_HIP_JOINT_ROT_speed);
+    LEFT_LEG_HIP_JOINT_ROT = getJointRotAngle(LEFT_LEG_HIP_JOINT_MAX, LEFT_LEG_HIP_JOINT_MIN, LEFT_LEG_HIP_JOINT_ROT_speed, 0.0);
 
     // Animate left foot
     const double LEFT_FOOT_JOINT_ROT_speed = 0.2;
-    LEFT_FOOT_JOINT_ROT = getJointRotAngle(LEFT_FOOT_JOINT_MAX, LEFT_FOOT_JOINT_MIN, LEFT_FOOT_JOINT_ROT_speed);
+    LEFT_FOOT_JOINT_ROT = getJointRotAngle(LEFT_FOOT_JOINT_MAX, LEFT_FOOT_JOINT_MIN, LEFT_FOOT_JOINT_ROT_speed, 0.0);
 
     const double HEAD_JOINT_ROT_speed = 0.2;
-    HEAD_JOINT_ROT = getJointRotAngle(HEAD_JOINT_MAX, HEAD_JOINT_MIN, HEAD_JOINT_ROT_speed);
+    HEAD_JOINT_ROT = getJointRotAngle(HEAD_JOINT_MAX, HEAD_JOINT_MIN, HEAD_JOINT_ROT_speed, 0.0);
 
     const double BEAK_TRANSLATE_speed = 0.3;
-    BEAK_TRANSLATE = getJointRotAngle(BEAK_TRANSLATE_MIN, BEAK_TRANSLATE_MAX, BEAK_TRANSLATE_speed);
+    BEAK_TRANSLATE = getJointRotAngle(BEAK_TRANSLATE_MIN, BEAK_TRANSLATE_MAX, BEAK_TRANSLATE_speed, 0.0);
+
+    // animate right leg
+    const double RIGHT_LEG_HIP_JOINT_ROT_speed = 0.1;
+    RIGHT_LEG_HIP_JOINT_ROT = getJointRotAngle(RIGHT_LEG_HIP_JOINT_MAX, RIGHT_LEG_HIP_JOINT_MIN, RIGHT_LEG_HIP_JOINT_ROT_speed, M_PI);
+
+    // animate right foot
+    const double RIGHT_FOOT_JOINT_ROT_speed = 0.1;
+    RIGHT_FOOT_JOINT_ROT = getJointRotAngle(RIGHT_FOOT_JOINT_MAX, RIGHT_FOOT_JOINT_MIN, RIGHT_FOOT_JOINT_ROT_speed, M_PI);
 
     // Update user interface
     glui->sync_live();
@@ -543,6 +568,37 @@ void display(void)
 				drawFoot(1.0);				
 			glPopMatrix();
 		glPopMatrix();
+
+        // Draw right leg
+        glPushMatrix();
+            glTranslatef(BODY_WIDTH/5 , -BODY_LENGTH * 0.4, 0.0);
+
+            // Joint between body and top part of left leg
+            drawJoint(JOINT_RADIUS);            
+    
+            glRotatef(RIGHT_LEG_HIP_JOINT_ROT, 0.0, 0.0, 10);
+            // Move to edge of leg
+            glPushMatrix();
+                // Scale size of leg top part
+                glScalef(LEG_WIDTH, LEG_LENGTH, 1.0);
+                glTranslatef(0.0, -0.4, 0.0);                       
+                glColor3f(0.8, 0.8, 0.0); // Yellow
+                drawSquare(1.0);
+            glPopMatrix();
+            
+            // Move to bottom edge of leg
+            glTranslatef(0.0, -LEG_LENGTH * 0.8f, 0.0);
+            drawJoint(JOINT_RADIUS);
+            
+            glPushMatrix();
+                // Scale size of leg bottom part
+                glRotatef(RIGHT_FOOT_JOINT_ROT, 0.0, 0.0, 1.0);
+                glScalef(FOOT_LENGTH, FOOT_WIDTH, 1.0);
+                glTranslatef(-0.4, 0.0, 0.0);
+                
+                drawFoot(1.0);              
+            glPopMatrix();
+        glPopMatrix();
 
     // Retrieve the previous state of the transformation stack
     glPopMatrix();
