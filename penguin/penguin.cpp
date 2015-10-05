@@ -69,16 +69,26 @@ int animate_mode = 0;       // 0 = no anim, 1 = animate
 int animation_frame = 0;      // Specify current frame of animation
 
 // Joint parameters
-const float JOINT_MIN = -45.0f;
-const float JOINT_MAX =  45.0f;
-float joint_rot = 0.0f;
+const float ARM_JOINT_MIN = -45.0f;
+const float ARM_JOINT_MAX =  45.0f;
+float ARM_JOINT_ROT = 0.0f;
+
+
 int NUM_CIRCLE_SIDES = 100;
 
 //////////////////////////////////////////////////////
 // TODO: Add additional joint parameters here
 //////////////////////////////////////////////////////
 
+const float LEFT_LEG_HIP_JOINT_MIN = -35.0f; // Joint that connects body and top half of left leg
+const float LEFT_LEG_HIP_JOINT_MAX = 35.0f;
+float LEFT_LEG_HIP_JOINT_ROT = 0.0f;
 
+// joint that connects left leg segments
+
+const float LEFT_LEG_KNEE_JOINT_MIN = -15.0f; // Joint that connects body and top half of left leg
+const float LEFT_LEG_KNEE_JOINT_MAX = 15.0f;
+float LEFT_LEG_KNEE_JOINT_ROT = 0.0f;
 
 // ***********  FUNCTION HEADER DECLARATIONS ****************
 
@@ -195,14 +205,23 @@ void initGlui()
 
     // Create a control to specify the rotation of the joint
     GLUI_Spinner *joint_spinner
-        = glui->add_spinner("Joint", GLUI_SPINNER_FLOAT, &joint_rot);
+        = glui->add_spinner("Arm Joint", GLUI_SPINNER_FLOAT, &ARM_JOINT_ROT);
     joint_spinner->set_speed(0.1);
-    joint_spinner->set_float_limits(JOINT_MIN, JOINT_MAX, GLUI_LIMIT_CLAMP);
+    joint_spinner->set_float_limits(ARM_JOINT_MIN, ARM_JOINT_MAX, GLUI_LIMIT_CLAMP);
 
     ///////////////////////////////////////////////////////////
     // TODO: 
     //   Add controls for additional joints here
     ///////////////////////////////////////////////////////////
+
+	joint_spinner = glui->add_spinner("Left Leg Hip Joint", GLUI_SPINNER_FLOAT, &LEFT_LEG_HIP_JOINT_ROT);
+	joint_spinner->set_speed(0.6);
+	joint_spinner->set_float_limits(LEFT_LEG_HIP_JOINT_MIN, LEFT_LEG_HIP_JOINT_MAX, GLUI_LIMIT_CLAMP);
+
+	joint_spinner = glui->add_spinner("Left Leg Knee Joint", GLUI_SPINNER_FLOAT, &LEFT_LEG_KNEE_JOINT_ROT);
+	joint_spinner->set_speed(0.6);
+	joint_spinner->set_float_limits(LEFT_LEG_KNEE_JOINT_MIN, LEFT_LEG_KNEE_JOINT_MAX, GLUI_LIMIT_CLAMP);
+
 
     // Add button to specify animation mode 
     glui->add_separator();
@@ -232,9 +251,9 @@ void initGl(void)
 void animate()
 {
     // Update geometry
-    const double joint_rot_speed = 0.1;
-    double joint_rot_t = (sin(animation_frame*joint_rot_speed) + 1.0) / 2.0;
-    joint_rot = joint_rot_t * JOINT_MIN + (1 - joint_rot_t) * JOINT_MAX;
+    const double ARM_JOINT_ROT_speed = 0.1;
+    double ARM_JOINT_ROT_t = (sin(animation_frame*ARM_JOINT_ROT_speed) + 1.0) / 2.0;
+    ARM_JOINT_ROT = ARM_JOINT_ROT_t * ARM_JOINT_MIN + (1 - ARM_JOINT_ROT_t) * ARM_JOINT_MAX;
     
     ///////////////////////////////////////////////////////////
     // TODO:
@@ -370,7 +389,7 @@ void display(void)
 			glPopMatrix();
 		    
 		    // Rotate along the hinge
-		    glRotatef(joint_rot, 0.0, 0.0, 1.0);
+		    glRotatef(ARM_JOINT_ROT, 0.0, 0.0, 1.0);
 
 			// Align pivot point with joint
 		    glTranslatef(0.0, JOINT_RADIUS, 0.0);
@@ -397,7 +416,7 @@ void display(void)
 		    glColor3f(0.6, 0.6, 0.6);
 			drawJoint(JOINT_RADIUS);		    
 	
-			glRotatef(30, 0.0, 0.0, 10);
+			glRotatef(LEFT_LEG_HIP_JOINT_ROT, 0.0, 0.0, 10);
 			// Move to edge of leg
 			glPushMatrix();
 				// Scale size of leg top part
@@ -414,7 +433,7 @@ void display(void)
 			
 			glPushMatrix();
 				// Scale size of leg bottom part
-				glRotatef(10, 0.0, 0.0, 1.0);
+				glRotatef(LEFT_LEG_KNEE_JOINT_ROT, 0.0, 0.0, 1.0);
 				glScalef(LEG_LENGTH, LEG_WIDTH, 1.0);
 				glTranslatef(-0.45, 0.0, 0.0);
 				glColor3f(0.0, 0.0, 1.0);
