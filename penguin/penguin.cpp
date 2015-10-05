@@ -314,6 +314,8 @@ void display(void)
     const float JOINT_PADDING = 1.0f;
     const float HEAD_WIDTH = 25.0f;
     const float HEAD_HEIGHT = 20.0f;
+    const float LEG_WIDTH = 10.0f;
+    const float LEG_LENGTH = 20.0f;
 
 	// Make everything bigger so that can see more easily
 	float zoom = 4.0f;
@@ -386,7 +388,41 @@ void display(void)
 		    
         glPopMatrix();
         
+		// Draw left leg
+		
+		glPushMatrix();
+			glTranslatef(-BODY_WIDTH/6 , -BODY_LENGTH * 0.4, 0.0);
 
+			// Joint between body and top part of left leg
+		    glColor3f(0.6, 0.6, 0.6);
+			drawJoint(JOINT_RADIUS);		    
+	
+			glRotatef(30, 0.0, 0.0, 10);
+			// Move to edge of leg
+			glPushMatrix();
+				// Scale size of leg top part
+				glScalef(LEG_WIDTH, LEG_LENGTH, 1.0);
+				glTranslatef(0.0, -0.45, 0.0);						
+				glColor3f(0.0, 0.0, 1.0);
+				drawSquare(1.0);
+			glPopMatrix();
+			
+			// Move to bottom edge of leg
+			glTranslatef(0.0, -LEG_LENGTH + 2 * JOINT_RADIUS, 0.0);
+			glColor3f(0.6, 0.6, 0.6);
+			drawJoint(JOINT_RADIUS);
+			
+			glPushMatrix();
+				// Scale size of leg bottom part
+				glRotatef(10, 0.0, 0.0, 1.0);
+				glScalef(LEG_LENGTH, LEG_WIDTH, 1.0);
+				glTranslatef(-0.45, 0.0, 0.0);
+				glColor3f(0.0, 0.0, 1.0);
+				drawSquare(1.0);				
+			glPopMatrix();
+	
+
+		glPopMatrix();
 
     // Retrieve the previous state of the transformation stack
     glPopMatrix();
@@ -405,7 +441,7 @@ void display(void)
 void drawSquare(float width)
 {
     // Draw the square
-    glBegin(GL_POLYGON);
+    glBegin(GL_LINE_LOOP);
     glVertex2d(-width/2, -width/2);
     glVertex2d(width/2, -width/2);
     glVertex2d(width/2, width/2);
