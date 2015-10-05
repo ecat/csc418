@@ -310,12 +310,13 @@ void display(void)
     const float BODY_LENGTH = 60.0f;
     const float ARM_LENGTH = 25.0f;
     const float ARM_WIDTH = 10.0f;
-    const float JOINT_RADIUS = 5.0f;
+    const float JOINT_RADIUS = 1.5f;
+    const float JOINT_PADDING = 1.0f;
     const float HEAD_WIDTH = 25.0f;
     const float HEAD_HEIGHT = 20.0f;
 
 	// Make everything bigger so that can see more easily
-	float zoom = 2.0f;
+	float zoom = 4.0f;
 	glScalef(zoom, zoom, 1.0);
 
     // Push the current transformation matrix on the stack
@@ -336,44 +337,56 @@ void display(void)
 
 	    // Draw the 'head'        
         glPushMatrix();
-        	glTranslatef(0.0, +BODY_LENGTH/2, 0.0);           	
+        	glTranslatef(0.0, +BODY_LENGTH*10/20 - JOINT_RADIUS, 0.0);
+	        glTranslatef(0.0, -JOINT_PADDING, 0.0);        	
+	        
+		    // Draw joint between head and body
+	        glPushMatrix();
+    	        glColor3f(0.6, 0.6, 0.6);
+			    drawJoint(JOINT_RADIUS);        	
+		    glPopMatrix();
+        	           	
         	glPushMatrix();      
-        		glTranslatef(0.0, HEAD_HEIGHT/5, 0.0);
+        		glTranslatef(0.0, HEAD_HEIGHT/2 - JOINT_RADIUS, 0.0);
+        		glTranslatef(0.0, -JOINT_PADDING, 0.0);
 		    	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
 				glColor3f(1.0, 1.0, 1.0);
 				drawHead(1.0, 1.0);
 		    glPopMatrix();
-		    
-		    // Draw joint between head and body
-	        glColor3f(0.6, 0.6, 0.6);
-		    drawJoint(JOINT_RADIUS);
-		    
         glPopMatrix();
                       
         // Draw the 'arm'
-
-		// Move the arm to the joint hinge
-	    glTranslatef(0.0, BODY_LENGTH/5, 0.0);
-	    
+   
         glPushMatrix();
+        	// Move the arm to the joint hinge
+		    glTranslatef(0.0, BODY_LENGTH/5, 0.0);		    
+	    	glTranslatef(0.0, -JOINT_PADDING, 0.0);
+	    	
+		    glPushMatrix();
+			    glColor3f(0.6, 0.6, 0.6);
+				drawJoint(JOINT_RADIUS);		    
+			glPopMatrix();
+		    
 		    // Rotate along the hinge
 		    glRotatef(joint_rot, 0.0, 0.0, 1.0);
 
+			// Align pivot point with joint
+		    glTranslatef(0.0, JOINT_RADIUS, 0.0);
+		    
 		    // Scale the size of the arm
 		    glScalef(ARM_WIDTH, ARM_LENGTH, 1.0);
 
 		    // Move to center location of arm, under previous rotation
-		    glTranslatef(0.0, -0.5, 0.0);
+		    glTranslatef(0.0, -0.45, 0.0);
 
-		    // Draw the square for the arm
+		    // Draw the arm
 		    glColor3f(1.0, 0.0, 0.0);
 		    //drawSquare(1.0);
 		    drawArm(1.0, 1.0);
+		    
         glPopMatrix();
         
-        // Draw joint hinge last so that it shows on top
-        glColor3f(0.6, 0.6, 0.6);
-		drawJoint(JOINT_RADIUS);
+
 
     // Retrieve the previous state of the transformation stack
     glPopMatrix();
