@@ -86,13 +86,14 @@ float LEFT_LEG_HIP_JOINT_ROT = 0.0f;
 
 // joint that connects left leg segments
 
-const float LEFT_FEET_JOINT_MIN = -15.0f; // Joint that connects body and top half of left leg
-const float LEFT_FEET_JOINT_MAX = 15.0f;
-float LEFT_FEET_JOINT_ROT = 0.0f;
+const float LEFT_FOOT_JOINT_MIN = -15.0f; 
+const float LEFT_FOOT_JOINT_MAX = 15.0f;
+float LEFT_FOOT_JOINT_ROT = 0.0f;
 
-const float HEAD_JOINT_MIN = -35.0f;
+const float HEAD_JOINT_MIN = -5.0f;
 const float HEAD_JOINT_MAX = 35.0f;
 float HEAD_JOINT_ROT = 0.0f;
+
 
 // ***********  FUNCTION HEADER DECLARATIONS ****************
 
@@ -119,9 +120,12 @@ void drawJoint(float radius);
 void drawHead(float width, float height);
 void drawBody(float width, float height);
 void drawArm(float width, float height);
+void drawFoot(float size);
 
 // Return the current system clock (in seconds)
 double getTime();
+// Helper function to calculate joint angle
+double getJointRotAngle(float max_angle, float min_angle, float rot_speed);
 
 
 // ******************** FUNCTIONS ************************
@@ -222,9 +226,9 @@ void initGlui()
 	joint_spinner->set_speed(0.6);
 	joint_spinner->set_float_limits(LEFT_LEG_HIP_JOINT_MIN, LEFT_LEG_HIP_JOINT_MAX, GLUI_LIMIT_CLAMP);
 
-	joint_spinner = glui->add_spinner("Left Leg Knee Joint", GLUI_SPINNER_FLOAT, &LEFT_FEET_JOINT_ROT);
+	joint_spinner = glui->add_spinner("Left Leg Knee Joint", GLUI_SPINNER_FLOAT, &LEFT_FOOT_JOINT_ROT);
 	joint_spinner->set_speed(0.6);
-	joint_spinner->set_float_limits(LEFT_FEET_JOINT_MIN, LEFT_FEET_JOINT_MAX, GLUI_LIMIT_CLAMP);
+	joint_spinner->set_float_limits(LEFT_FOOT_JOINT_MIN, LEFT_FOOT_JOINT_MAX, GLUI_LIMIT_CLAMP);
 
     joint_spinner = glui->add_spinner("Head Joint", GLUI_SPINNER_FLOAT, &HEAD_JOINT_ROT);
     joint_spinner->set_speed(0.6);
@@ -252,7 +256,12 @@ void initGl(void)
 }
 
 
+double getJointRotAngle(float max_angle, float min_angle, float rot_speed){
 
+    double animation_time = (sin(animation_frame * rot_speed) + 1.0)/ 2.0; // normalize to 0 < y < 1
+    float angle = animation_time * min_angle + (1 - animation_time) * max_angle;        
+    return angle;
+}
 
 // Callback idle function for animating the scene
 void animate()
@@ -268,9 +277,17 @@ void animate()
     //   Note: Nothing should be drawn in this function!  OpenGL drawing
     //   should only happen in the display() callback.
     ///////////////////////////////////////////////////////////
+
+    // Animate left leg at hip joint
     const double LEFT_LEG_HIP_JOINT_ROT_speed = 0.1;
-    double LEFT_LEG_HIP_JOINT_ROT_t = (sin(animation_frame * LEFT_LEG_HIP_JOINT_ROT_speed) + 1.0)/ 2.0; // normalize to 0 < y < 1
-    LEFT_LEG_HIP_JOINT_ROT = LEFT_LEG_HIP_JOINT_ROT_t * LEFT_LEG_HIP_JOINT_MIN + (1 - LEFT_LEG_HIP_JOINT_ROT_t) * LEFT_LEG_HIP_JOINT_MAX;    
+    LEFT_LEG_HIP_JOINT_ROT = getJointRotAngle(LEFT_LEG_HIP_JOINT_MAX, LEFT_LEG_HIP_JOINT_MIN, LEFT_LEG_HIP_JOINT_ROT_speed);
+
+    // Animate left foot
+    const double LEFT_FOOT_JOINT_ROT_speed = 0.2;
+    LEFT_FOOT_JOINT_ROT = getJointRotAngle(LEFT_FOOT_JOINT_MAX, LEFT_FOOT_JOINT_MIN, LEFT_FOOT_JOINT_ROT_speed);
+
+    const double HEAD_JOINT_ROT_speed = 0.2;
+    HEAD_JOINT_ROT = getJointRotAngle(HEAD_JOINT_MAX, HEAD_JOINT_MIN, HEAD_JOINT_ROT_speed);
 
     // Update user interface
     glui->sync_live();
@@ -343,10 +360,10 @@ void display(void)
     const float JOINT_PADDING = 1.0f;
     const float HEAD_WIDTH = 25.0f;
     const float HEAD_HEIGHT = 20.0f;
-    const float LEG_WIDTH = 8.0f;
-    const float LEG_LENGTH = 15.0f;
-    const float FEET_WIDTH = 6.0f;
-    const float FEET_LENGTH = 15.0f;
+    const float LEG_WIDTH = 5.0f;
+    const float LEG_LENGTH = 20.0f;
+    const float FOOT_WIDTH = 6.0f;
+    const float FOOT_LENGTH = 15.0f;
 
 	// Make everything bigger so that can see more easily
 	float zoom = 4.0f;
@@ -361,7 +378,7 @@ void display(void)
             glScalef(BODY_WIDTH, BODY_LENGTH, 1.0);
 
             // Set the colour to green
-            glColor3f(0.0, 1.0, 0.0);
+            glColor3f(0.0, 0.0, 0.0);
 
             // Draw the square for the body
             //drawSquare(1.0);
@@ -374,13 +391,12 @@ void display(void)
 	        glTranslatef(0.0, -JOINT_PADDING, 0.0);        	
 	        
 		    // Draw joint between head and body
-	        glColor3f(0.6, 0.6, 0.6);
 		    drawJoint(JOINT_RADIUS);        	
         	           	
         	glPushMatrix();      
                 glRotatef(HEAD_JOINT_ROT, 0.0, 0.0, 1.0);
 		    	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
-				glColor3f(1.0, 1.0, 1.0);
+				glColor3f(0.0, 0.0, 0.0);
 
                 glTranslatef(0.0, 0.4, 0.0); // Translate to the pivot point of the head
 				drawHead(1.0, 1.0);
@@ -394,7 +410,6 @@ void display(void)
 		    glTranslatef(0.0, BODY_LENGTH/5, 0.0);		    
 	    	glTranslatef(0.0, -JOINT_PADDING, 0.0);
 	    	
-		    glColor3f(0.6, 0.6, 0.6);
 			drawJoint(JOINT_RADIUS);		    
 		    
 		    // Rotate along the hinge
@@ -410,7 +425,7 @@ void display(void)
 		    glTranslatef(0.0, -0.45, 0.0);
 
 		    // Draw the arm
-		    glColor3f(1.0, 0.0, 0.0);
+		    glColor3f(0.0, 0.0, 0.0);
 		    //drawSquare(1.0);
 		    drawArm(1.0, 1.0);
 		    
@@ -422,7 +437,6 @@ void display(void)
 			glTranslatef(-BODY_WIDTH/6 , -BODY_LENGTH * 0.4, 0.0);
 
 			// Joint between body and top part of left leg
-		    glColor3f(0.6, 0.6, 0.6);
 			drawJoint(JOINT_RADIUS);		    
 	
 			glRotatef(LEFT_LEG_HIP_JOINT_ROT, 0.0, 0.0, 10);
@@ -431,29 +445,21 @@ void display(void)
 				// Scale size of leg top part
 				glScalef(LEG_WIDTH, LEG_LENGTH, 1.0);
 				glTranslatef(0.0, -0.4, 0.0);						
-				glColor3f(0.0, 0.0, 1.0);
+				glColor3f(1.0, 1.0, 0.0); // Yellow
 				drawSquare(1.0);
 			glPopMatrix();
 			
 			// Move to bottom edge of leg
 			glTranslatef(0.0, -LEG_LENGTH * 0.8f, 0.0);
-			glColor3f(0.6, 0.6, 0.6);
 			drawJoint(JOINT_RADIUS);
 			
 			glPushMatrix();
 				// Scale size of leg bottom part
-				glRotatef(LEFT_FEET_JOINT_ROT, 0.0, 0.0, 1.0);
-				glScalef(FEET_LENGTH, FEET_WIDTH, 1.0);
+				glRotatef(LEFT_FOOT_JOINT_ROT, 0.0, 0.0, 1.0);
+				glScalef(FOOT_LENGTH, FOOT_WIDTH, 1.0);
 				glTranslatef(-0.4, 0.0, 0.0);
                 
-                // Shear the feet a bit
-                glScalef(1.0, 1/1.8, 1.0);
-                glRotatef(10, 0.0, 0.0, 1.0);
-                glScalef(1.0, 1.8, 1.0);
-                glRotatef(-10, 0.0, 0.0, 1.0);
-
-				glColor3f(0.0, 0.0, 1.0);
-				drawSquare(1.0);				
+				drawFoot(1.0);				
 			glPopMatrix();
 	
 
@@ -470,7 +476,6 @@ void display(void)
     // (this prevents flickering).
     glutSwapBuffers();
 }
-
 
 // Draw a square of the specified size, centered at the current location
 void drawSquare(float width)
@@ -498,10 +503,10 @@ void drawCircle(float radius)
 	glEnd();
 }
 
-// Draws a circle that is not filled in
+// Draws a circle that is not filled in white
 void drawJoint(float radius){
 	glBegin(GL_LINE_LOOP); // Use GL_LINE_LOOP instead of GL_LINES to make the circle continuous
-
+    glColor3f(1.0, 1.0, 1.0);
 	for(int i = 0; i < NUM_CIRCLE_SIDES; i++){
 		float xPos = radius * cos(2*M_PI * i / NUM_CIRCLE_SIDES);
 		float yPos = radius * sin(2*M_PI * i / NUM_CIRCLE_SIDES);
@@ -548,3 +553,16 @@ void drawArm(float width, float height){
 	glEnd();
 }
 
+// Draws a yellow square that is sheared for the foot
+void drawFoot(float width){
+    glPushMatrix();
+        glColor3f(1.0, 1.0, 0.0); // Yellow
+        glScalef(1.0, 1/1.8, 1.0);
+        glRotatef(10, 0.0, 0.0, 1.0);
+        glScalef(1.0, 1.8, 1.0);
+        glRotatef(-10, 0.0, 0.0, 1.0);
+        drawSquare(1.0);
+    glPopMatrix();
+
+
+}
