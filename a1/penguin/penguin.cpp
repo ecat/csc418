@@ -306,6 +306,7 @@ double getJointRotAngle(float max_angle, float min_angle, float rot_speed, float
 }
 
 // Callback idle function for animating the scene
+// This function updates the joint angles
 void animate()
 {
     // Update geometry
@@ -429,7 +430,7 @@ void display(void)
 	// Make everything bigger so that can see more easily
 	float zoom = 2.0f;
 
-    // Apply the penguin's translation
+    // Apply the penguin's translation relative to the world
     glTranslatef(PENGUIN_TRANSLATE_X * PENGUIN_TRANSLATE_X_MAX, PENGUIN_TRANSLATE_Y * PENGUIN_TRANSLATE_Y_MAX, 0.0);
 	glScalef(zoom, zoom, 1.0);
 
@@ -508,8 +509,6 @@ void display(void)
                     glPopMatrix();
                 glPopMatrix();
 
-
-
 		    glPopMatrix();
         glPopMatrix();
                       
@@ -539,8 +538,7 @@ void display(void)
 		    
         glPopMatrix();
         
-		// Draw left leg
-		
+		// Draw left leg		
 		glPushMatrix();
 			glTranslatef(-BODY_WIDTH/6 , -BODY_LENGTH * 0.4, 0.0);
 

@@ -1,3 +1,6 @@
+INTRODUCTION
+_______________
+
 This program is an OpenGL implementation of a 9 degree of freedom (DOF) planar penguin. The 9 degrees of freedom are as follows: the penguin's limbs are able to rotate about its joints (6), the entire figure can be translated in the plane (2), and the penguin's beak is able translate in order to open and close (1). Each degree of freedom can be controlled via the spinners in the control bar. The penguin can also be animated, in which case the magnitude of articulation for each limb is controlled via a sinusoid as a function of time. Transformation hierarchies and a transformation stack were used to simplify the drawing of each limb in the correct location. The functionalities of the penguin can be separated into how it is animated, transformed, and drawn.
 
 DRAW
@@ -14,7 +17,7 @@ For shapes that are only drawn once such as the head or body, the colors are set
 TRANSFORM
 _________________
 
-The transform function specifies the location, orientation, and size of each of the penguin's limb. Since the draw function assumes a unit square, the transform function is also responsible for scaling the length and width of each limb. The initial origin is considered to be the body. Each other limb is specified via a transformation tree from the center of the body. Specifically the transformation hierarchy is as follows:
+The transform function specifies the location, orientation, and size of each of the penguin's limb. When the screen is resized, the penguin is scaled such that it remains the same height, and translated so that it remains the same relative part of the window. Since the draw function assumes a unit square, the transform function is also responsible for scaling the length and width of each limb. The initial origin is considered to be the body. Each other limb is specified via a transformation tree from the center of the body. Specifically the transformation hierarchy is as follows:
 
 Body ---> Arm
 	\---> Left Leg ---> Left Foot
@@ -22,9 +25,11 @@ Body ---> Arm
 	\---> Head ---> Bottom Beak ---> Top Beak
 		\---> Eyes
 
-For example, the location of the left foot is achieved by first moving from the body to the left leg, then from the left leg to the left foot. Using a hierarchy simplifies the matrix operations required to change coordinate frame because it is built in steps that can be more easily observed and understood.
+For example, the location of the left foot is achieved by first translating the coordinate frame from the body to the left leg. The frame is then rotated to match the orientation of the left leg, then it is translated to the left foot coordinate frame. Using such a hierarchy simplifies the matrix operations required to change coordinate frame because it is built in steps that can be more easily observed and understood.
 
-Rotation and translation of the degrees of freedom are accounted for in the transform hierarchy to ensure that the pivot point is about a joint. The values for the rotation and translation are updated in the animate function.		
+Rotation and translation of the degrees of freedom are accounted for in the transform hierarchy and ensure that a limb's pivot point is about the joint. To achieve rotation about a point that is not the center of the shape, the shape is first translated such that the pivot point is lcoated at the origin. Then the rotation matrix is applied.
+
+The values for the rotation and translation are updated in the animate function.		
 
 ANIMATE
 _________________
