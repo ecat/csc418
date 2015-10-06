@@ -426,7 +426,7 @@ void display(void)
     const float BEAK_LENGTH = 15.0f;
 
 	// Make everything bigger so that can see more easily
-	float zoom = 4.0f;
+	float zoom = 2.0f;
     glTranslatef(PENGUIN_TRANSLATE_X * PENGUIN_TRANSLATE_X_MAX, PENGUIN_TRANSLATE_Y * PENGUIN_TRANSLATE_Y_MAX, 0.0);
 	glScalef(zoom, zoom, 1.0);
 
@@ -439,7 +439,6 @@ void display(void)
             glScalef(BODY_WIDTH, BODY_LENGTH, 1.0);
 
             // Draw body polygon
-            glColor3f(0.0, 0.0, 0.0);
             drawBody(1.0, 1.0);
         glPopMatrix();
 
@@ -458,14 +457,11 @@ void display(void)
                 // Draw main head outline
                 glPushMatrix();
     		    	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
-    				glColor3f(0.0, 0.0, 0.0);
-
                     glTranslatef(0.0, 0.4, 0.0); // Translate to the pivot point of the head
     				drawHead(1.0, 1.0);
                 glPopMatrix();
 
                 // Draw eyes
-
                 glPushMatrix();
                     glTranslatef(-HEAD_WIDTH * 0.2f, HEAD_HEIGHT * 0.5, 0.0);
 
@@ -481,8 +477,7 @@ void display(void)
 
                 glPopMatrix();
 
-                // Draw beak yellow
-                glColor3f(0.8, 0.8, 0.0); // Yellow
+
                 glPushMatrix();
                     glTranslatef(-HEAD_WIDTH*0.45, HEAD_HEIGHT * 0.15, 0.0);
 
@@ -492,6 +487,8 @@ void display(void)
                         glTranslatef(0.0f, HEAD_HEIGHT * 0.1 * BEAK_TRANSLATE, 0.0);
                         glScalef(BEAK_LENGTH, BEAK_WIDTH_BOTTOM, 1.0);
                         glTranslatef(-0.4, 0.0, 0.0);
+                        // Draw beak yellow
+                        glColor3f(0.8, 0.8, 0.0); // Yellow
                         drawSquare(1.0);
                     glPopMatrix();
 
@@ -531,8 +528,6 @@ void display(void)
 		    glTranslatef(0.0, -0.45, 0.0);
 
 		    // Draw the arm
-		    glColor3f(0.0, 0.0, 0.0);
-		    //drawSquare(1.0);
 		    drawArm(1.0, 1.0);
 		    
         glPopMatrix();
@@ -662,6 +657,7 @@ void drawJoint(float radius, bool isWhite){
 // Draws the head shape
 void drawHead(float width, float height)
 {
+    glColor3f(0.0, 0.0, 0.0); // black
 	glBegin(GL_LINE_LOOP);
     glVertex2d(-width*3/8, height*1/4);
     glVertex2d(-width/8, height/2);
@@ -673,6 +669,7 @@ void drawHead(float width, float height)
 
 // Draws body shape
 void drawBody(float width, float height){
+    glColor3f(0.0, 0.0, 0.0); // black
 	glBegin(GL_LINE_LOOP);
 	// Start with the bottom trapezoid like part
 	glVertex2d(-width/2, -height/3);
@@ -688,6 +685,7 @@ void drawBody(float width, float height){
 
 // Draws arm which is like an inverted trapezoid
 void drawArm(float width, float height){
+    glColor3f(0.0, 0.0, 0.0); // black
 	glBegin(GL_LINE_LOOP);
 	glVertex2d(-width/2, height/2);// Start at top left
 	glVertex2d(width/2, height * 9/20); // top right
@@ -709,6 +707,8 @@ void drawFoot(float width){
 }
 
 void drawBeakTop(float width, float height){
+    // Draw beak yellow
+    glColor3f(0.8, 0.8, 0.0); // Yellow
     glBegin(GL_LINE_LOOP);
         // Beak is a quadrilateral
         glVertex2d(width/2, -height/2);// Start at bottom right
