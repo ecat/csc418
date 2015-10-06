@@ -2,8 +2,8 @@
 Assignment 1 Checklist/Grading sheet
 -------------------------------------
 
-Name: 
-Student ID:
+Name: Philip Lee
+Student ID: 999074932
 
 -----------------------------------------------------------------------------------------
 A. PLEASE ANSWER THE FOLLOWING QUESTIONS (your assignment will not be graded otherwise!)
@@ -13,14 +13,14 @@ A. PLEASE ANSWER THE FOLLOWING QUESTIONS (your assignment will not be graded oth
    Academic Honesty policy stated in 
    http://www.cs.toronto.edu/~kyros/courses/418/policy.2010f.html
 
-   ___Yes   ___No
+   _X__Yes   ___No
 
 
 2. I collaborated on this assignment with another student 
    (see http://www.cs.toronto.edu/~kyros/courses/418/policy.2010f.html for
     policy on assignments done in collaboration)
 
-   ___Yes   ___No
+   ___Yes   __X_No
 
    If you checked yes, please supply the following
 
@@ -39,16 +39,16 @@ B. PLACE AN (X) IN FRONT OF PORTIONS OF THE ASSIGNMENT THAT YOU COMPLETED IN FUL
    WE WILL BE ABLE TO MAKE AN ACCURATE ASSESSMENT
 
    
-___   ( 5 points) Part 2a     Parts description & drawing
+_X__   ( 5 points) Part 2a     Parts description & drawing
                   
-___   (10 points) Part 2b	  Parts transformation description & implementation
+_X__   (10 points) Part 2b	  Parts transformation description & implementation
 
-___   ( 8 points) Part 2c     Animation control functions description & implementation
+_X__   ( 8 points) Part 2c     Animation control functions description & implementation
 
-___   (15 points) Part 2d     Hierarchical object rendering 
+_X__   (15 points) Part 2d     Hierarchical object rendering 
                   
-___   ( 2 points) Part 2e     Joint drawing
+_X__   ( 2 points) Part 2e     Joint drawing
 
-___   (10 points) Part 2f     Written report
+_X__   (10 points) Part 2f     Written report
 
 -------------------------------------------------------------------------------- 
