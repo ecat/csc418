@@ -22,6 +22,8 @@ Body ---> Arm
 	\---> Head ---> Bottom Beak ---> Top Beak
 		\---> Eyes
 
+For example, the location of the left foot is achieved by first moving from the body to the left leg, then from the left leg to the left foot. Using a hierarchy simplifies the matrix operations required to change coordinate frame because it is built in steps that can be more easily observed and understood.
+
 Rotation and translation of the degrees of freedom are accounted for in the transform hierarchy to ensure that the pivot point is about a joint. The values for the rotation and translation are updated in the animate function.		
 
 ANIMATE

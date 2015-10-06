@@ -409,6 +409,7 @@ void display(void)
     ///////////////////////////////////////////////////////////
 
     // Draw our hinged object
+    // Specify the scale of each limb
     const float BODY_WIDTH = 40.0f;
     const float BODY_LENGTH = 60.0f;
     const float ARM_LENGTH = 25.0f;
@@ -427,6 +428,8 @@ void display(void)
 
 	// Make everything bigger so that can see more easily
 	float zoom = 2.0f;
+
+    // Apply the penguin's translation
     glTranslatef(PENGUIN_TRANSLATE_X * PENGUIN_TRANSLATE_X_MAX, PENGUIN_TRANSLATE_Y * PENGUIN_TRANSLATE_Y_MAX, 0.0);
 	glScalef(zoom, zoom, 1.0);
 
@@ -435,9 +438,8 @@ void display(void)
 
         // Draw the 'body'
         glPushMatrix();
-            // Scale square to size of body
+            // Scale polygon to size of body
             glScalef(BODY_WIDTH, BODY_LENGTH, 1.0);
-
             // Draw body polygon
             drawBody(1.0, 1.0);
         glPopMatrix();
@@ -457,28 +459,31 @@ void display(void)
                 // Draw main head outline
                 glPushMatrix();
     		    	glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
-                    glTranslatef(0.0, 0.4, 0.0); // Translate to the pivot point of the head
+                    glTranslatef(0.0, 0.4, 0.0); // Translate head to the pivot point
     				drawHead(1.0, 1.0);
                 glPopMatrix();
 
                 // Draw eyes
                 glPushMatrix();
+                    // Position the eye in the head
                     glTranslatef(-HEAD_WIDTH * 0.2f, HEAD_HEIGHT * 0.5, 0.0);
 
                     glPushMatrix();
-                        glTranslatef(HEAD_WIDTH * 0.02f, 0.0, 0.0); // Offcenter eye
+                        glTranslatef(HEAD_WIDTH * 0.02f, 0.0, 0.0); // Off-center the eye
                         glScalef(2.0f, 2.0f, 1.0f); // Draw outer eye
                         drawJoint(1.0, false);
                     glPopMatrix();
 
-                    // Draw inner eye
+                    // Draw inner eye which is a filled in circle
                     glColor3f(0.0, 0.0, 0.0);
                     drawCircle(1.0);
 
                 glPopMatrix();
 
-
+                // Draw beak
                 glPushMatrix();
+
+                    // Move to left side of head and slightly up vertically
                     glTranslatef(-HEAD_WIDTH*0.45, HEAD_HEIGHT * 0.15, 0.0);
 
                     // Draw beak bottom
@@ -492,7 +497,9 @@ void display(void)
                         drawSquare(1.0);
                     glPopMatrix();
 
+                    // Draw the top of the beak slightly above the bottom beak
                     glTranslatef(0, HEAD_HEIGHT * 0.25, 0.0);
+
                     // Draw beak top
                     glPushMatrix();
                         glScalef(BEAK_LENGTH, BEAK_WIDTH_TOP, 1.0);
@@ -509,7 +516,7 @@ void display(void)
         // Draw the 'arm'
    
         glPushMatrix();
-        	// Move the arm to the joint hinge
+        	// Adjust the arm to the joint hinge
 		    glTranslatef(0.0, BODY_LENGTH/5, 0.0);		    
 	    	glTranslatef(0.0, -JOINT_PADDING, 0.0);
 	    	
@@ -586,7 +593,7 @@ void display(void)
             drawJoint(JOINT_RADIUS);
             
             glPushMatrix();
-                // Scale size of leg bottom part
+                // Scale size of bottom leg
                 glRotatef(RIGHT_FOOT_JOINT_ROT, 0.0, 0.0, 1.0);
                 glScalef(FOOT_LENGTH, FOOT_WIDTH, 1.0);
                 glTranslatef(-0.4, 0.0, 0.0);
@@ -706,6 +713,7 @@ void drawFoot(float width){
     glPopMatrix();
 }
 
+// Draws the top beak shape
 void drawBeakTop(float width, float height){
     // Draw beak yellow
     glColor3f(0.8, 0.8, 0.0); // Yellow
