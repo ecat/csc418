@@ -1,10 +1,15 @@
-INTRODUCTION
-_______________
+\documentclass{scrartcl}
+
+
+\begin{document}
+
+\section{Introduction}
+
 
 This program is an OpenGL implementation of a 9 degree of freedom (DOF) planar penguin. The 9 degrees of freedom are as follows: the penguin's limbs are able to rotate about its joints (6), the entire figure can be translated in the plane (2), and the penguin's beak is able translate in order to open and close (1). Each degree of freedom can be controlled via the spinners in the control bar. The penguin can also be animated, in which case the magnitude of articulation for each limb is controlled via a sinusoid as a function of time. Transformation hierarchies and a transformation stack were used to simplify the drawing of each limb in the correct location. The functionalities of the penguin can be separated into how it is animated, transformed, and drawn.
 
-DRAW
-________________
+\section{Draw}
+
 
 The body of the penguin is comprised of multiple irregular polygons. The head, body, arm, legs, and top beak were drawn by specifying vertices of each body part to OpenGL. OpenGL then connects the vertices but does not fill in the resulting polygon with a solid color. Parts such as the arm were relatively simple quadrilaterals, but other shapes such as the body had more vertices. These shapes were drawn within the coordinates of a unit square and scaled by transformation matrices in the transform function.
 
@@ -14,8 +19,8 @@ The joints of the penguin are circles. Since OpenGL is only capable of drawing s
 
 For shapes that are only drawn once such as the head or body, the colors are set when the shape's vertices are specified.
 
-TRANSFORM
-_________________
+\section{Transform}
+
 
 The transform function specifies the location, orientation, and size of each of the penguin's limb. When the screen is resized, the penguin is scaled such that it remains the same height, and translated so that it remains the same relative part of the window. Since the draw function assumes a unit square, the transform function is also responsible for scaling the length and width of each limb. The initial origin is considered to be the body. Each other limb is specified via a transformation tree from the center of the body. Specifically the transformation hierarchy is as follows:
 
@@ -31,8 +36,9 @@ Rotation and translation of the degrees of freedom are accounted for in the tran
 
 The values for the rotation and translation are updated in the animate function.		
 
-ANIMATE
-_________________
+\section{Animate}
+
 
 When the animate option is enabled, the penguin's limbs move about their rotational or translational axes. The animate callback is executed. The maximum amplitude of rotation for each limb is specified in the joint parameters. The animation values are updated every 50ms and follows a sinusoidal pattern. For the joints, a new rotation angle is calculated every timestep, which is then used in the transform hierarchy to orient a limb. Some joints rotate faster than others, controlled by changing the frequency of the sinusoid. A similar method is applied to the beak, which translates up and down. The magnitude of translation is normalized to be between 0 and 1, with 1 being completely open and 0 being completely closed.
 
+\end{document}

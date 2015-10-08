@@ -1,3 +1,6 @@
 *~
 penguin/penguin
 *.o
+*.aux
+*.log
+*.pdf
