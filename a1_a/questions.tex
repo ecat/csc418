@@ -1,0 +1,164 @@
+\documentclass[a4paper,10pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+%opening
+\title{}
+\author{Philip Lee - 9999074932}
+\setlength{\parindent}{0cm}
+\begin{document}
+
+\maketitle
+
+
+\section{}
+
+\section{}
+
+\section{Do Transforms Commute?}
+
+\subsection{}
+
+The translation and uniform scaling transforms do not commute in general.
+
+Consider the transformation matrix \\
+
+$T = 
+\begin{bmatrix}
+    1       & 0 & t_x \\
+    0       & 1 & t_y \\
+    0       & 0 & 1 
+\end{bmatrix}
+$, where $t_x $ and $t_y$ are the translations in the $x$ and $y$ direction. \\
+
+and the uniform scaling matrix \\
+
+$S_{Uniform} = \begin{bmatrix}
+    s       & 0 & 0 \\
+    0       & s & 0 \\
+    0       & 0 & 1     
+ \end{bmatrix}
+$, where $s$ is the scaling factor. \\
+
+Scaling first then translating. Multiplying the two matrices $T$ and $S$ gives: \\
+
+$T \bullet S_{Uniform} = \begin{bmatrix}
+		  s & 0 & t_x \\
+		  0 & s & t_y \\
+		  0 & 0 & 1
+               \end{bmatrix}
+$ \\
+
+Translating first then scaling gives: \\
+
+$S_{Uniform} \bullet T = \begin{bmatrix}
+		  s & 0 & st_x \\
+		  0 & s & st_y \\
+		  0 & 0 & 1
+               \end{bmatrix}
+$ \\ 
+
+These transformations matrices are not the same for $s \neq 1$ and thus the transforms do not commute. \\ 
+
+{\bfseries{Example:}}
+
+Consider the point $P_o = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, a transformation of $t_x = -1$ and $t_y = -1$ and a scaling $s = 2$\\
+Applying the translation first gives $P_{1a} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$ \\ 
+Appling scaling second gives $P_{2a} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$
+
+Reversing the order of the transforms:
+
+Applying scaling first gives $P_{1b} = \begin{bmatrix} 2 \\ 2 \end{bmatrix}$ \\
+Applying translation second gives  $P_{2b} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ \\
+
+$P_{2b} \neq P_{1b}$
+
+\subsection{}
+
+
+The translation and non-uniform scaling transforms do not commute in general.
+
+Consider the transformation matrix \\
+
+$T = 
+\begin{bmatrix}
+    1       & 0 & t_x \\
+    0       & 1 & t_y \\
+    0       & 0 & 1 
+\end{bmatrix}
+$, where $t_x $ and $t_y$ are the translations in the $x$ and $y$ direction. \\
+
+and the non-uniform scaling matrix \\
+
+$S_{Non\_Uniform} = \begin{bmatrix}
+    s_x       & 0 & 0 \\
+    0       & s_y & 0 \\
+    0       & 0 & 1     
+ \end{bmatrix}
+$, where $s_x$ and $s_y$ are the scaling factors. \\
+
+Scaling first then translating. Multiplying the two matrices $T$ and $S_{Non\_Uniform}$ gives: \\
+
+$T \bullet S_{Non\_Uniform} = \begin{bmatrix}
+		  s_x & 0 & t_x \\
+		  0 & s_y & t_y \\
+		  0 & 0 & 1
+               \end{bmatrix}
+$ \\
+
+Reversing the order of the transformation gives: \\
+
+$S_{Non\_Uniform} \bullet T = \begin{bmatrix}
+		  s_x & 0 & s_xt_x \\
+		  0 & s_y & s_yt_y \\
+		  0 & 0 & 1
+               \end{bmatrix}
+$ \\ 
+
+These transformations matrices are not the same for $s_x \neq 1$ and $s_y \neq 1$ and thus the transforms do not commute.
+
+\subsection{}
+
+Consider a rotation and scaling about the same fixed point about the origin. This transformation commutes for uniform scaling where $s_x = s_y$. Otherwise the transformation does not commute.\\
+
+{\bfseries Proof:}
+
+The scaling matrix is given by \\
+
+$S_{Non\_Uniform} = \begin{bmatrix}
+    s_x       & 0 & 0 \\
+    0       & s_y & 0 \\
+    0       & 0 & 1     
+ \end{bmatrix}
+$, where $s_x$ and $s_y$ are the scaling factors. \\
+
+The rotation matrix is given by \\
+
+$R = \begin{bmatrix}
+      \cos{\theta}       & -\sin{\theta} & 0 \\
+      \sin{\theta}       & \cos{\theta} & 0 \\
+      0       & 0 & 1             
+     \end{bmatrix}
+$   , where $\theta$ is the rotation
+
+Doing a scale followed by a rotation gives: \\
+
+$R \bullet S_{Non\_Uniform} = \begin{bmatrix}
+		  s_x\cos{\theta} & -s_y\sin{\theta} & 0 \\
+		  s_x\sin{\theta} & s_y\cos{\theta} & 0 \\
+		  0 & 0 & 1
+               \end{bmatrix}
+$ \\
+
+
+Doing a rotation followed by a scale gives: \\
+
+$S_{Non\_Uniform} \bullet R = \begin{bmatrix}
+		  s_x\cos{\theta} & -s_x\sin{\theta} & 0 \\
+		  s_y\sin{\theta} & s_y\cos{\theta} & 0 \\
+		  0 & 0 & 1
+               \end{bmatrix}
+$ \\
+
+These transforamtion matrices are equivalent only if $s_x = s_y$. Thus this transform does not commute in general.
+
+\end{document}
