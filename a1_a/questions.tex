@@ -2,7 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 %opening
-\title{}
+\title{CSC418 Assignment 1}
 \author{Philip Lee - 9999074932}
 \setlength{\parindent}{0cm}
 \begin{document}
@@ -10,9 +10,43 @@
 \maketitle
 
 
-\section{}
+\section{Parametric Equations}
+$x(t) = 4\cos{2\pi t} + 1/16 * \cos{32\pi t} \\ y(t) = 2\sin{2\pi t} + 1/16 * \sin{32\pi t}$
 
-\section{}
+\subsection{}
+
+The tangent vector is given by $p(t) = <\frac{dx}{dt}, \frac{dy}{dt}>$\\
+$ p(t) = <-8\pi\sin{2\pi t} - 2\pi\sin{32\pi t}$ , $ 4\pi\cos{2\pi t} + 2\pi\cos{32\pi t}>$
+
+\subsection{}
+
+The normal vector $n(t)$ will satisfy $p(t) \cdot n(t) = 0$ so therefore $n(t) = <- \frac{dy}{dt}, \frac{dx}{dt}>$
+$ n(t) =  < - 4\pi\cos{2\pi t} - 2\pi\cos{32\pi t}$, $-8\pi\sin{2\pi t} - 2\pi\sin{32\pi t}>$
+
+\subsection{}
+
+The curve is not symmetric about the y axis.
+
+The curve is symmetric about the x axis.
+
+\subsection{}
+
+The formula to compute the curve's perimeter is given by
+
+\subsection{}
+
+The perimeter can be piecewise approximated by divding the curve into evenly spaced points, then connecting each of the points,
+and finding the sum of the lengths of all of the straight lines. The smaller the distance between each point,
+the more accurate the approximation will be.\\
+
+For example, we know that the curve exists for the interval $0 < t < 1$. Divide the curve into $k$ segments where $k$ is an integer greater than 0.
+Then evaluate $p(t)$ at $t = nT$, where $n = 0,1,2 \ldots k-1$ and $T = 1/k$. Then find the cartesian distance between
+$p(nT)$ and $p((n+1)T)$ for all $n$ and take the sum. Thus the final formula becomes:\\
+\[
+\sum_{n=0}^{k-1}
+  ||p(nT) - p((n+1)T)||,\] where $k$ is the number of piecewise segments and $T = 1/k$
+
+\section{Intersections of a 2D Line And Circle}
 
 \section{Do Transforms Commute?}
 
