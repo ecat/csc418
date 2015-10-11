@@ -1,6 +1,8 @@
 \documentclass[a4paper,10pt]{scrartcl}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 %opening
 \title{CSC418 Assignment 1}
 \author{Philip Lee - 9999074932}
@@ -25,7 +27,7 @@ $ n(t) =  < - 4\pi\cos{2\pi t} - 2\pi\cos{32\pi t}$, $-8\pi\sin{2\pi t} - 2\pi\s
 
 \subsection{}
 
-The curve is not symmetric about the y axis.\\
+{\bfseries The curve is not symmetric about the y axis.}\\
 
 {\bfseries Counter Example:}\\
 
@@ -44,7 +46,7 @@ Since $x(3/8) \neq -x(1/8)$ and $y(3/8) = y(1/8)$ the curve is not symmetric abo
 cannot be reflected about the y-axis.\\\\
 
 
-The curve is symmetric about the x axis.\\
+{\bfseries The curve is symmetric about the x axis.}\\
 
 {\bfseries Proof:}\\
 
@@ -102,7 +104,7 @@ $p(nT)$ and $p((n+1)T)$ for all $n$ and take the sum. Thus the final formula bec
 
 \section{Do Transforms Commute?}
 
-\subsection{}
+\subsection{Translation and Uniform Scaling}
 
 The translation and uniform scaling transforms do not commute in general.
 
@@ -158,7 +160,7 @@ Applying translation second gives  $P_{2b} = \begin{bmatrix} 1 \\ 1 \end{bmatrix
 
 $P_{2b} \neq P_{2a}$
 
-\subsection{}
+\subsection{Translation and Non-Uniform Scaling}
 
 
 The translation and non-uniform scaling transforms do not commute in general.
@@ -202,7 +204,7 @@ $ \\
 
 These transformations matrices are not the same for $s_x \neq 1$ and $s_y \neq 1$ and thus the transforms do not commute.
 
-\subsection{}
+\subsection{Rotation and Scaling}
 
 Consider a rotation and scaling about the same fixed point about the origin. This transformation commutes for uniform scaling where $s_x = s_y$. Otherwise the transformation does not commute.\\
 
@@ -247,9 +249,9 @@ $ \\
 
 These transformation matrices are equivalent only if $s_x = s_y$. Thus this transform does not commute in general.
 
-\subsection{}
+\subsection{Rotation and Scaling About Different Fixed Points}
 
-The transformations of rotation and scaling about different points of reference do not commit. As a counter example, consider 
+The transformations of rotation and scaling about different fixed points do not commute. As a counter example, consider 
 the point $P_o = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, a scaling of $s_x = 1$ and $s_y = 2$ about the origin
 $\begin{bmatrix} 0 \\ 0\end{bmatrix}$, and a rotation of $90^o$ counter-clockwise about the point $P_r = \begin{bmatrix} 0 \\ 1\end{bmatrix}$\\
 
@@ -264,7 +266,7 @@ Then rotating about $P_r$, we get $P_{2b} = \begin{bmatrix} 0 \\ 3\end{bmatrix}$
 
 Since $P_{2b} \neq P_{1b}$ the two transforms do not commute.
 
-\subsection{}
+\subsection{Translate and Sh}
 
 The transformations of translating and shear do not commute.
 
@@ -320,5 +322,45 @@ Applying shear first gives $P_{2a} = \begin{bmatrix} 4 \\ 3 \end{bmatrix}$ \\
 Applying translation second gives  $P_{2b} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}$ \\
 
 $P_{2b} \neq P_{1b}$ so the transforms do not commute.
+
+\section{Triangles}
+
+\subsection{Is point q inside or outside triangle}
+
+Recall that in Bresenham's line algorithm, a point can be determined to be above or below a parametrized straight line.
+
+\begin{algorithm}
+  \caption{Is Point Above or Below Line}\label{}
+  
+  \begin{algorithmic}
+
+    \State Given a point $p$
+    \State{$f(x,y) = (xdy - ydx)$}\\
+    \If{$f(x,y) < 0$}
+    \State Point above line
+    \ElsIf{$f(x,y) > 0$}
+    \State   Point below line
+    \Else 
+    \State Point on line
+    \EndIf\\
+    
+  \end{algorithmic}
+\end{algorithm}
+
+
+    
+\begin{algorithm}
+  \caption{Point Inside or Outside Triangle}\label{}
+  \begin{algorithmic}
+
+    \State Given vertices of triangle $\bar v_1, \bar v_2, \bar v_3$
+    \State Given point $\bar q$
+    \State Parametrize the lines between $\bar v_1, \bar v_2$ and $\bar v_1, \bar v_3$ and $\bar v_2, \bar v_3$
+  
+  
+  \end{algorithmic}
+\end{algorithm}
+
+
 
 \end{document}
