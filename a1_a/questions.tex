@@ -97,14 +97,14 @@ These transformations matrices are not the same for $s \neq 1$ and thus the tran
 
 Consider the point $P_o = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, a transformation of $t_x = -1$ and $t_y = -1$ and a scaling $s = 2$\\
 Applying the translation first gives $P_{1a} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$ \\ 
-Appling scaling second gives $P_{2a} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$
+Appling scaling second gives $P_{1b} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$
 
 Reversing the order of the transforms:
 
-Applying scaling first gives $P_{1b} = \begin{bmatrix} 2 \\ 2 \end{bmatrix}$ \\
+Applying scaling first gives $P_{2a} = \begin{bmatrix} 2 \\ 2 \end{bmatrix}$ \\
 Applying translation second gives  $P_{2b} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ \\
 
-$P_{2b} \neq P_{1b}$
+$P_{2b} \neq P_{2a}$
 
 \subsection{}
 
@@ -193,6 +193,80 @@ $S_{Non\_Uniform} \bullet R = \begin{bmatrix}
                \end{bmatrix}
 $ \\
 
-These transforamtion matrices are equivalent only if $s_x = s_y$. Thus this transform does not commute in general.
+These transformation matrices are equivalent only if $s_x = s_y$. Thus this transform does not commute in general.
+
+\subsection{}
+
+The transformations of rotation and scaling about different points of reference do not commit. As a counter example, consider 
+the point $P_o = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, a scaling of $s_x = 1$ and $s_y = 2$ about the origin
+$\begin{bmatrix} 0 \\ 0\end{bmatrix}$, and a rotation of $90^o$ counter-clockwise about the point $P_r = \begin{bmatrix} 0 \\ 1\end{bmatrix}$\\
+
+First consider the case of rotating followed by scaling.\\
+If we first rotate $P_o$ about $P_r$, we get $P_{1a} = \begin{bmatrix} 0 \\ 2 \end{bmatrix}$\\
+If we then scale with respect to the origin we get $P_{1b} = \begin{bmatrix} 0 \\ 4\end{bmatrix}$
+
+
+Now consider the case of scaling followed by rotating.\\
+Scaling $P_o$ with respect to the origin, we get $P_{2a} = \begin{bmatrix} 2 \\ 1\end{bmatrix}$\\
+Then rotating about $P_r$, we get $P_{2b} = \begin{bmatrix} 0 \\ 3\end{bmatrix}$\\
+
+Since $P_{2b} \neq P_{1b}$ the two transforms do not commute.
+
+\subsection{}
+
+The transformations of translating and shear do not commute.
+
+Consider the transformation matrix \\
+
+$T = 
+\begin{bmatrix}
+    1       & 0 & t_x \\
+    0       & 1 & t_y \\
+    0       & 0 & 1 
+\end{bmatrix}
+$, where $t_x $ and $t_y$ are the translations in the $x$ and $y$ direction. \\
+
+and the shear matrix \\
+
+$S_{Shear} = \begin{bmatrix}
+    1       & s_y & 0 \\
+    s_x       & 1 & 0 \\
+    0       & 0 & 1     
+ \end{bmatrix}
+$, where $s_x, s_y$ is the shear factor. \\
+
+Shearing first then translating. Multiplying the two matrices $T$ and $S$ gives: \\
+
+$T \bullet S_{Shear} = \begin{bmatrix}
+		  1 & s_y & t_x \\
+		  s_x & 1 & t_y \\
+		  0 & 0 & 1
+               \end{bmatrix}
+$ \\
+
+If however, we apply the translation matrix first followed by the shear matrix gives:
+
+$S_{Shear} \bullet T = \begin{bmatrix}
+		  1 & s_y & s_xt_x \\
+		  s_x & 1 & s_yt_y \\
+		  0 & 0 & 1
+               \end{bmatrix}
+$ \\
+
+These transformations matrices are not the same for $s_x, s_y \neq 1$ and thus the transforms do not commute. \\ 
+
+
+{\bfseries{Example:}}
+
+Consider the point $P_o = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, a transformation of $t_x = -1$ and $t_y = -1$ and a shear of $s_x = 2, s_y = 3$\\
+Applying the translation first gives $P_{1a} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$ \\ 
+Appling shear second gives $P_{1b} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$
+
+Reversing the order of the transforms:
+
+Applying shear first gives $P_{2a} = \begin{bmatrix} 4 \\ 3 \end{bmatrix}$ \\
+Applying translation second gives  $P_{2b} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}$ \\
+
+$P_{2b} \neq P_{1b}$ so the transforms do not commute.
 
 \end{document}
