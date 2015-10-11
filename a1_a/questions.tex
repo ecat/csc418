@@ -333,9 +333,9 @@ Recall that in Bresenham's line algorithm, a point can be determined to be above
   \caption{Is Point Above or Below Line}\label{}
   
   \begin{algorithmic}
-
-    \State Given a point $p$
-    \State{$f(x,y) = (xdy - ydx)$}\\
+    \Function{F}{Point $p$, Parametrized Line}
+    \State{$x \gets p_x, y \gets p_y$}
+    \State{$f(x,y) = (xdy - ydx) \gets $ Parametrized Line}\\
     \If{$f(x,y) < 0$}
     \State Point above line
     \ElsIf{$f(x,y) > 0$}
@@ -343,24 +343,80 @@ Recall that in Bresenham's line algorithm, a point can be determined to be above
     \Else 
     \State Point on line
     \EndIf\\
+    \EndFunction
     
   \end{algorithmic}
 \end{algorithm}
 
-
-    
+   
 \begin{algorithm}
   \caption{Point Inside or Outside Triangle}\label{}
   \begin{algorithmic}
-
     \State Given vertices of triangle $\bar v_1, \bar v_2, \bar v_3$
     \State Given point $\bar q$
     \State Parametrize the lines between $\bar v_1, \bar v_2$ and $\bar v_1, \bar v_3$ and $\bar v_2, \bar v_3$
-  
-  
+    \State Count $\gets 0$
+    \For{Each parametrized line $l$}
+      \State Check if point $\bar q$ lies above or below $l$ using Algorithm 1
+      \State To determine if that point lies on the 'inside' of the triangle, check that the result
+      for point $\bar q$ matches the result for the point not used to parametrize the line i.e. if
+      $\bar v_1$ and $\bar v_2$ were used to parametrize the line, check whether $\bar v_3$ lies above or below
+      \If{Signs match}
+	\State Count$++$
+      \EndIf
+    \EndFor
+    
+    \If{Count $== 3$}
+      \State Point lies in triangle.
+    \Else
+      \State Point lies outside triangle.
+    \EndIf  
   \end{algorithmic}
 \end{algorithm}
 
+\subsection{Is point q on edge of triangle}
 
+To determine if a point is on the edge of a triangle, perform a check similar to the previous part, but use
+the fact that if Algorithm 1 evaluates to $0$, the point is on the line.
+
+
+\begin{algorithm}
+  \caption{Point Inside or Edge of Triangle}\label{}
+  \begin{algorithmic}
+    \State Given vertices of triangle $\bar v_1, \bar v_2, \bar v_3$
+    \State Given point $\bar q$
+    \State Parametrize the lines between $\bar v_1, \bar v_2$ and $\bar v_1, \bar v_3$ and $\bar v_2, \bar v_3$
+    \State Count $\gets 0$
+    \State PointOnLine $\gets False$
+    \For{Each parametrized line $l$}
+      \State Check if point $\bar q$ lies above or below $l$ using Algorithm 1
+      \State To determine if that point lies on the 'inside' of the triangle, check that the result
+      for point $\bar q$ matches the result for the point not used to parametrize the line i.e. if
+      $\bar v_1$ and $\bar v_2$ were used to parametrize the line, check whether $\bar v_3$ lies above or below
+      \\
+      {\bfseries
+      \State If Algorithm 1 returns a 0, that does not necessarily mean that $\bar q$ lies on the edge. It simply means
+      that $\bar q$ lies on the parametrized line. For the line to be on the edge of the triangle,
+      $\bar q$ must lie on the 'correct' side of the triangle, by checking if the signs match in the same manner
+      as Algorithm 2}
+      \Comment{Modifaction from prior part}
+      \\
+      \If{Signs match}
+	\State Count$++$
+      \EndIf
+      
+      \If{\Call{F}{$\bar q$, $l$} ==  Point On Line}
+	\State PointOnLine $\gets True$
+      \EndIf
+    \EndFor
+    
+    \
+    \If{Count $== 2 $ \&\& PointOnLine $==$ True}
+      \State Point lies on edge of triangle.
+    \Else
+      \State Point lies inside or outside triangle.
+    \EndIf  
+  \end{algorithmic}
+\end{algorithm}
 
 \end{document}
