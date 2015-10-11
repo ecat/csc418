@@ -25,18 +25,70 @@ $ n(t) =  < - 4\pi\cos{2\pi t} - 2\pi\cos{32\pi t}$, $-8\pi\sin{2\pi t} - 2\pi\s
 
 \subsection{}
 
-The curve is not symmetric about the y axis.
+The curve is not symmetric about the y axis.\\
 
-The curve is symmetric about the x axis.
+{\bfseries Counter Example:}\\
 
+If we evaluate at $t = 1/8$,  $<x(1/8), y(1/8)> = <4/\sqrt{2} + 1/16, 2/\sqrt{2}>$\\
+For the curve to be symmetric about the y axis and by the definition of symmetry,
+there must exist a value of $t_o$ such that
+\[<x(t_o), y(t_o)> = <-(4/\sqrt{2} + 1/16), 2/\sqrt{2}>\]
+
+It turns out that $y(t_o) = 2/\sqrt{2}$ only for $t_o = 1/8, 3/8$ \\\\
+The presence of only two solutions for $t_o$ can be justified by inspecting
+the plots of $f(t) = 2/\sqrt{2} - 1/16\sin{32\pi t}$ and $g(t) = 2\sin{2\pi t}$
+
+Evaluating $x$ at $t_o$ gives $x(3/8) = -4\sqrt{2} + 1/16$ \\
+
+Since $x(3/8) \neq -x(1/8)$ and $y(3/8) = y(1/8)$ the curve is not symmetric about the y axis because. There is a point on the curve that
+cannot be reflected about the y-axis.\\\\
+
+
+The curve is symmetric about the x axis.\\
+
+{\bfseries Proof:}\\
+
+For every value of $t_o$, there must exist a value $t_1$ such that  
+\[ <x(t_o), y(t_o)> = <x(t_1), -y(t_1)>\]
+
+To demonstrate this, let us consider the parametric function on the interval of \\$-1/2 < t < 1/2$\\
+
+Recall that an odd function has the property that $f(t) = -f(-t)$ and that an even
+function has the property $f(t) = f(-t)$. Also, the sum of two even functions is even, and the sum of
+two odd functions is also odd.\\
+
+Since $x(t)$ is the sum of two cosines which are even functions, $x(t)$ is even about $t = 0$.
+Since $y(t)$ is the sum of two sines which are odd functions, $y(t)$ is odd about $t = 0$.\\
+
+Consider an arbitrary $t_o$ in the range $0 < t_o < 0.5$. Since $x(t)$ is an even function, $x(t_o) = x(-t_o)$.
+Since $y(t)$ is an odd function, $y(t_o) = -y(-t_o)$. \\
+
+Thus for any given $t_o, 0 < t_o < 0.5$, choosing $t_1 = -t_o$ satisfies the condition for symmetry about the y axis.
+
+\[ <x(t_o), y(t_o)> = <x(t_1), y(t_1)>\]\\
+\[ = <x(-t_o), y(-t_o)>\]\\
+Which by the even and odd properties of the functions $x(t), y(t)$ \\ 
+\[ = <x(t_o), -y(t_o)>\]\\
+
+Since the range of $t$ covers the entire curve, this implies that the curve is symmetric about the x-axis.
 \subsection{}
 
 The formula to compute the curve's perimeter is given by
 
+\[ L = \int_{a}^{b} \sqrt{\left( \frac{dx}{dt}\right)^2 + \left( \frac{dy}{dt}\right)^2}dt\]
+
+The limits must be over one complete period. Since $x(t)$ has period $1$ and $y(t)$ has period $1$ the limits of the integral can be $a=0$ and $b=1$
+
+Taking the derivatives from $p(t)$, we get
+
+\[ L = \int_{0}^{1} \sqrt{\left( -8\pi\sin{2\pi t} - 2\pi\sin{32\pi t} \right)^2 + \left( 4\pi\cos{2\pi t} + 2\pi\cos{32\pi t}\right)^2}dt\]
+
+This integral is pretty tedious to solve analytically.
+
 \subsection{}
 
-The perimeter can be piecewise approximated by divding the curve into evenly spaced points, then connecting each of the points,
-and finding the sum of the lengths of all of the straight lines. The smaller the distance between each point,
+The perimeter can be piecewise approximated by dividing the curve into even segments,
+and finding the sum of the lengths of each segment which is a straight line. The smaller the segments,
 the more accurate the approximation will be.\\
 
 For example, we know that the curve exists for the interval $0 < t < 1$. Divide the curve into $k$ segments where $k$ is an integer greater than 0.
@@ -44,7 +96,7 @@ Then evaluate $p(t)$ at $t = nT$, where $n = 0,1,2 \ldots k-1$ and $T = 1/k$. Th
 $p(nT)$ and $p((n+1)T)$ for all $n$ and take the sum. Thus the final formula becomes:\\
 \[
 \sum_{n=0}^{k-1}
-  ||p(nT) - p((n+1)T)||,\] where $k$ is the number of piecewise segments and $T = 1/k$
+  ||\,p(nT) - p((n+1)T)||,\,\] where $k$ is the number of piecewise segments and $T = 1/k$
 
 \section{Intersections of a 2D Line And Circle}
 
