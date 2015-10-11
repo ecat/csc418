@@ -419,4 +419,56 @@ the fact that if Algorithm 1 evaluates to $0$, the point is on the line.
   \end{algorithmic}
 \end{algorithm}
 
+\subsection{Triangulate Quadrilateral}
+
+A quadrilateral has four vertices, $A, B, C, D$. To triangle the quadrilateral as two triangles, simply create
+a triangle from $ABC$, and a second triangle from $BCD$
+
+\subsection{Triangulate N-Sided Convex Polygon}
+
+A convex polygon means that no angle in the polygon is greater than $180 ^o$. A property of a convex polygon is that
+a straight line can be drawn from one vertex to every vertex in the polygon.
+
+If the vertices of the polygon are given by $V_1, V_2, \dots, V_n$ and are in counter clockwise order
+,then the shape can be triangulated by connecting $V_1, V_2, V_3$ then $V_1, V_3, V_4 \dots V_1, V_{n-1}, V_{n}$
+
+\subsection{Triangulate Concave Polygon}
+
+Consider the following shape.
+
+\subsection{Determine if Point In/Out of Convex Polygon}
+
+
+\begin{algorithm}
+  \caption{Point Inside or Outside or On Convex Polygon}\label{}
+  \begin{algorithmic}
+    \State Triangulate the polygon
+    \State NumOutside $\gets 0$, NumInside $\gets 0$, NumEdge $\gets 0$
+    \For{Each triangle $t$}
+      \State Check if point is inside, outside, or on triangle
+      
+      \If{Inside}
+	\State NumInside$++$
+      \ElsIf{Outside}
+	\State NumOutside$++$
+      \Else
+	\State NumEdge$++$
+      \EndIf
+    \EndFor
+    
+    \If{NumEdge $== 1$}
+      \State Point is on edge 
+      \Comment Note that the point could be inside the polygon but still on the triangles edge. If this is the case,
+      then the the number of times the point was on the edge will be greater than 1, since the triangles on the interior of
+      the polygon share an edge with another triangle
+    \ElsIf{NumInside $> 1$ || NumEdge $ > 1$}
+      \State Point is on inside
+      \Comment If the point was inside a single triangle, then it must lie inside the polygon. This also
+      covers the case where the point was on the edge of a triangle but inside the polygon    
+    \Else
+      \State Point is on outside
+    \EndIf
+  \end{algorithmic}
+\end{algorithm}
+
 \end{document}
