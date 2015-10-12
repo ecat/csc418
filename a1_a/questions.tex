@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{tikz}
 %opening
 \title{CSC418 Assignment 1}
 \author{Philip Lee - 9999074932}
@@ -15,17 +16,17 @@
 \section{Parametric Equations}
 $x(t) = 4\cos{2\pi t} + 1/16 * \cos{32\pi t} \\ y(t) = 2\sin{2\pi t} + 1/16 * \sin{32\pi t}$
 
-\subsection{}
+\subsection{Tangent Vector}
 
 The tangent vector is given by $p(t) = <\frac{dx}{dt}, \frac{dy}{dt}>$\\
 $ p(t) = <-8\pi\sin{2\pi t} - 2\pi\sin{32\pi t}$ , $ 4\pi\cos{2\pi t} + 2\pi\cos{32\pi t}>$
 
-\subsection{}
+\subsection{Normal Vector}
 
 The normal vector $n(t)$ will satisfy $p(t) \cdot n(t) = 0$ so therefore $n(t) = <- \frac{dy}{dt}, \frac{dx}{dt}>$
 $ n(t) =  < - 4\pi\cos{2\pi t} - 2\pi\cos{32\pi t}$, $-8\pi\sin{2\pi t} - 2\pi\sin{32\pi t}>$
 
-\subsection{}
+\subsection{Symmetry}
 
 {\bfseries The curve is not symmetric about the y axis.}\\
 
@@ -73,7 +74,7 @@ Which by the even and odd properties of the functions $x(t), y(t)$ \\
 \[ = <x(t_o), -y(t_o)>\]\\
 
 Since the range of $t$ covers the entire curve, this implies that the curve is symmetric about the x-axis.
-\subsection{}
+\subsection{Curve's Perimeter}
 
 The formula to compute the curve's perimeter is given by
 
@@ -87,7 +88,7 @@ Taking the derivatives from $p(t)$, we get
 
 This integral is pretty tedious to solve analytically.
 
-\subsection{}
+\subsection{Curve's Perimeter Approximation}
 
 The perimeter can be piecewise approximated by dividing the curve into even segments,
 and finding the sum of the lengths of each segment which is a straight line. The smaller the segments,
@@ -101,6 +102,113 @@ $p(nT)$ and $p((n+1)T)$ for all $n$ and take the sum. Thus the final formula bec
   ||\,p(nT) - p((n+1)T)||,\,\] where $k$ is the number of piecewise segments and $T = 1/k$
 
 \section{Intersections of a 2D Line And Circle}
+
+\subsection{Area of Grey Region}
+
+The area of the grey region is given by \[ A = \pi(r_2-r_1)^2\]
+
+\subsection{Number of Intersections}
+
+There can be :
+
+\begin{itemize}
+ \item $0$ Intersections
+ \item $1$ Intersection if the line is tangent to the larger circle
+ \item $2$ Intersections if the line passes through the larger circle but does not intersect with the inner circle
+ \item $3$ Intersections if the line passes through the larger circle and is tangent to the inner circle
+ \item $4$ Intersections if the line passes through both circles and is not tangent to the inner circle
+\end{itemize}
+
+\subsection{Determine Number of Intersections}
+
+The number of locations can be computed analytically as follows:
+
+Consider the number of times the line intersects with a circle $r$.\\
+
+We are given that $\bar p(\lambda) = \bar p_o + \lambda\bar d$ and the equation of the circle is given by \\$||\bar q - \bar p_1 ||^2 = r^2$\\
+
+An intersection with the circle means that there is some value of $\lambda$ for $\bar p(\lambda)$ that satisfies the equation of the circle. Thus we can substitute $\bar p(\lambda)$.\\
+
+\[||\bar q - \bar p(\lambda)||^2 = r^2\]\\
+
+Expanding and simplifying the equation and finding the magnitude of the vectors:
+
+\[||\bar q - (\bar p_o + \lambda\bar d) || ^2 = r^2\]
+\[\sqrt{ (q_x - p_{ox} - \lambda\bar d_x)^2 +  (q_y - p_{oy} - \lambda\bar d_y)^2}^2  = r^2\]\\
+
+Since $q_x, q_y, p_{ox}, p_{oy}$ are given (center of circle and one point on the line), let $\Delta_x = q_x - p_{ox}$ and $\Delta_y = q_y - p_{oy}$
+
+\[(\Delta_x - \lambda\bar d_x)^2 +  (\Delta_y - \lambda\bar d_y)^2  = r^2\]\\
+
+Expanding and grouping terms:
+\begin{equation}
+ \lambda^2(d_x^2 + d_y^2) + 2\lambda(\Delta_xd_x + \Delta_yd_y) + ((\Delta_x^2 + \Delta_y^2) - r^2) = 0
+\end{equation}
+The number of solutions can be determined by looking at the discriminant. If the discriminant is negative, there are no intersections between the line and this circle.
+If the discriminant is positive, there are two intersections between the line and this circle. If the discrimant is zero, there is one intersection.\\
+
+The discriminant is given by: 
+
+\[ b^2-4ac = (\Delta_xd_x + \Delta_yd_y)^2 - 4(d_x^2 + d_y^2) ((\Delta_x^2 + \Delta_y^2) - r^2) \]
+
+{\bfseries Thus, the number of intersections between the line and the donut can be achieved by evaluating the discriminant for circles $r = r_1$ and $r = r_2$ and summing the result.}
+
+\subsection{Location of Intersections}
+
+The location of the intersections can be determined by determining the roots of equation $(1)$ for the circles with $r = r_1$ and $r = r_2$. The location can be solved by
+using the quadratic formula which gives a value for $\lambda_o$.
+
+\[ \lambda_o = \frac{-(\Delta_xd_x + \Delta_yd_y) \pm \sqrt{(\Delta_xd_x + \Delta_yd_y)^2 - 4(d_x^2 + d_y^2) ((\Delta_x^2 + \Delta_y^2) - r^2)}}{2(d_x^2 + d_y^2)}\]
+
+with $\Delta_x = q_x - p_{ox}$ and $\Delta_y = q_y - p_{oy}$\\
+
+This $\lambda_o$ can then be substituted into $p(\lambda)$ to determine the intersections.
+
+
+\subsection{Intersections After Non-Uniform Scaling Line and Circle}
+
+If both the line and circle are scaled non-uniformly by the same transformation, then the number of intersections remains the same. \\
+
+Consider a circle and line that intersects at a point $\bar p_o$. Thus $p_o$ must lie on the circle. When the circle is scaled with reference to the origin, that point on the circle will become\\
+
+\[\bar p_1 = \begin{bmatrix}
+    s_x       & 0 & 0 \\
+    0       & s_y & 0 \\
+    0       & 0 & 1     
+ \end{bmatrix} \bar p_o\]
+ 
+ The point $p_o$ must also lie on the line. When the line is scaled, the point on the line will map to
+ 
+ \[\bar p_2 = \begin{bmatrix}
+    s_x       & 0 & 0 \\
+    0       & s_y & 0 \\
+    0       & 0 & 1     
+ \end{bmatrix} \bar p_o\]
+ 
+ 
+Since $\bar p_o = \bar p_1$, the intersection will still exist after the transformation. A similar argument can be made for points that do not intersect will not intersect after the transformation. Thus
+the number of intersections before and after will remain the same.\\
+
+However, the locations of the intersections will change according to the scaling values about the origin. As demonstrated above, the new intersection location will be given by $p_1$\\
+
+\subsection{Intersections After Non-Uniform Scaling Circle Only}
+
+If the circle is scaled non-uniformly, then the number of intersections will change completely along with the locations of the intersection. A new implicit equation for the circle would have to be chosen
+and locations solved similar to how equation (1) was derived.\\
+
+To demonstrate why the number of intersections and locations will change unpredictably, consider the following example.\\
+
+Imagine a circle centered at $(0,5)$ with a radius $r = 1$ and a line with equation $y = 3$. The point $(0, 4)$ lies on the circle. There are no intersections between between the line and circle.\\
+
+If the circle is scaled by a factor of $s_x = 1, s_y = 5$, then the point $(0,4)$ will map to $(0, 20)$. There are still no intersections between the line and circle.\\
+
+If the circle is scaled by a factor of $s_x = 1, s_y = 0.75$, then the point $(0,4)$ will map to $(0, 3)$. There is one intersections between the line and circle.\\
+
+If the circle is scaled by a factor of $s_x = 1, s_y = 0.25$, then the point $(0,4)$ will map to $(0, 1)$. There will be two intersections between the line and circle that now have an $x$ value not one.\\
+
+Though this was shown for only one circle, it applies also for the two circles that form the donut with $r = r1$ and $r = r2$
+
+
 
 \section{Do Transforms Commute?}
 
@@ -163,7 +271,7 @@ $P_{2b} \neq P_{2a}$
 \subsection{Translation and Non-Uniform Scaling}
 
 
-The translation and non-uniform scaling transforms do not commute in general.
+{\bfseries The translation and non-uniform scaling transforms do not commute in general.}
 
 Consider the transformation matrix \\
 
@@ -206,7 +314,7 @@ These transformations matrices are not the same for $s_x \neq 1$ and $s_y \neq 1
 
 \subsection{Rotation and Scaling}
 
-Consider a rotation and scaling about the same fixed point about the origin. This transformation commutes for uniform scaling where $s_x = s_y$. Otherwise the transformation does not commute.\\
+Consider a rotation and scaling about the same fixed point about the origin. {\bfseries This transformation commutes for uniform scaling where $s_x = s_y$. Otherwise the transformation does not commute.}\\
 
 {\bfseries Proof:}
 
@@ -251,7 +359,7 @@ These transformation matrices are equivalent only if $s_x = s_y$. Thus this tran
 
 \subsection{Rotation and Scaling About Different Fixed Points}
 
-The transformations of rotation and scaling about different fixed points do not commute. As a counter example, consider 
+{\bfseries The transformations of rotation and scaling about different fixed points do not commute.} As a counter example, consider 
 the point $P_o = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, a scaling of $s_x = 1$ and $s_y = 2$ about the origin
 $\begin{bmatrix} 0 \\ 0\end{bmatrix}$, and a rotation of $90^o$ counter-clockwise about the point $P_r = \begin{bmatrix} 0 \\ 1\end{bmatrix}$\\
 
@@ -266,9 +374,9 @@ Then rotating about $P_r$, we get $P_{2b} = \begin{bmatrix} 0 \\ 3\end{bmatrix}$
 
 Since $P_{2b} \neq P_{1b}$ the two transforms do not commute.
 
-\subsection{Translate and Sh}
+\subsection{Translate and Shear}
 
-The transformations of translating and shear do not commute.
+{\bfseries The transformations of translating and shear do not commute.}
 
 Consider the transformation matrix \\
 
@@ -329,7 +437,7 @@ $P_{2b} \neq P_{1b}$ so the transforms do not commute.
 
 Recall that in Bresenham's line algorithm, a point can be determined to be above or below a parametrized straight line.
 
-\begin{algorithm}
+\begin{algorithm}[h!]
   \caption{Is Point Above or Below Line}\label{}
   
   \begin{algorithmic}
@@ -349,7 +457,7 @@ Recall that in Bresenham's line algorithm, a point can be determined to be above
 \end{algorithm}
 
    
-\begin{algorithm}
+\begin{algorithm}[h!]
   \caption{Point Inside or Outside Triangle}\label{}
   \begin{algorithmic}
     \State Given vertices of triangle $\bar v_1, \bar v_2, \bar v_3$
@@ -359,9 +467,10 @@ Recall that in Bresenham's line algorithm, a point can be determined to be above
     \For{Each parametrized line $l$}
       \State Check if point $\bar q$ lies above or below $l$ using Algorithm 1
       \State To determine if that point lies on the 'inside' of the triangle, check that the result
-      for point $\bar q$ matches the result for the point not used to parametrize the line i.e. if
-      $\bar v_1$ and $\bar v_2$ were used to parametrize the line, check whether $\bar v_3$ lies above or below
-      \If{Signs match}
+      for point $\bar q$ matches the result for the point not used to parametrize the line 
+      \State Example: If $\bar v_1$ and $\bar v_2$ were used to parametrize the line, check whether $\bar v_3$ lies above or below $l$ and compare
+      that to the result of $\bar q$
+      \If{Result of $\bar q$ matches result of third point}
 	\State Count$++$
       \EndIf
     \EndFor
@@ -374,13 +483,15 @@ Recall that in Bresenham's line algorithm, a point can be determined to be above
   \end{algorithmic}
 \end{algorithm}
 
+\newpage
+
 \subsection{Is point q on edge of triangle}
 
 To determine if a point is on the edge of a triangle, perform a check similar to the previous part, but use
-the fact that if Algorithm 1 evaluates to $0$, the point is on the line.
+the fact that if Algorithm 1 evaluates to $0$, the point is on the line. See Algorithm 3.
 
 
-\begin{algorithm}
+\begin{algorithm}[h]
   \caption{Point Inside or Edge of Triangle}\label{}
   \begin{algorithmic}
     \State Given vertices of triangle $\bar v_1, \bar v_2, \bar v_3$
@@ -419,6 +530,9 @@ the fact that if Algorithm 1 evaluates to $0$, the point is on the line.
   \end{algorithmic}
 \end{algorithm}
 
+\newpage
+
+
 \subsection{Triangulate Quadrilateral}
 
 A quadrilateral has four vertices, $A, B, C, D$. To triangle the quadrilateral as two triangles, simply create
@@ -434,12 +548,44 @@ If the vertices of the polygon are given by $V_1, V_2, \dots, V_n$ and are in co
 
 \subsection{Triangulate Concave Polygon}
 
-Consider the following shape.
+Consider the following shape. There is no single vertex where a line can be drawn to every other vertex.
+Thus the above triangulation procedure will not work. Examples are drawn in dashed red and cyan lines.
 
+\begin{figure}[!h]
+ \centering
+ \begin{tikzpicture}
+  
+    \draw (0,0) -- (-1,-3) -- (-1, 4) -- (0, 2) -- (3, 5) -- (4, 4) -- (2, 2.5) -- (1, -1) -- (0,0);
+    \node [left] at (0,0){$V_1$};
+    \node [left] at (-1,-3){$V_2$};
+    \node [left] at (-1,4){$V_3$};
+    \node [left] at (0,2){$V_4$};
+    \node [above] at (3,5){$V_5$};
+    \node [right] at (4,4){$V_6$};    
+    \node [left] at (2,2.5){$V_7$};        
+    \node [left] at (1,-1){$V_8$};        
+    
+    %V6
+    \draw[dashed, red] (-1, -3) -- (4,4);
+    \draw[dashed, red] (0, 0) -- (4,4);    
+    \draw[dashed, red] (1, -1) -- (4,4);        
+    \draw[dashed, red] (0, 2) -- (4,4);            
+    \draw[dashed, red] (-1, 4) -- (4,4);                
+    
+    %V2
+    \draw[dashed, cyan] (-1, -3) -- (3,5);            
+    \draw[dashed, cyan] (-1, -3) -- (2,2.5);                    
+ \end{tikzpicture}
+
+ \caption{Concave polygon that does not work with the above triangulation procedure.}
+ 
+\end{figure}
+
+\newpage
 \subsection{Determine if Point In/Out of Convex Polygon}
 
 
-\begin{algorithm}
+\begin{algorithm}[!h]
   \caption{Point Inside or Outside or On Convex Polygon}\label{}
   \begin{algorithmic}
     \State Triangulate the polygon
@@ -461,10 +607,10 @@ Consider the following shape.
       \Comment Note that the point could be inside the polygon but still on the triangles edge. If this is the case,
       then the the number of times the point was on the edge will be greater than 1, since the triangles on the interior of
       the polygon share an edge with another triangle
-    \ElsIf{NumInside $> 1$ || NumEdge $ > 1$}
+    \ElsIf{NumInside $> 1$ $||$ NumEdge $ > 1$}
       \State Point is on inside
       \Comment If the point was inside a single triangle, then it must lie inside the polygon. This also
-      covers the case where the point was on the edge of a triangle but inside the polygon    
+      covers the case where the point was on the edge of a triangle but inside the polygon in which case NumEdge$ = 2  $
     \Else
       \State Point is on outside
     \EndIf
