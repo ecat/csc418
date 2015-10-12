@@ -16,17 +16,17 @@
 \section{Parametric Equations}
 $x(t) = 4\cos{2\pi t} + 1/16 * \cos{32\pi t} \\ y(t) = 2\sin{2\pi t} + 1/16 * \sin{32\pi t}$
 
-\subsection{Tangent Vector}
+\subsection{}
 
 The tangent vector is given by $p(t) = <\frac{dx}{dt}, \frac{dy}{dt}>$\\
 $ p(t) = <-8\pi\sin{2\pi t} - 2\pi\sin{32\pi t}$ , $ 4\pi\cos{2\pi t} + 2\pi\cos{32\pi t}>$
 
-\subsection{Normal Vector}
+\subsection{}
 
 The normal vector $n(t)$ will satisfy $p(t) \cdot n(t) = 0$ so therefore $n(t) = <- \frac{dy}{dt}, \frac{dx}{dt}>$
 $ n(t) =  < - 4\pi\cos{2\pi t} - 2\pi\cos{32\pi t}$, $-8\pi\sin{2\pi t} - 2\pi\sin{32\pi t}>$
 
-\subsection{Symmetry}
+\subsection{}
 
 {\bfseries The curve is not symmetric about the y axis.}\\
 
@@ -74,7 +74,7 @@ Which by the even and odd properties of the functions $x(t), y(t)$ \\
 \[ = <x(t_o), -y(t_o)>\]\\
 
 Since the range of $t$ covers the entire curve, this implies that the curve is symmetric about the x-axis.
-\subsection{Curve's Perimeter}
+\subsection{}
 
 The formula to compute the curve's perimeter is given by
 
@@ -88,7 +88,7 @@ Taking the derivatives from $p(t)$, we get
 
 This integral is pretty tedious to solve analytically.
 
-\subsection{Curve's Perimeter Approximation}
+\subsection{}
 
 The perimeter can be piecewise approximated by dividing the curve into even segments,
 and finding the sum of the lengths of each segment which is a straight line. The smaller the segments,
@@ -103,11 +103,11 @@ $p(nT)$ and $p((n+1)T)$ for all $n$ and take the sum. Thus the final formula bec
 
 \section{Intersections of a 2D Line And Circle}
 
-\subsection{Area of Grey Region}
+\subsection{}
 
-The area of the grey region is given by \[ A = \pi(r_2-r_1)^2\]
+The area of the grey region is given by \[ A = pi(r_2-r_1)^2\]
 
-\subsection{Number of Intersections}
+\subsection{}
 
 There can be :
 
@@ -119,7 +119,7 @@ There can be :
  \item $4$ Intersections if the line passes through both circles and is not tangent to the inner circle
 \end{itemize}
 
-\subsection{Determine Number of Intersections}
+\subsection{}
 
 The number of locations can be computed analytically as follows:
 
@@ -151,9 +151,9 @@ The discriminant is given by:
 
 \[ b^2-4ac = (\Delta_xd_x + \Delta_yd_y)^2 - 4(d_x^2 + d_y^2) ((\Delta_x^2 + \Delta_y^2) - r^2) \]
 
-{\bfseries Thus, the number of intersections between the line and the donut can be achieved by evaluating the discriminant for circles $r = r_1$ and $r = r_2$ and summing the result.}
+Thus, the number of intersections between the line and the two circles can be achieved by evaluating the discriminant for $r = r_1$ and $r = r_2$ and summing the result.
 
-\subsection{Location of Intersections}
+\subsection{}
 
 The location of the intersections can be determined by determining the roots of equation $(1)$ for the circles with $r = r_1$ and $r = r_2$. The location can be solved by
 using the quadratic formula which gives a value for $\lambda_o$.
@@ -205,8 +205,6 @@ If the circle is scaled by a factor of $s_x = 1, s_y = 5$, then the point $(0,4)
 If the circle is scaled by a factor of $s_x = 1, s_y = 0.75$, then the point $(0,4)$ will map to $(0, 3)$. There is one intersections between the line and circle.\\
 
 If the circle is scaled by a factor of $s_x = 1, s_y = 0.25$, then the point $(0,4)$ will map to $(0, 1)$. There will be two intersections between the line and circle that now have an $x$ value not one.\\
-
-Though this was shown for only one circle, it applies also for the two circles that form the donut with $r = r1$ and $r = r2$
 
 
 
@@ -271,7 +269,7 @@ $P_{2b} \neq P_{2a}$
 \subsection{Translation and Non-Uniform Scaling}
 
 
-{\bfseries The translation and non-uniform scaling transforms do not commute in general.}
+The translation and non-uniform scaling transforms do not commute in general.
 
 Consider the transformation matrix \\
 
@@ -314,7 +312,7 @@ These transformations matrices are not the same for $s_x \neq 1$ and $s_y \neq 1
 
 \subsection{Rotation and Scaling}
 
-Consider a rotation and scaling about the same fixed point about the origin. {\bfseries This transformation commutes for uniform scaling where $s_x = s_y$. Otherwise the transformation does not commute.}\\
+Consider a rotation and scaling about the same fixed point about the origin. This transformation commutes for uniform scaling where $s_x = s_y$. Otherwise the transformation does not commute.\\
 
 {\bfseries Proof:}
 
@@ -357,26 +355,26 @@ $ \\
 
 These transformation matrices are equivalent only if $s_x = s_y$. Thus this transform does not commute in general.
 
-\subsection{Scaling About Different Fixed Points}
+\subsection{Rotation and Scaling About Different Fixed Points}
 
-{\bfseries The transformations of scaling about different fixed points do not commute.} As a counter example, consider 
-the point $P_o = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, a scaling $S_1$ of $s_x = 1$ and $s_y = 2$ about the origin
-$\begin{bmatrix} 0 \\ 0\end{bmatrix}$, and a scaling $S_2$ of $a_x = 3$ and $a_y = 3$ about $P_r = \begin{bmatrix} 0 \\ 1\end{bmatrix}$\\\\
+The transformations of rotation and scaling about different fixed points do not commute. As a counter example, consider 
+the point $P_o = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, a scaling of $s_x = 1$ and $s_y = 2$ about the origin
+$\begin{bmatrix} 0 \\ 0\end{bmatrix}$, and a rotation of $90^o$ counter-clockwise about the point $P_r = \begin{bmatrix} 0 \\ 1\end{bmatrix}$\\
+
+First consider the case of rotating followed by scaling.\\
+If we first rotate $P_o$ about $P_r$, we get $P_{1a} = \begin{bmatrix} 0 \\ 2 \end{bmatrix}$\\
+If we then scale with respect to the origin we get $P_{1b} = \begin{bmatrix} 0 \\ 4\end{bmatrix}$
 
 
-{\bfseries Case 1}: $S_1$ followed by $S_2$.\\
-If we first apply $S_1$ with respect to origin, we get $P_{1a} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}$\\
-If we then apply $S_2$ with respect to $P_r$, we get $P_{1b} = \begin{bmatrix} 3 \\ 4\end{bmatrix}$\\
-
-{\bfseries Case 2:} $S_2$ followed by $S_1$.\\
-If we first apply $S_2$ with respect to $P_r$, we get $P_{2a} = \begin{bmatrix} 3 \\ 1\end{bmatrix}$\\
-If we then apply $S_1$ with respect to origin, we get $P_{2b} = \begin{bmatrix} 3 \\ 2\end{bmatrix}$\\
+Now consider the case of scaling followed by rotating.\\
+Scaling $P_o$ with respect to the origin, we get $P_{2a} = \begin{bmatrix} 2 \\ 1\end{bmatrix}$\\
+Then rotating about $P_r$, we get $P_{2b} = \begin{bmatrix} 0 \\ 3\end{bmatrix}$\\
 
 Since $P_{2b} \neq P_{1b}$ the two transforms do not commute.
 
 \subsection{Translate and Shear}
 
-{\bfseries The transformations of translating and shear do not commute.}
+The transformations of translating and shear do not commute.
 
 Consider the transformation matrix \\
 
@@ -467,10 +465,9 @@ Recall that in Bresenham's line algorithm, a point can be determined to be above
     \For{Each parametrized line $l$}
       \State Check if point $\bar q$ lies above or below $l$ using Algorithm 1
       \State To determine if that point lies on the 'inside' of the triangle, check that the result
-      for point $\bar q$ matches the result for the point not used to parametrize the line 
-      \State Example: If $\bar v_1$ and $\bar v_2$ were used to parametrize the line, check whether $\bar v_3$ lies above or below $l$ and compare
-      that to the result of $\bar q$
-      \If{Result of $\bar q$ matches result of third point}
+      for point $\bar q$ matches the result for the point not used to parametrize the line i.e. if
+      $\bar v_1$ and $\bar v_2$ were used to parametrize the line, check whether $\bar v_3$ lies above or below
+      \If{Signs match}
 	\State Count$++$
       \EndIf
     \EndFor
@@ -482,16 +479,14 @@ Recall that in Bresenham's line algorithm, a point can be determined to be above
     \EndIf  
   \end{algorithmic}
 \end{algorithm}
-
 \newpage
-
 \subsection{Is point q on edge of triangle}
 
 To determine if a point is on the edge of a triangle, perform a check similar to the previous part, but use
 the fact that if Algorithm 1 evaluates to $0$, the point is on the line. See Algorithm 3.
 
 
-\begin{algorithm}[h]
+\begin{algorithm}[h!]
   \caption{Point Inside or Edge of Triangle}\label{}
   \begin{algorithmic}
     \State Given vertices of triangle $\bar v_1, \bar v_2, \bar v_3$
@@ -548,44 +543,31 @@ If the vertices of the polygon are given by $V_1, V_2, \dots, V_n$ and are in co
 
 \subsection{Triangulate Concave Polygon}
 
-Consider the following shape. There is no single vertex where a line can be drawn to every other vertex.
-Thus the above triangulation procedure will not work. Examples are drawn in dashed red and cyan lines.
+Consider the following shape. For every vertex
 
-\begin{figure}[!h]
+\begin{figure}
  \centering
  \begin{tikzpicture}
   
-    \draw (0,0) -- (-1,-3) -- (-1, 4) -- (0, 2) -- (3, 5) -- (4, 4) -- (2, 2.5) -- (1, -1) -- (0,0);
+    \draw (0,0) -- (-1,-1) -- (-1, 4) -- (0, 2) -- (3, 5) -- (4, 4) -- (2, 3) -- (1, -1) -- (0,0);
     \node [left] at (0,0){$V_1$};
-    \node [left] at (-1,-3){$V_2$};
+    \node [left] at (-1,-1){$V_2$};
     \node [left] at (-1,4){$V_3$};
     \node [left] at (0,2){$V_4$};
-    \node [above] at (3,5){$V_5$};
-    \node [right] at (4,4){$V_6$};    
-    \node [left] at (2,2.5){$V_7$};        
-    \node [left] at (1,-1){$V_8$};        
-    
-    %V6
-    \draw[dashed, red] (-1, -3) -- (4,4);
-    \draw[dashed, red] (0, 0) -- (4,4);    
-    \draw[dashed, red] (1, -1) -- (4,4);        
-    \draw[dashed, red] (0, 2) -- (4,4);            
-    \draw[dashed, red] (-1, 4) -- (4,4);                
-    
-    %V2
-    \draw[dashed, cyan] (-1, -3) -- (3,5);            
-    \draw[dashed, cyan] (-1, -3) -- (2,2.5);                    
+    \node [left] at (3,5){$V_5$};
+    \node [left] at (4,4){$V_6$};    
+    \node [left] at (2,3){$V_7$};        
  \end{tikzpicture}
 
  \caption{Concave polygon that does not work with the above triangulation procedure.}
  
 \end{figure}
 
-\newpage
+
 \subsection{Determine if Point In/Out of Convex Polygon}
 
 
-\begin{algorithm}[!h]
+\begin{algorithm}
   \caption{Point Inside or Outside or On Convex Polygon}\label{}
   \begin{algorithmic}
     \State Triangulate the polygon
@@ -607,10 +589,10 @@ Thus the above triangulation procedure will not work. Examples are drawn in dash
       \Comment Note that the point could be inside the polygon but still on the triangles edge. If this is the case,
       then the the number of times the point was on the edge will be greater than 1, since the triangles on the interior of
       the polygon share an edge with another triangle
-    \ElsIf{NumInside $> 1$ $||$ NumEdge $ > 1$}
+    \ElsIf{NumInside $> 1$ || NumEdge $ > 1$}
       \State Point is on inside
       \Comment If the point was inside a single triangle, then it must lie inside the polygon. This also
-      covers the case where the point was on the edge of a triangle but inside the polygon in which case NumEdge$ = 2  $
+      covers the case where the point was on the edge of a triangle but inside the polygon    
     \Else
       \State Point is on outside
     \EndIf
