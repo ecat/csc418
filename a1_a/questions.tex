@@ -544,7 +544,7 @@ A convex polygon means that no angle in the polygon is greater than $180 ^o$. A 
 a straight line can be drawn from one vertex to every vertex in the polygon.
 
 If the vertices of the polygon are given by $V_1, V_2, \dots, V_n$ and are in counter clockwise order
-,then the shape can be triangulated by connecting $V_1, V_2, V_3$ then $V_1, V_3, V_4 \dots V_1, V_{n-1}, V_{n}$
+,then the shape can be triangulated by connecting $(V_1, V_2, V_3)$ then $(V_1, V_3, V_4) \dots (V_1, V_{n-1}, V_{n})$
 
 \subsection{Triangulate Concave Polygon}
 
@@ -555,22 +555,22 @@ Thus the above triangulation procedure will not work. Examples are drawn in dash
  \centering
  \begin{tikzpicture}
   
-    \draw (0,0) -- (-1,-3) -- (-1, 4) -- (0, 2) -- (3, 5) -- (4, 4) -- (2, 2.5) -- (1, -1) -- (0,0);
+    \draw (0,0) -- (-1,-3) -- (-1, 4) -- (0, 2) -- (3, 5) -- (4, 2) -- (2, 2.5) -- (1, -0.5) -- (0,0);
     \node [left] at (0,0){$V_1$};
     \node [left] at (-1,-3){$V_2$};
     \node [left] at (-1,4){$V_3$};
     \node [left] at (0,2){$V_4$};
     \node [above] at (3,5){$V_5$};
-    \node [right] at (4,4){$V_6$};    
+    \node [right] at (4,2){$V_6$};    
     \node [left] at (2,2.5){$V_7$};        
-    \node [left] at (1,-1){$V_8$};        
+    \node [left] at (1,-0.5){$V_8$};        
     
     %V6
-    \draw[dashed, red] (-1, -3) -- (4,4);
-    \draw[dashed, red] (0, 0) -- (4,4);    
-    \draw[dashed, red] (1, -1) -- (4,4);        
-    \draw[dashed, red] (0, 2) -- (4,4);            
-    \draw[dashed, red] (-1, 4) -- (4,4);                
+    \draw[dashed, red] (-1, -3) -- (4,2);
+    \draw[dashed, red] (0, 0) -- (4,2);    
+    \draw[dashed, red] (1, -0.5) -- (4,2);        
+    \draw[dashed, red] (0, 2) -- (4,2);            
+    \draw[dashed, red] (-1, 4) -- (4,2);                
     
     %V2
     \draw[dashed, cyan] (-1, -3) -- (3,5);            
