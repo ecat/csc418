@@ -35,15 +35,15 @@ $ n(t) =  < - 4\pi\cos{2\pi t} - 2\pi\cos{32\pi t}$, $-8\pi\sin{2\pi t} - 2\pi\s
 If we evaluate at $t = 1/8$,  $<x(1/8), y(1/8)> = <4/\sqrt{2} + 1/16, 2/\sqrt{2}>$\\
 For the curve to be symmetric about the y axis and by the definition of symmetry,
 there must exist a value of $t_o$ such that
-\[<x(t_o), y(t_o)> = <-(4/\sqrt{2} + 1/16), 2/\sqrt{2}>\]
+\[<x(t_o), y(t_o)> = <-(4/\sqrt{2} + 1/16), 2/\sqrt{2}>\] 
 
 It turns out that $y(t_o) = 2/\sqrt{2}$ only for $t_o = 1/8, 3/8$ \\\\
 The presence of only two solutions for $t_o$ can be justified by inspecting
-the plots of $f(t) = 2/\sqrt{2} - 1/16\sin{32\pi t}$ and $g(t) = 2\sin{2\pi t}$
+the plots of $f(t) = 2/\sqrt{2} - 1/16\sin{32\pi t}$ and $g(t) = 2\sin{2\pi t}$\\
 
 Evaluating $x$ at $t_o$ gives $x(3/8) = -4\sqrt{2} + 1/16$ \\
 
-Since $x(3/8) \neq -x(1/8)$ and $y(3/8) = y(1/8)$ the curve is not symmetric about the y axis because. There is a point on the curve that
+Since $x(3/8) \neq -x(1/8)$ and $y(3/8) = y(1/8)$ the curve is not symmetric about the y axis because there is a point on the curve that
 cannot be reflected about the y-axis.\\\\
 
 
@@ -73,7 +73,7 @@ Thus for any given $t_o, 0 < t_o < 0.5$, choosing $t_1 = -t_o$ satisfies the con
 Which by the even and odd properties of the functions $x(t), y(t)$ \\ 
 \[ = <x(t_o), -y(t_o)>\]\\
 
-Since the range of $t$ covers the entire curve, this implies that the curve is symmetric about the x-axis.
+Thus $t_1 = -t_o$ satisfies the symmetry requirement. Since the range of $t_o$ spans one period of the entire curve, this implies that the curve is symmetric about the x-axis.
 \subsection{Curve's Perimeter}
 
 The formula to compute the curve's perimeter is given by
@@ -125,7 +125,8 @@ The number of locations can be computed analytically as follows:
 
 Consider the number of times the line intersects with a circle $r$.\\
 
-We are given that $\bar p(\lambda) = \bar p_o + \lambda\bar d$ and the equation of the circle is given by \\$||\bar q - \bar p_1 ||^2 = r^2$\\
+We are given that $\bar p(\lambda) = \bar p_o + \lambda\bar d$ and the equation of the circle is given by \\$||\bar q - \bar p_1 ||^2 = r^2$. Let $\bar d = [d_x, d_y]^T$ ,
+$\bar q = [q_x, q_y]^T$, $\bar p_o = [p_{ox}, p_{oy}]^T$ \\
 
 An intersection with the circle means that there is some value of $\lambda$ for $\bar p(\lambda)$ that satisfies the equation of the circle. Thus we can substitute $\bar p(\lambda)$.\\
 
@@ -136,7 +137,7 @@ Expanding and simplifying the equation and finding the magnitude of the vectors:
 \[||\bar q - (\bar p_o + \lambda\bar d) || ^2 = r^2\]
 \[\sqrt{ (q_x - p_{ox} - \lambda\bar d_x)^2 +  (q_y - p_{oy} - \lambda\bar d_y)^2}^2  = r^2\]\\
 
-Since $q_x, q_y, p_{ox}, p_{oy}$ are given (center of circle and one point on the line), let $\Delta_x = q_x - p_{ox}$ and $\Delta_y = q_y - p_{oy}$
+Since $q_x, q_y, p_{ox}, p_{oy}$ are given (center of circle and one point on the line), in addition to $d_x, d_y$ ('slope' of line), let $\Delta_x = q_x - p_{ox}$ and $\Delta_y = q_y - p_{oy}$
 
 \[(\Delta_x - \lambda\bar d_x)^2 +  (\Delta_y - \lambda\bar d_y)^2  = r^2\]\\
 
@@ -409,8 +410,8 @@ $ \\
 If however, we apply the translation matrix first followed by the shear matrix gives:
 
 $S_{Shear} \bullet T = \begin{bmatrix}
-		  1 & s_y & s_xt_x \\
-		  s_x & 1 & s_yt_y \\
+		  1 & s_y & t_y + s_xt_x \\
+		  s_x & 1 & t_x + s_yt_y \\
 		  0 & 0 & 1
                \end{bmatrix}
 $ \\
