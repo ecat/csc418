@@ -49,6 +49,6 @@ _X__   (15 points) Part 2d     Hierarchical object rendering
                   
 _X__   ( 2 points) Part 2e     Joint drawing
 
-_X__   (10 points) Part 2f     Written report
+_X__   (10 points) Part 2f     Written report (See REPORT.pdf)
 
 -------------------------------------------------------------------------------- 
