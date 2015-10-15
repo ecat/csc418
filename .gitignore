@@ -1,5 +1,6 @@
 *~
 penguin/penguin
+a2/penguin
 *.o
 *.aux
 *.log

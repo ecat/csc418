@@ -103,6 +103,7 @@ const float HEAD_JOINT_MIN = -5.0f;
 const float HEAD_JOINT_MAX = 35.0f;
 float HEAD_JOINT_ROT = 0.0f;
 
+// Beak animation
 const float BEAK_TRANSLATE_MAX = 1.0f;
 const float BEAK_TRANSLATE_MIN = 0.0f;
 float BEAK_TRANSLATE = 0.0f;
@@ -268,6 +269,7 @@ void initGlui()
 
     glui->add_separator();
 
+    // Following buttons control xy translation
     joint_spinner = glui->add_spinner("Translate X", GLUI_SPINNER_FLOAT, &PENGUIN_TRANSLATE_X);
     joint_spinner->set_speed(0.8);
     joint_spinner->set_float_limits(-1.0, 1.0, GLUI_LIMIT_CLAMP);
