@@ -196,8 +196,7 @@ void motion(int x, int y);
 Vector getInterpolatedJointDOFS(float time);
 void drawCube();
 void drawFrustrum();
-void drawFrustrumHelper(int glFlag);
-
+void renderPenguin();
 
 // Image functions
 void writeFrame(char* filename, bool pgm, bool frontBuffer);
@@ -686,6 +685,9 @@ void initGl(void)
     // glClearColor (red, green, blue, alpha)
     // Ignore the meaning of the 'alpha' value for now
     glClearColor(0.7f,0.7f,0.9f,1.0f);
+
+    // Enable depth testing
+    glEnable(GL_DEPTH_TEST);
 }
 
 
@@ -849,11 +851,30 @@ void display(void)
 		glRotatef(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_X), 1.0, 0.0, 0.0);
 		glRotatef(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_Y), 0.0, 1.0, 0.0);
 		glRotatef(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_Z), 0.0, 0.0, 1.0);
-		// determine render style and set glPolygonMode appropriately
 
-		// draw body part
-		glColor3f(1.0, 1.0, 1.0);
-		drawFrustrum();
+		// determine render style and set glPolygonMode appropriately
+		if(renderStyle == WIREFRAME){
+			// Draw wireframe
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glColor3f(0.0, 0.0, 0.0);
+			renderPenguin();
+		}else if(renderStyle == OUTLINED){
+			// Draw solid
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glColor3f(1.0, 1.0, 1.0);			
+			renderPenguin();	
+
+			// Draw wireframe
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonOffset(1, 8.0f); // Offset wireframe drawing so that it appears outside the faces
+			glColor3f(0.0, 0.0, 0.0);			
+			renderPenguin();			
+		}else if(renderStyle == SOLID){
+			// Draw solid			
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glColor3f(1.0, 1.0, 1.0);
+			renderPenguin();
+		}
 
 	glPopMatrix();
 	//
@@ -872,6 +893,12 @@ void display(void)
     // Now, show the frame buffer that we just drew into.
     // (this prevents flickering).
     glutSwapBuffers();
+}
+
+// Applies a sequence of matrix transformations and glDraw calls to draw the entire penguin
+void renderPenguin(){
+	// draw body part
+	drawFrustrum();
 }
 
 
@@ -956,61 +983,40 @@ void drawCube()
 	glEnd();
 }
 
-
-// Draws a frustrume, decides flags based on render style
-void drawFrustrum(){
-	if(renderStyle == WIREFRAME){
-		glColor3f(0.0, 0.0, 0.0); // Set lines to be black
-		drawFrustrumHelper(GL_LINE_STRIP);
-	}else if(renderStyle == OUTLINED){
-		drawFrustrumHelper(GL_QUADS);
-		glColor3f(0.0, 0.0, 0.0); // Set lines to be black
-		drawFrustrumHelper(GL_LINE_STRIP);
-	}else{// renderStyle == SOLID
-		drawFrustrumHelper(GL_QUADS);
-	}
-
-}
-
 // Function to draw a frustrum, entered at current location with top face surface area 
 // equal to one quarter the bottom face surface area
-void drawFrustrumHelper(int glFlag){
-	glBegin(glFlag);
+void drawFrustrum(){
+	glBegin(GL_QUADS);
 		// draw front face
 		glVertex3f(-1.0, -1.0, 1.0);
 		glVertex3f( 1.0, -1.0, 1.0);
 		glVertex3f( 0.5,  1.0, 0.5);
 		glVertex3f(-0.5,  1.0, 0.5);
-	glEnd();
-	glBegin(glFlag);
+
 		// draw back face
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-0.5,  1.0, -0.5);
 		glVertex3f( 0.5,  1.0, -0.5);
-	glEnd();
-	glBegin(glFlag);
+
 		// draw left face
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0,  1.0);
 		glVertex3f(-0.5,  1.0,  0.5);
 		glVertex3f(-0.5,  1.0, -0.5);
-	glEnd();
-	glBegin(glFlag);
+
 		// draw right face
 		glVertex3f( 1.0, -1.0,  1.0);
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f( 0.5,  1.0, -0.5);
 		glVertex3f( 0.5,  1.0,  0.5);
-	glEnd();
-	glBegin(glFlag);
+
 		// draw top, y = 1.0
 		glVertex3f(-0.5,  1.0,  0.5);
 		glVertex3f( 0.5,  1.0,  0.5);
 		glVertex3f( 0.5,  1.0, -0.5);
 		glVertex3f(-0.5,  1.0, -0.5);
-	glEnd();
-	glBegin(glFlag);
+
 		// draw bottom, y = -1.0
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f( 1.0, -1.0, -1.0);
@@ -1018,6 +1024,7 @@ void drawFrustrumHelper(int glFlag){
 		glVertex3f(-1.0, -1.0,  1.0);
 	glEnd();
 }
+
 
 ///////////////////////////////////////////////////////////
 //
