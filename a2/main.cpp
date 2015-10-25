@@ -56,6 +56,7 @@
 const float PI = 3.14159;
 
 const float SPINNER_SPEED = 0.1;
+const float BEAK_SPINNER_SPEED = 0.5;
 
 // --------------- USER INTERFACE VARIABLES -----------------
 
@@ -177,10 +178,12 @@ const float KNEE_MAX             = 75.0;
 const float BODY_HEIGHT = 1.4;
 const float BODY_WIDTH = 1.2;
 const float HEAD_HEIGHT = 0.3;
-const float HEAD_WIDTH = 0.7;
-const float BEAK_HEIGHT = 0.1;
+const float HEAD_WIDTH = 0.6;
+const float HEAD_DEPTH = 0.6;
+const float BEAK_HEIGHT = 0.05;
 const float BEAK_WIDTH = 0.3;
 const float BEAK_DEPTH = 0.2;
+const float BEAK_TRANSLATION_SCALE = 5.0;
 
 // ***********  FUNCTION HEADER DECLARATIONS ****************
 
@@ -523,7 +526,7 @@ void initGlui()
 
 	glui_spinner = glui_joints->add_spinner_to_panel(glui_panel, "beak:", GLUI_SPINNER_FLOAT, joint_ui_data->getDOFPtr(Keyframe::BEAK));
 	glui_spinner->set_float_limits(BEAK_MIN, BEAK_MAX, GLUI_LIMIT_CLAMP);
-	glui_spinner->set_speed(SPINNER_SPEED);
+	glui_spinner->set_speed(BEAK_SPINNER_SPEED);
 
 
 	glui_joints->add_column(false);
@@ -917,7 +920,11 @@ void renderPenguin(){
 				// draw head		
 	 			// Translate so that bottom of head frustrum is at top of body frustrum			
 				glTranslatef(0.0, 1, 0.0);
-				glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
+				
+				// Rotate head about y axis
+				glRotatef(joint_ui_data->getDOF(Keyframe::HEAD), 0.0, 1.0, 0.0);
+
+				glScalef(HEAD_WIDTH, HEAD_HEIGHT, HEAD_DEPTH);
 				glTranslatef(0.0, 1, 0.0);			
 				drawFrustrum();
 
@@ -927,8 +934,10 @@ void renderPenguin(){
 				glScalef(BEAK_WIDTH, BEAK_HEIGHT, BEAK_DEPTH);
 				drawCube();
 
-				// draw top beak
-				glTranslatef(0.0, 1.0, 0.0); 
+				// draw top beak such that bottom plane of top beak is on top plane of top beak
+				glTranslatef(0.0, 2.0, 0.0); 
+				// animate top beak
+				glTranslatef(0.0, BEAK_TRANSLATION_SCALE * joint_ui_data->getDOF(Keyframe::BEAK), 0.0);
 				// since in coordinate frame of bottom beak, don't have to scale top beak
 				glScalef(1.0, 1.0, 1.0);
 				drawCube();
