@@ -195,6 +195,8 @@ void motion(int x, int y);
 // Functions to help draw the object
 Vector getInterpolatedJointDOFS(float time);
 void drawCube();
+void drawFrustrum();
+void drawFrustrumHelper(int glFlag);
 
 
 // Image functions
@@ -843,14 +845,15 @@ void display(void)
 		glTranslatef(joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_X),
 					 joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_Y),
 					 joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_Z));
-		glRotatef(30.0, 0.0, 1.0, 0.0);
-		glRotatef(30.0, 1.0, 0.0, 0.0);
 
+		glRotatef(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_X), 1.0, 0.0, 0.0);
+		glRotatef(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_Y), 0.0, 1.0, 0.0);
+		glRotatef(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_Z), 0.0, 0.0, 1.0);
 		// determine render style and set glPolygonMode appropriately
 
 		// draw body part
 		glColor3f(1.0, 1.0, 1.0);
-		drawCube();
+		drawFrustrum();
 
 	glPopMatrix();
 	//
@@ -889,6 +892,7 @@ void mouse(int button, int state, int x, int y)
 			updateCamZPos = false;
 		}
 	}
+
 }
 
 
@@ -945,6 +949,69 @@ void drawCube()
 		glVertex3f(-1.0,  1.0, -1.0);
 
 		// draw bottom
+		glVertex3f(-1.0, -1.0, -1.0);
+		glVertex3f( 1.0, -1.0, -1.0);
+		glVertex3f( 1.0, -1.0,  1.0);
+		glVertex3f(-1.0, -1.0,  1.0);
+	glEnd();
+}
+
+
+// Draws a frustrume, decides flags based on render style
+void drawFrustrum(){
+	if(renderStyle == WIREFRAME){
+		glColor3f(0.0, 0.0, 0.0); // Set lines to be black
+		drawFrustrumHelper(GL_LINE_STRIP);
+	}else if(renderStyle == OUTLINED){
+		drawFrustrumHelper(GL_QUADS);
+		glColor3f(0.0, 0.0, 0.0); // Set lines to be black
+		drawFrustrumHelper(GL_LINE_STRIP);
+	}else{// renderStyle == SOLID
+		drawFrustrumHelper(GL_QUADS);
+	}
+
+}
+
+// Function to draw a frustrum, entered at current location with top face surface area 
+// equal to one quarter the bottom face surface area
+void drawFrustrumHelper(int glFlag){
+	glBegin(glFlag);
+		// draw front face
+		glVertex3f(-1.0, -1.0, 1.0);
+		glVertex3f( 1.0, -1.0, 1.0);
+		glVertex3f( 0.5,  1.0, 0.5);
+		glVertex3f(-0.5,  1.0, 0.5);
+	glEnd();
+	glBegin(glFlag);
+		// draw back face
+		glVertex3f( 1.0, -1.0, -1.0);
+		glVertex3f(-1.0, -1.0, -1.0);
+		glVertex3f(-0.5,  1.0, -0.5);
+		glVertex3f( 0.5,  1.0, -0.5);
+	glEnd();
+	glBegin(glFlag);
+		// draw left face
+		glVertex3f(-1.0, -1.0, -1.0);
+		glVertex3f(-1.0, -1.0,  1.0);
+		glVertex3f(-0.5,  1.0,  0.5);
+		glVertex3f(-0.5,  1.0, -0.5);
+	glEnd();
+	glBegin(glFlag);
+		// draw right face
+		glVertex3f( 1.0, -1.0,  1.0);
+		glVertex3f( 1.0, -1.0, -1.0);
+		glVertex3f( 0.5,  1.0, -0.5);
+		glVertex3f( 0.5,  1.0,  0.5);
+	glEnd();
+	glBegin(glFlag);
+		// draw top, y = 1.0
+		glVertex3f(-0.5,  1.0,  0.5);
+		glVertex3f( 0.5,  1.0,  0.5);
+		glVertex3f( 0.5,  1.0, -0.5);
+		glVertex3f(-0.5,  1.0, -0.5);
+	glEnd();
+	glBegin(glFlag);
+		// draw bottom, y = -1.0
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f( 1.0, -1.0,  1.0);
