@@ -89,7 +89,7 @@ const GLdouble NEAR_CLIP   = 0.1;
 const GLdouble FAR_CLIP    = 1000.0;
 
 // Render settings
-enum { WIREFRAME, SOLID, OUTLINED };	// README: the different render styles
+enum { WIREFRAME, SOLID, OUTLINED, METALLIC, MATTE };	// README: the different render styles
 int renderStyle = WIREFRAME;			// README: the selected render style
 
 // Animation settings
@@ -157,8 +157,8 @@ const float HEAD_MIN             = -180.0;
 const float HEAD_MAX             =  180.0;
 const float SHOULDER_PITCH_MIN   = -45.0;
 const float SHOULDER_PITCH_MAX   =  45.0;
-const float SHOULDER_YAW_MIN     =  0.0;
-const float SHOULDER_YAW_MAX     =  45.0;
+const float SHOULDER_YAW_MIN     =  20.0;
+const float SHOULDER_YAW_MAX     =  65.0;
 const float SHOULDER_ROLL_MIN    = -45.0;
 const float SHOULDER_ROLL_MAX    =  45.0;
 const float HIP_PITCH_MIN        = -45.0;
@@ -683,6 +683,8 @@ void initGlui()
 	glui_render->add_radiobutton_to_group(glui_radio_group, "Wireframe");
 	glui_render->add_radiobutton_to_group(glui_radio_group, "Solid");
 	glui_render->add_radiobutton_to_group(glui_radio_group, "Solid w/ outlines");
+	glui_render->add_radiobutton_to_group(glui_radio_group, "Metallic");
+	glui_render->add_radiobutton_to_group(glui_radio_group, "Matte");	
 	//
 	// ***************************************************
 
@@ -703,6 +705,9 @@ void initGl(void)
 
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
+
+    // Enable lighting calculations
+    glEnable(GL_LIGHTING);
 }
 
 
@@ -876,7 +881,7 @@ void display(void)
 		}else if(renderStyle == OUTLINED){
 			// Draw solid
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glColor3f(1.0, 1.0, 1.0);			
+			glColor3f(0.6, 0.6, 0.6);			
 			renderPenguin();	
 
 			// Draw wireframe
@@ -887,7 +892,29 @@ void display(void)
 		}else if(renderStyle == SOLID){
 			// Draw solid			
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glColor3f(1.0, 1.0, 1.0);
+			glColor3f(0.6, 0.6, 0.6);
+			renderPenguin();
+		}else if(renderStyle == METALLIC){
+			// Draw with metallic texture
+			// Set appropriate diffuse, ambient, specular, shininess parameters to simulate metal
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+			GLfloat ambient[] = {0.192, 0.192, 0.192, 1.0};
+			GLfloat diffuse[] = {0.508, 0.508, 0.508};
+			GLfloat specular[] = {0.508, 0.508, 0.508};			
+			float shine = 0.4;
+			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);					
+			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);	
+			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shine);
+
+			// Turn on light source
+			float* lightValues = new float[3];
+			lightValues[0] = lightValues[1] = lightValues[2] = 0.5f;
+			glEnable(GL_LIGHT0);
+			glLightfv(GL_LIGHT0, GL_AMBIENT, lightValues);
+			glLightfv(GL_LIGHT0, GL_DIFFUSE, lightValues);			
+			glLightfv(GL_LIGHT0, GL_SPECULAR, lightValues);
 			renderPenguin();
 		}
 
@@ -948,9 +975,8 @@ void renderPenguin(){
 			glPopMatrix();
 
 			glPushMatrix();
-
 				// draw left arm closest to screen
-				glTranslatef(0.0, 0.6, 0.6); // Move arm to edge of body and closer to head
+				glTranslatef(0.0, 0.6, 0.75); // Move arm to edge of body and closer to head
 
 				// Rotate upper arm
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_SHOULDER_PITCH), 0.0, 0.0, 1.0);
@@ -982,10 +1008,7 @@ void renderPenguin(){
 
 			glPopMatrix();
 
-
-
 		glPopMatrix();
-
 
 	glPopMatrix();
 }
