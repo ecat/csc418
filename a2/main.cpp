@@ -173,6 +173,14 @@ const float ELBOW_MAX            = 75.0;
 const float KNEE_MIN             =  0.0;
 const float KNEE_MAX             = 75.0;
 
+// Values for penguin part sizes
+const float BODY_HEIGHT = 1.4;
+const float BODY_WIDTH = 1.2;
+const float HEAD_HEIGHT = 0.3;
+const float HEAD_WIDTH = 0.7;
+const float BEAK_HEIGHT = 0.1;
+const float BEAK_WIDTH = 0.3;
+const float BEAK_DEPTH = 0.2;
 
 // ***********  FUNCTION HEADER DECLARATIONS ****************
 
@@ -897,8 +905,41 @@ void display(void)
 
 // Applies a sequence of matrix transformations and glDraw calls to draw the entire penguin
 void renderPenguin(){
-	// draw body part
-	drawFrustrum();
+
+	glPushMatrix();
+
+		glPushMatrix();
+			// draw body		
+			glScalef(BODY_WIDTH, BODY_HEIGHT, 1.0);
+			drawFrustrum();
+
+			glPushMatrix();
+				// draw head		
+	 			// Translate so that bottom of head frustrum is at top of body frustrum			
+				glTranslatef(0.0, 1, 0.0);
+				glScalef(HEAD_WIDTH, HEAD_HEIGHT, 1.0);
+				glTranslatef(0.0, 1, 0.0);			
+				drawFrustrum();
+
+				// draw bottom beak as rectangular prism
+				glTranslatef(-1.0, 0.0, 0.0);
+
+				glScalef(BEAK_WIDTH, BEAK_HEIGHT, BEAK_DEPTH);
+				drawCube();
+
+				// draw top beak
+				glTranslatef(0.0, 1.0, 0.0); 
+				// since in coordinate frame of bottom beak, don't have to scale top beak
+				glScalef(1.0, 1.0, 1.0);
+				drawCube();
+			glPopMatrix();
+
+
+
+		glPopMatrix();
+
+
+	glPopMatrix();
 }
 
 
