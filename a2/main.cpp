@@ -157,7 +157,7 @@ const float HEAD_MIN             = -180.0;
 const float HEAD_MAX             =  180.0;
 const float SHOULDER_PITCH_MIN   = -45.0;
 const float SHOULDER_PITCH_MAX   =  45.0;
-const float SHOULDER_YAW_MIN     = -45.0;
+const float SHOULDER_YAW_MIN     =  0.0;
 const float SHOULDER_YAW_MAX     =  45.0;
 const float SHOULDER_ROLL_MIN    = -45.0;
 const float SHOULDER_ROLL_MAX    =  45.0;
@@ -184,6 +184,10 @@ const float BEAK_HEIGHT = 0.05;
 const float BEAK_WIDTH = 0.3;
 const float BEAK_DEPTH = 0.2;
 const float BEAK_TRANSLATION_SCALE = 5.0;
+const float ARM_WIDTH = 0.2;
+const float ARM_DEPTH = 0.05;
+const float ARM_HEIGHT = 0.5;
+const float FOREARM_HEIGHT = 0.2;
 
 // ***********  FUNCTION HEADER DECLARATIONS ****************
 
@@ -943,6 +947,41 @@ void renderPenguin(){
 				drawCube();
 			glPopMatrix();
 
+			glPushMatrix();
+
+				// draw left arm closest to screen
+				glTranslatef(0.0, 0.6, 0.6); // Move arm to edge of body and closer to head
+
+				// Rotate upper arm
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_SHOULDER_PITCH), 0.0, 0.0, 1.0);
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_SHOULDER_YAW), -1.0, 0.0, 0.0);				
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_SHOULDER_ROLL), 0.0, 1.0, 0.0);		
+
+				glPushMatrix();
+					glScalef(ARM_WIDTH, ARM_HEIGHT, ARM_DEPTH);
+					// Move arm to pivot point
+					glTranslatef(0.0, -0.9, 0.0);				
+					drawCube();
+				glPopMatrix();
+
+				// Move arm to pivot point again so that scaling doesn't affect rotation
+				glTranslatef(0.0, -0.9 * ARM_HEIGHT, 0.0);								
+				glTranslatef(0.0, -ARM_HEIGHT, 0.0);	
+							
+				// Rotate elbow joint
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_ELBOW), 1.0, 0.0, 0.0); 
+
+				// Realign the coordinate frame with arm
+				glScalef(ARM_WIDTH, ARM_HEIGHT, ARM_DEPTH);
+
+				// Size the joint with respect to the arm
+				glScalef(1.0, FOREARM_HEIGHT, 1.0);
+				// draw forearm
+				glTranslatef(0.0, -1.0, 0.0);
+				drawCube();
+
+			glPopMatrix();
+
 
 
 		glPopMatrix();
@@ -1074,7 +1113,6 @@ void drawFrustrum(){
 		glVertex3f(-1.0, -1.0,  1.0);
 	glEnd();
 }
-
 
 ///////////////////////////////////////////////////////////
 //
