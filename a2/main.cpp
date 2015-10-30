@@ -180,8 +180,8 @@ const float BODY_WIDTH = 1.2;
 const float HEAD_HEIGHT = 0.3;
 const float HEAD_WIDTH = 0.6;
 const float HEAD_DEPTH = 0.6;
-const float BEAK_HEIGHT = 0.1;
-const float BEAK_WIDTH = 0.4;
+const float BEAK_HEIGHT = 0.02;
+const float BEAK_WIDTH = 0.25;
 const float BEAK_DEPTH = 0.2;
 const float BEAK_TRANSLATION_SCALE = 5.0;
 const float ARM_WIDTH = 0.2;
@@ -971,10 +971,10 @@ void renderPenguin(){
 				glScalef(HEAD_WIDTH, HEAD_HEIGHT, HEAD_DEPTH);
 				glTranslatef(0.0, 1, 0.0);			
 				drawFrustrum();
+				glTranslatef(-1.1, 0.0, 0.0); // Move frame of reference to front of head
+				glScalef(1/HEAD_WIDTH, 1/HEAD_HEIGHT, 1/HEAD_DEPTH);
 
 				// draw bottom beak as rectangular prism
-				glTranslatef(-1.1, 0.0, 0.0);
-
 				glScalef(BEAK_WIDTH, BEAK_HEIGHT, BEAK_DEPTH);
 				drawCube();
 
