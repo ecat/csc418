@@ -187,8 +187,9 @@ const float BEAK_TRANSLATION_SCALE = 5.0;
 const float ARM_WIDTH = 0.2;
 const float ARM_DEPTH = 0.05;
 const float ARM_HEIGHT = 0.5;
-const float FOREARM_HEIGHT = 0.2;
-const float FOREARM_WIDTH = 0.8;
+const float FOREARM_HEIGHT = 0.1;
+const float FOREARM_WIDTH = 0.15;
+const float FOREARM_DEPTH = 0.05;
 const float LEG_WIDTH = 0.05;
 const float LEG_LENGTH = 0.3;
 const float LEG_DEPTH = 0.05;
@@ -999,18 +1000,15 @@ void renderPenguin(){
 				// Move arm to pivot point
 				glTranslatef(0.0, -0.9, 0.0);				
 				drawArm();
+				// Move coordinate frame to end of arm
+				glTranslatef(0.0, -1.0, 0.0);					
 				glScalef(1/ARM_WIDTH, 1/ARM_HEIGHT, 1/ARM_DEPTH);
 			
 				// Rotate elbow joint
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_ELBOW), 1.0, 0.0, 0.0); 
 
-				// Move coordinate frame to end of arm
-				glScalef(ARM_WIDTH, ARM_HEIGHT, ARM_DEPTH);
-				glTranslatef(0.0, -1.0, 0.0);	
-
-
 				// Size the joint with respect to the arm
-				glScalef(FOREARM_WIDTH, FOREARM_HEIGHT, 1.0);
+				glScalef(FOREARM_WIDTH, FOREARM_HEIGHT, FOREARM_DEPTH);
 
 				// Translate hand so that face of polygon is touching face of arm
 				glTranslatef(0.0, -0.8, 0.0);
@@ -1023,18 +1021,22 @@ void renderPenguin(){
 
 			glPushMatrix();
 				// Draw left leg, closest to screen
-	 			// Translate so that top of head is at bottom of body frustrum and slightly off to the side
+				// Translate so that reference is at bottom of body frustrum and off to side
 				glTranslatef(0.0, -1.0, 0.5);
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_HIP_PITCH), 0.0, 0.0, 1.0);
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_HIP_YAW), 0.0, 1.0, 0.0);
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_HIP_ROLL), -1.0, 0.0, 0.0);
 
 				glScalef(LEG_WIDTH, LEG_LENGTH, LEG_DEPTH);
+				// Translate so that top of knee is aligned with bottom of body
 				glTranslatef(0.0, -1.0, 0.0);
 				drawCube();
-				glTranslatef(0.0, -1.0, 0.0);				
+				// Translate reference to bottom of leg joint
+				glTranslatef(0.0, -1.0, 0.0);
 				glScalef(1/LEG_WIDTH, 1/LEG_LENGTH, 1/LEG_DEPTH);
 				
-
+				// Apply knee joint rotation
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_KNEE), 0.0, 0.0, -1.0);
 				glScalef(FOOT_WIDTH, FOOT_HEIGHT, FOOT_DEPTH);
 				glTranslatef(-0.6, -1.0, 0.0);				
 				drawFoot();
