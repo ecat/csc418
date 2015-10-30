@@ -180,14 +180,21 @@ const float BODY_WIDTH = 1.2;
 const float HEAD_HEIGHT = 0.3;
 const float HEAD_WIDTH = 0.6;
 const float HEAD_DEPTH = 0.6;
-const float BEAK_HEIGHT = 0.05;
-const float BEAK_WIDTH = 0.3;
+const float BEAK_HEIGHT = 0.1;
+const float BEAK_WIDTH = 0.4;
 const float BEAK_DEPTH = 0.2;
 const float BEAK_TRANSLATION_SCALE = 5.0;
 const float ARM_WIDTH = 0.2;
 const float ARM_DEPTH = 0.05;
 const float ARM_HEIGHT = 0.5;
 const float FOREARM_HEIGHT = 0.2;
+const float FOREARM_WIDTH = 0.8;
+const float LEG_WIDTH = 0.05;
+const float LEG_LENGTH = 0.3;
+const float LEG_DEPTH = 0.05;
+const float FOOT_HEIGHT = 0.05;
+const float FOOT_WIDTH = 0.25;
+const float FOOT_DEPTH = 0.25;
 
 // ***********  FUNCTION HEADER DECLARATIONS ****************
 
@@ -211,6 +218,8 @@ void motion(int x, int y);
 Vector getInterpolatedJointDOFS(float time);
 void drawCube();
 void drawFrustrum();
+void drawArm();
+void drawFoot();
 void renderPenguin();
 
 // Image functions
@@ -706,8 +715,6 @@ void initGl(void)
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
 
-    // Enable lighting calculations
-    glEnable(GL_LIGHTING);
 }
 
 
@@ -873,6 +880,8 @@ void display(void)
 		glRotatef(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_Z), 0.0, 0.0, 1.0);
 
 		// determine render style and set glPolygonMode appropriately
+		glDisable(GL_LIGHT0);
+		glDisable(GL_LIGHTING);
 		if(renderStyle == WIREFRAME){
 			// Draw wireframe
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -898,6 +907,8 @@ void display(void)
 			// Draw with metallic texture
 			// Set appropriate diffuse, ambient, specular, shininess parameters to simulate metal
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			// Enable lighting calculations
+			glEnable(GL_LIGHTING);
 
 			GLfloat ambient[] = {0.192, 0.192, 0.192, 1.0};
 			GLfloat diffuse[] = {0.508, 0.508, 0.508};
@@ -915,6 +926,7 @@ void display(void)
 			glLightfv(GL_LIGHT0, GL_AMBIENT, lightValues);
 			glLightfv(GL_LIGHT0, GL_DIFFUSE, lightValues);			
 			glLightfv(GL_LIGHT0, GL_SPECULAR, lightValues);
+
 			renderPenguin();
 		}
 
@@ -960,7 +972,7 @@ void renderPenguin(){
 				drawFrustrum();
 
 				// draw bottom beak as rectangular prism
-				glTranslatef(-1.0, 0.0, 0.0);
+				glTranslatef(-1.1, 0.0, 0.0);
 
 				glScalef(BEAK_WIDTH, BEAK_HEIGHT, BEAK_DEPTH);
 				drawCube();
@@ -983,28 +995,49 @@ void renderPenguin(){
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_SHOULDER_YAW), -1.0, 0.0, 0.0);				
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_SHOULDER_ROLL), 0.0, 1.0, 0.0);		
 
-				glPushMatrix();
-					glScalef(ARM_WIDTH, ARM_HEIGHT, ARM_DEPTH);
-					// Move arm to pivot point
-					glTranslatef(0.0, -0.9, 0.0);				
-					drawCube();
-				glPopMatrix();
-
-				// Move arm to pivot point again so that scaling doesn't affect rotation
-				glTranslatef(0.0, -0.9 * ARM_HEIGHT, 0.0);								
-				glTranslatef(0.0, -ARM_HEIGHT, 0.0);	
-							
+				glScalef(ARM_WIDTH, ARM_HEIGHT, ARM_DEPTH);
+				// Move arm to pivot point
+				glTranslatef(0.0, -0.9, 0.0);				
+				drawArm();
+				glScalef(1/ARM_WIDTH, 1/ARM_HEIGHT, 1/ARM_DEPTH);
+			
 				// Rotate elbow joint
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_ELBOW), 1.0, 0.0, 0.0); 
 
-				// Realign the coordinate frame with arm
+				// Move coordinate frame to end of arm
 				glScalef(ARM_WIDTH, ARM_HEIGHT, ARM_DEPTH);
+				glTranslatef(0.0, -1.0, 0.0);	
+
 
 				// Size the joint with respect to the arm
-				glScalef(1.0, FOREARM_HEIGHT, 1.0);
-				// draw forearm
+				glScalef(FOREARM_WIDTH, FOREARM_HEIGHT, 1.0);
+
+				// Translate hand so that face of polygon is touching face of arm
+				glTranslatef(0.0, -0.8, 0.0);
+				// draw forearm by rotating arm shape				
+				glRotatef(260, 0.0, 0.0, 1.0);				
+				drawArm();
+				glScalef(1.0, 1/FOREARM_HEIGHT, 1.0);
+
+			glPopMatrix();
+
+			glPushMatrix();
+				// Draw left leg, closest to screen
+	 			// Translate so that top of head is at bottom of body frustrum and slightly off to the side
+				glTranslatef(0.0, -1.0, 0.5);
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_HIP_PITCH), 0.0, 0.0, 1.0);
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_HIP_YAW), 0.0, 1.0, 0.0);
+
+				glScalef(LEG_WIDTH, LEG_LENGTH, LEG_DEPTH);
 				glTranslatef(0.0, -1.0, 0.0);
 				drawCube();
+				glTranslatef(0.0, -1.0, 0.0);				
+				glScalef(1/LEG_WIDTH, 1/LEG_LENGTH, 1/LEG_DEPTH);
+				
+
+				glScalef(FOOT_WIDTH, FOOT_HEIGHT, FOOT_DEPTH);
+				glTranslatef(-0.6, -1.0, 0.0);				
+				drawFoot();
 
 			glPopMatrix();
 
@@ -1134,6 +1167,83 @@ void drawFrustrum(){
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f( 1.0, -1.0,  1.0);
 		glVertex3f(-1.0, -1.0,  1.0);
+	glEnd();
+}
+
+// Draws a trapezoid with depth that acts as arm shape
+// Modify the faces with y value = -1
+void drawArm(){
+	glBegin(GL_QUADS);
+		// draw front face
+		glVertex3f(-0.6, -1.0, 1.0);
+		glVertex3f( 0.8, -1.0, 1.0);
+		glVertex3f( 1.0,  1.0, 1.0);
+		glVertex3f(-1.0,  1.0, 1.0);
+
+		// draw back face
+		glVertex3f( 0.8, -1.0, -1.0);
+		glVertex3f(-0.6, -1.0, -1.0);
+		glVertex3f(-1.0,  1.0, -1.0);
+		glVertex3f( 1.0,  1.0, -1.0);
+
+		// draw left face
+		glVertex3f(-0.6, -1.0, -1.0);
+		glVertex3f(-0.6, -1.0,  1.0);
+		glVertex3f(-1.0,  1.0,  1.0);
+		glVertex3f(-1.0,  1.0, -1.0);
+
+		// draw right face
+		glVertex3f( 0.8, -1.0,  1.0);
+		glVertex3f( 0.8, -1.0, -1.0);
+		glVertex3f( 1.0,  1.0, -1.0);
+		glVertex3f( 1.0,  1.0,  1.0);
+
+		// draw top
+		glVertex3f(-1.0,  1.0,  1.0);
+		glVertex3f( 1.0,  1.0,  1.0);
+		glVertex3f( 1.0,  1.0, -1.0);
+		glVertex3f(-1.0,  1.0, -1.0);
+
+		// draw bottom
+		glVertex3f(-0.6, -1.0, -1.0);
+		glVertex3f( 0.8, -1.0, -1.0);
+		glVertex3f( 0.8, -1.0,  1.0);
+		glVertex3f(-0.6, -1.0,  1.0);
+	glEnd();
+}
+
+// Draws a triangular prism with triangle center at 0, 0, 0
+void drawFoot(){
+	glBegin(GL_QUADS);
+		// draw front face
+		glVertex3f(-1.0, -1.0, 1.0);
+		glVertex3f( 1.0, -1.0, 0.0);
+		glVertex3f( 1.0,  1.0, 0.0);
+		glVertex3f(-1.0,  1.0, 1.0);
+
+		// draw back face
+		glVertex3f( 1.0, -1.0, 0.0);
+		glVertex3f(-1.0, -1.0, -1.0);
+		glVertex3f(-1.0,  1.0, -1.0);
+		glVertex3f( 1.0,  1.0, 0.0);
+
+		// draw left face
+		glVertex3f(-1.0, -1.0, -1.0);
+		glVertex3f(-1.0, -1.0,  1.0);
+		glVertex3f(-1.0,  1.0,  1.0);
+		glVertex3f(-1.0,  1.0, -1.0);
+
+		// draw top, y = 1.0, specify four vertices for triangle because using GL_QUADS
+		glVertex3f(-1.0,  1.0,  1.0);
+		glVertex3f( 1.0,  1.0,  0.0);
+		glVertex3f( -1.0,  1.0, -1.0);
+		glVertex3f( -1.0,  1.0, -1.0);		
+
+		// draw bottom, y = -1.0
+		glVertex3f(-1.0,  -1.0,  1.0);
+		glVertex3f( 1.0,  -1.0,  0.0);
+		glVertex3f( -1.0, -1.0, -1.0);
+		glVertex3f( -1.0, -1.0, -1.0);		
 	glEnd();
 }
 
