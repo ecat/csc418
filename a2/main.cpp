@@ -71,6 +71,8 @@ GLUI* glui_render;			// Glui window for render style
 char msg[256];				// String used for status message
 GLUI_StaticText* status;	// Status message ("Status: <msg>")
 
+char debugmsg[256];
+GLUI_StaticText* debugStatus;
 
 // ---------------- ANIMATION VARIABLES ---------------------
 
@@ -329,16 +331,23 @@ void updateKeyframeButton(int)
 	///////////////////////////////////////////////////////////
 
 	// Get the keyframe ID from the UI
-	int keyframeID = 0;
+	int keyframeID = joint_ui_data->getID();
+	float keyframeTime = joint_ui_data->getTime();
 
 	// Update the 'maxValidKeyframe' index variable
 	// (it will be needed when doing the interpolation)
+	maxValidKeyframe = keyframeID;
+	keyframes[keyframeID].setID(keyframeID);
+	keyframes[keyframeID].setTime(keyframeTime);
 
 	// Update the appropriate entry in the 'keyframes' array
 	// with the 'joint_ui_data' data
+	for( int i = 0; i < Keyframe::NUM_JOINT_ENUM; i++ )
+		keyframes[keyframeID].setDOF(i, joint_ui_data->getDOF(i));
+
 
 	// Let the user know the values have been updated
-	sprintf(msg, "Status: Keyframe %d updated successfully", keyframeID);
+	sprintf(msg, "Status: Keyframe %d updated successfully, time %f", keyframeID, keyframeTime);
 	status->set_text(msg);
 }
 
@@ -676,6 +685,10 @@ void initGlui()
 	glui_panel = glui_keyframe->add_panel("");
 	status = glui_keyframe->add_statictext_to_panel(glui_panel, "Status: Ready");
 
+	// Add debug line
+	glui_panel = glui_keyframe->add_panel("");
+	debugStatus = glui_keyframe->add_statictext_to_panel(glui_panel, "Debug Status: ");	
+
 	// Add button to quit
 	glui_panel = glui_keyframe->add_panel("", GLUI_PANEL_NONE);
 	glui_keyframe->add_button_to_panel(glui_panel, "Quit", 0, quitButton);
@@ -731,6 +744,10 @@ Vector getInterpolatedJointDOFS(float time)
 	int i = 0;
 	while( i <= maxValidKeyframe && keyframes[i].getTime() < time )
 		i++;
+
+	// Let the user know the values have been loaded
+	sprintf(debugmsg, "Interpolating between %d and %d", i-1, i);
+	debugStatus->set_text(debugmsg);
 
 	// If time is before or at first defined keyframe, then
 	// just use first keyframe pose
@@ -827,7 +844,7 @@ void display(void)
 	if( animate_mode )
 	{
 		float curTime = animationTimer->elapsed();
-
+		
 		if( curTime >= keyframes[maxValidKeyframe].getTime() )
 		{
 			// Restart the animation
