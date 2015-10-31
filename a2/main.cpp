@@ -773,8 +773,41 @@ Vector getInterpolatedJointDOFS(float time)
     //   Modify this function so it uses Catmull-Rom instead.
 	///////////////////////////////////////////////////////////
 
+	// For cubic hermite spline, need start and end points, and tangents at these two points (t0, t1)
+	// Start point is given by po
+	// End point is given by p1
+
+	// Calculate tangent vector to at po and t1 at p1
+	Vector t0;
+	Vector t1;
+	float catmullRomKFactor = 0.5;
+
+	// Verify that there is frame two timesteps back
+	if(i < 2){
+		t0 = p1 - p0;
+	}else{
+		// tangent for p0 is k * p(1) - p(-1)		
+		t0 = (keyframes[i].getDOFVector() - keyframes[i-2].getDOFVector()) * catmullRomKFactor;
+	}
+
+
+	// If i is the last keyframe, simply use same tangent vector from p0 to p1
+	if(i == maxValidKeyframe){
+		t1 = p1 - p0;
+	}else{
+		// tangent for p1 is k * p(i+1) - p(i-1)
+		t1 = (keyframes[i+1].getDOFVector() - keyframes[i-1].getDOFVector()) * catmullRomKFactor;
+	}
+
+
+	// Return the Catmull-Rom interpolated vector
+	return p0 * (2 * pow(alpha, 3) - 3 * pow(alpha, 2) + 1)
+		+ t0 * (pow(alpha, 3) - 2 * pow(alpha, 2) + alpha)
+		+ p1 * (-2 * pow(alpha, 3) + 3 * pow(alpha, 2))
+		+ t1 * (pow(alpha, 3) - pow(alpha, 2));
+
 	// Return the linearly interpolated Vector
-	return p0 * (1-alpha) + p1 * alpha;
+	//return p0 * (1-alpha) + p1 * alpha;
 }
 
 
