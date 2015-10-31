@@ -157,8 +157,8 @@ const float HEAD_MIN             = -180.0;
 const float HEAD_MAX             =  180.0;
 const float SHOULDER_PITCH_MIN   = -45.0;
 const float SHOULDER_PITCH_MAX   =  45.0;
-const float SHOULDER_YAW_MIN     =  20.0;
-const float SHOULDER_YAW_MAX     =  65.0;
+const float SHOULDER_YAW_MIN     =  25.0;
+const float SHOULDER_YAW_MAX     =  70.0;
 const float SHOULDER_ROLL_MIN    = -45.0;
 const float SHOULDER_ROLL_MAX    =  45.0;
 const float HIP_PITCH_MIN        = -45.0;
@@ -987,8 +987,8 @@ void renderPenguin(){
 				drawCube();
 			glPopMatrix();
 
+			// Draw left arm closest to screen
 			glPushMatrix();
-				// draw left arm closest to screen
 				glTranslatef(0.0, 0.6, 0.75); // Move arm to edge of body and closer to head
 
 				// Rotate upper arm
@@ -1019,10 +1019,42 @@ void renderPenguin(){
 
 			glPopMatrix();
 
+			// Draw right arm closest to screen
 			glPushMatrix();
-				// Draw left leg, closest to screen
+				glTranslatef(0.0, 0.6, -0.75); // Move arm to edge of body and closer to head
+
+				// Rotate upper arm about joint
+				glRotatef(joint_ui_data->getDOF(Keyframe::R_SHOULDER_PITCH), 0.0, 0.0, 1.0);
+				glRotatef(joint_ui_data->getDOF(Keyframe::R_SHOULDER_YAW), 1.0, 0.0, 0.0);				
+				glRotatef(joint_ui_data->getDOF(Keyframe::R_SHOULDER_ROLL), 0.0, 1.0, 0.0);		
+
+				glScalef(ARM_WIDTH, ARM_HEIGHT, ARM_DEPTH);
+				// Move arm to pivot point
+				glTranslatef(0.0, -0.9, 0.0);				
+				drawArm();
+				// Move coordinate frame to end of arm
+				glTranslatef(0.0, -1.0, 0.0);					
+				glScalef(1/ARM_WIDTH, 1/ARM_HEIGHT, 1/ARM_DEPTH);
+			
+				// Rotate elbow joint
+				glRotatef(joint_ui_data->getDOF(Keyframe::L_ELBOW), 1.0, 0.0, 0.0); 
+
+				// Size the joint with respect to the arm
+				glScalef(FOREARM_WIDTH, FOREARM_HEIGHT, FOREARM_DEPTH);
+
+				// Translate hand so that face of polygon is touching face of arm
+				glTranslatef(0.0, -0.8, 0.0);
+				// draw forearm by rotating arm shape				
+				glRotatef(260, 0.0, 0.0, 1.0);				
+				drawArm();
+				glScalef(1.0, 1/FOREARM_HEIGHT, 1.0);
+
+			glPopMatrix();
+
+			// Draw left leg, closest to screen
+			glPushMatrix();
 				// Translate so that reference is at bottom of body frustrum and off to side
-				glTranslatef(0.0, -1.0, 0.5);
+				glTranslatef(-0.0, -1.0, 0.5);
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_HIP_PITCH), 0.0, 0.0, 1.0);
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_HIP_YAW), 0.0, 1.0, 0.0);
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_HIP_ROLL), -1.0, 0.0, 0.0);
@@ -1037,6 +1069,30 @@ void renderPenguin(){
 				
 				// Apply knee joint rotation
 				glRotatef(joint_ui_data->getDOF(Keyframe::L_KNEE), 0.0, 0.0, -1.0);
+				glScalef(FOOT_WIDTH, FOOT_HEIGHT, FOOT_DEPTH);
+				glTranslatef(-0.6, -1.0, 0.0);				
+				drawFoot();
+
+			glPopMatrix();
+
+			// Draw right leg, furthest from screen
+			glPushMatrix();
+				// Translate so that reference is at bottom of body frustrum and off to side
+				glTranslatef(0.0, -1.0, -0.5);
+				glRotatef(joint_ui_data->getDOF(Keyframe::R_HIP_PITCH), 0.0, 0.0, 1.0);
+				glRotatef(joint_ui_data->getDOF(Keyframe::R_HIP_YAW), 0.0, 1.0, 0.0);
+				glRotatef(joint_ui_data->getDOF(Keyframe::R_HIP_ROLL), -1.0, 0.0, 0.0);
+
+				glScalef(LEG_WIDTH, LEG_LENGTH, LEG_DEPTH);
+				// Translate so that top of knee is aligned with bottom of body
+				glTranslatef(0.0, -1.0, 0.0);
+				drawCube();
+				// Translate reference to bottom of leg joint
+				glTranslatef(0.0, -1.0, 0.0);
+				glScalef(1/LEG_WIDTH, 1/LEG_LENGTH, 1/LEG_DEPTH);
+				
+				// Apply knee joint rotation
+				glRotatef(joint_ui_data->getDOF(Keyframe::R_KNEE), 0.0, 0.0, -1.0);
 				glScalef(FOOT_WIDTH, FOOT_HEIGHT, FOOT_DEPTH);
 				glTranslatef(-0.6, -1.0, 0.0);				
 				drawFoot();
