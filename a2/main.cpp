@@ -551,6 +551,12 @@ void initGlui()
 	glui_spinner->set_float_limits(BEAK_MIN, BEAK_MAX, GLUI_LIMIT_CLAMP);
 	glui_spinner->set_speed(BEAK_SPINNER_SPEED);
 
+	glui_panel = glui_joints->add_panel("Light Angle");
+
+	glui_spinner = glui_joints->add_spinner_to_panel(glui_panel, "angle:", GLUI_SPINNER_FLOAT, joint_ui_data->getDOFPtr(Keyframe::LIGHT_ANGLE));
+	glui_spinner->set_float_limits(0, 360, GLUI_LIMIT_WRAP); // Allow rotation of 360 degrees
+	glui_spinner->set_speed(SPINNER_SPEED);
+
 
 	glui_joints->add_column(false);
 
@@ -931,8 +937,6 @@ void display(void)
 		glRotatef(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_Z), 0.0, 0.0, 1.0);
 
 		// determine render style and set glPolygonMode appropriately
-		glDisable(GL_LIGHT0);
-		glDisable(GL_LIGHTING);
 		if(renderStyle == WIREFRAME){
 			// Draw wireframe
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -961,6 +965,8 @@ void display(void)
 			// Enable lighting calculations
 			glEnable(GL_LIGHTING);
 
+
+
 			GLfloat ambient[] = {0.192, 0.192, 0.192, 1.0};
 			GLfloat diffuse[] = {0.508, 0.508, 0.508};
 			GLfloat specular[] = {0.508, 0.508, 0.508};			
@@ -971,14 +977,24 @@ void display(void)
 			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shine);
 
 			// Turn on light source
-			float* lightValues = new float[3];
-			lightValues[0] = lightValues[1] = lightValues[2] = 0.5f;
-			glEnable(GL_LIGHT0);
-			glLightfv(GL_LIGHT0, GL_AMBIENT, lightValues);
-			glLightfv(GL_LIGHT0, GL_DIFFUSE, lightValues);			
-			glLightfv(GL_LIGHT0, GL_SPECULAR, lightValues);
+			//float* lightValues = new float[3];
+			//lightValues[0] = lightValues[1] = lightValues[2] = 0.5f;
+			glEnable(GL_LIGHT0); 
+			//glLightfv(GL_LIGHT0, GL_AMBIENT, lightValues);
+			//glLightfv(GL_LIGHT0, GL_DIFFUSE, lightValues);			
+			//glLightfv(GL_LIGHT0, GL_SPECULAR, lightValues);
 
+			// Position the light according to dof, have it rotate around origin
+			float radius = 100;
+			float angle = joint_ui_data->getDOF(Keyframe::LIGHT_ANGLE);
+
+			// Specify xyz position of light, w last value is 1 because it is point source
+			// It rotates in the xy plane and is center at (0, 0, 1)
+			GLfloat light_position[] = {radius * cos(angle * 2 * PI/360), radius * sin(angle * 2 * PI/360), 0.0, 1};
+			glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 			renderPenguin();
+			glDisable(GL_LIGHT0);
+			glDisable(GL_LIGHTING);
 		}
 
 	glPopMatrix();
