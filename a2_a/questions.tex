@@ -1,8 +1,8 @@
 \documentclass[a4paper,10pt]{scrartcl}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
 \usepackage{tikz}
 %opening
 \title{CSC418 Assignment 2}
@@ -91,6 +91,14 @@ plane's normal at $p_q$, where $p_q$ has coordinates $x_o = R\cos\lambda, y_o = 
 
 \[\nabla f(p_q) = (2R\cos\lambda - \frac{2R * 2R\cos\lambda}{\sqrt{4R^2\cos\lambda + 4R^2\sin\lambda}}, 2R\sin\lambda - \frac{2R * 2R\sin\lambda}{\sqrt{4R^2\cos\lambda + 4R^2\sin\lambda}}, 2r)\]
 \[\nabla f(p_q) = (0, 0, 2r)\]
+
+Check if the gradient at $p_q$ is perpendicular to tangent vector of $q(\lambda)$
+
+\[q(\lambda) \bullet f(p_q) = (-R\sin\lambda, R\cos\lambda, 0) \bullet (0, 0, 2r) = 0\]
+
+The dot product is $0$ so the tangent vector of $q(\lambda)$ and the normal of the tangent plane are perpendicular.
+
+So therefore the tangent vector of $q(\lambda)$ lies on the tangent plane.
 
 \end{document}
  
