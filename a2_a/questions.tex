@@ -15,5 +15,82 @@
 
 \section{Surfaces}
 
+$f(x,y,z) = (R - \sqrt{(x^2 + y^2) \,})^2 + z^2 - r^2 = 0$, where $ R > r$
+
+\subsection{Find surface normal}
+
+
+Need to find \[ \vec n = \nabla f\]
+\[ \nabla f = ( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z})\]
+\[ \frac{\partial f}{\partial x} = \frac{\partial ((R - \sqrt{(x^2 + y^2) \,})^2 + z^2 - r^2)}{\partial x}\]
+
+Let $u = \sqrt{x ^2 + y^2}$, $\frac{\partial u}{\partial x} = \frac{x}{\sqrt{x ^2 + y^2}}$
+
+Do substitution of $u$ into $f$
+
+\[ \frac{\partial f}{\partial x} = \frac{\partial (R - u)^2}{\partial u} * \frac{\partial u}{\partial x}\]
+\[ = -2 (R - \sqrt{x^2 + y^2}) * \frac{x}{\sqrt{x^2 + y^2}}\]
+\[ = 2x - \frac{2Rx}{\sqrt{x^2+y^2}}\]
+
+Similarly, 
+\[\frac{\partial f}{\partial y} = 2y - \frac{2Ry}{\sqrt{x^2+y^2}}\]
+
+And
+
+\[\frac{\partial f}{\partial z} = 2z\]
+
+such that \[ \vec n = \nabla f = (2x - \frac{2Rx}{\sqrt{x^2+y^2}}, 2y - \frac{2Ry}{\sqrt{x^2+y^2}}, 2z)\]
+
+% Finally,
+% 
+% \[|\nabla f| = \sqrt{\frac{\partial f}{\partial x}^2 + \frac{\partial f}{\partial y}^2 + \frac{\partial f}{\partial z}^2}\]
+% 
+% \[ = (2x - \frac{2Rx}{\sqrt{x^2+y^2}})^2 + (2y - \frac{2Ry}{\sqrt{x^2+y^2}})^2 + (2z)^2\]
+% \[ = \]
+
+\subsection{}
+
+Given a point $p = (x_o, y_o, z_o)$ that lies on the torus, implicit equation for tangent plane at $p$ is found by evaluating
+$\nabla f $ at $p$.
+
+\[ \nabla f(p) = (a,b,c) = (2x_o - \frac{2Rx_o}{\sqrt{x_o^2+y_o^2}}, 2y_o - \frac{2Ry_o}{\sqrt{x_o^2+y_o^2}}, 2z_o) \]
+\[ ax + by + cz + d = 0\]
+
+Evaluate the implicit equation at $p$ with values of $a, b, c$ to determine the constant $d$.
+
+\[ d = -( x_o (2x_o - \frac{2Rx_o}{\sqrt{x_o^2+y_o^2}}) + y_o (2y_o - \frac{2Ry_o}{\sqrt{x_o^2+y_o^2}}) + z_o(2 z_o) )\]
+\[ a = (2x_o - \frac{2Rx_o}{\sqrt{x_o^2+y_o^2}})\]
+\[ b = (2y_o - \frac{2Ry_o}{\sqrt{x_o^2+y_o^2}})\]
+\[ c = 2z\]
+
+Substitute values of $a,b,c, d$ to obtain the implicit equation of the tangent plane at $p$.
+
+\[ (2x_o - \frac{2Rx_o}{\sqrt{x_o^2+y_o^2}})x + (2y_o - \frac{2Ry_o}{\sqrt{x_o^2+y_o^2}})y + (2z_o)z -( x_o (2x_o - \frac{2Rx_o}{\sqrt{x_o^2+y_o^2}}) + y_o (2y_o - \frac{2Ry_o}{\sqrt{x_o^2+y_o^2}}) + z_o(2 z_o) ) = 0\]
+
+\subsection{}
+
+\[ q(\lambda) = (R\cos\lambda, R\sin\lambda, r)\]
+
+Substitute $q(\lambda)$ into equation of surface $f$.
+
+\[f(R\cos\lambda, R\sin\lambda, r) = R - \sqrt{R^2\cos^2{\lambda} + R^2\sin^2{\lambda}\,} + r^2 - r^2 = 0\]
+\[ = R - \sqrt{R^2(\cos^2{\lambda} + \sin^2{\lambda})} = 0\]
+
+This satisfies the equation of the surface so $q(\lambda)$ lies on the torus.
+
+\subsection{}
+
+Tangent vector of $q(\lambda)$ is given by $ \frac{dq}{d\lambda} = (-R\sin\lambda, R\cos\lambda, 0) $
+
+\subsection{}
+
+The tangent vector of $q(\lambda)$ lies on the plane if the tangent vector is perpendicular to the plane's
+normal and $q(\lambda)$ shares one point with the tangent plane. From 1.3, we already know that $q(\lambda)$ lies on
+the surface of $f$ so there must already be a shared point. Check that the tangent vector is perpendicular to there
+plane's normal at $p_q$, where $p_q$ has coordinates $x_o = R\cos\lambda, y_o = R\sin\lambda, z_o = r$
+
+\[\nabla f(p_q) = (2R\cos\lambda - \frac{2R * 2R\cos\lambda}{\sqrt{4R^2\cos\lambda + 4R^2\sin\lambda}}, 2R\sin\lambda - \frac{2R * 2R\sin\lambda}{\sqrt{4R^2\cos\lambda + 4R^2\sin\lambda}}, 2r)\]
+\[\nabla f(p_q) = (0, 0, 2r)\]
 
 \end{document}
+ 
