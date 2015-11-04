@@ -12,6 +12,80 @@
 
 \maketitle
 
+\section{Transformations}
+
+\subsection{}
+
+We are given three point mappings. An arbitrary affine 2D transformation has 6 unknowns. Thus we must solve for the following matrix $A$ with unknowns $a,b,c,d,e,f,$ that satisfies
+the equation
+\[ \begin{bmatrix}
+      x_o \\ 
+      y_o \\
+      1
+   \end{bmatrix} = A 
+   \begin{bmatrix}
+      x \\ 
+      y \\
+      1
+   \end{bmatrix}
+\]
+
+\[A = \begin{bmatrix}
+		  a & b & c \\
+		  d & e & f \\
+		  0 & 0 & 1
+    \end{bmatrix}\]
+    
+The three point mappings are as follows: $(2,3) \rightarrow (10,8), (1,2) \rightarrow (8,-4), \\(3,-1) \rightarrow (2,0)$ 
+
+From the matrix, we have the equations $x_o = ax + by + c, y_o = dx + ey + f$. Substituting in the points, we get the following system of equations written in matrix form:
+
+% \begin{align} 10 &= 2a + b3 + c \\
+%     8 &= 2d + e3 + f \\
+%     9 &= a + 2b + c \\
+%     -4 &= d + 2e + f \\
+%     2 &= 3a - b + c \\
+%     0 &= 3d - e + f \\
+% \end{align}
+
+\[ \begin{bmatrix}
+      10 & 8 & 2 \\
+      8 & -4 & 0 \\
+      1 & 1 & 1\\
+   \end{bmatrix} = AX,
+   \hspace{1cm}X = \begin{bmatrix}
+      2 & 1 & 3\\
+      3 & 2 & -1\\
+      1 & 1 & 1
+   \end{bmatrix}
+\]
+
+Solving this equation gives
+
+\[ X^{-1} = 
+  \begin{bmatrix}
+      0.6 & 0.4 & -1.4\\
+      -0.8 & -0.2 & 2.2\\
+      0.2 & -0.2 & 0.2
+   \end{bmatrix}\]
+   
+and
+
+\[
+  A =   \begin{bmatrix}
+      0 & 2 & 4\\
+      8 & 4 & -20\\
+      0 & 0 & 1
+   \end{bmatrix}\], which is the affine transformation that maps the specified triangle.
+   
+\subsection{}
+
+A general 2D homography has 8 unknowns. Thus 4 point mappings are required to fully specify it.\\
+
+A rigid 2D transform preserves lengths of lines and angles, including translation and rotation. The parameters are rotation angle $\theta$ and $t_x, t_y$. Thus two point mappings
+are required to uniquely determine this transformation.
+
+
 
 \section{Surfaces}
 
