@@ -80,12 +80,124 @@ and
    
 \subsection{}
 
-A general 2D homography has 8 unknowns. Thus 4 point mappings are required to fully specify it.\\
+A general 2D homography has 8 unknowns. Thus {\bfseries four} point mappings are required to fully specify it.\\
 
-A rigid 2D transform preserves lengths of lines and angles, including translation and rotation. The parameters are rotation angle $\theta$ and $t_x, t_y$. Thus two point mappings
+A rigid 2D transform preserves lengths of lines and angles, including translation and rotation. The parameters are rotation angle $\theta$ and $t_x, t_y$. Thus {\bfseries two} point mappings
 are required to uniquely determine this transformation.
 
 
+\subsection{}
+\subsubsection{Centroid}
+The centroid of three points is preserved after projection. Consider the points $p_o(x_o, y_o, z_o), p_1(x_1, y_1, z_1)$ and $p_2(x_2, y_2, z_2)$. 
+
+Consider 2 cases: 
+\begin{enumerate}
+ \item Find the centroid in 3D space then project onto 2D space
+ \item Project all 3D points to 2D space then find the centroid
+\end{enumerate}
+
+{\bfseries Case 1}
+
+The centroid in 3D space is 
+\[ \begin{bmatrix}
+    \frac{x_o + x_1 + x_2}{3}\\
+    \frac{y_o + y_1 + y_2}{3}\\
+    \frac{z_o + z_1 + z_2}{3}\\
+  \end{bmatrix}
+\]
+
+After an affine projection, the z coordinate is discarded, which results in the centroid being
+\[\begin{bmatrix}
+    \frac{x_o + x_1 + x_2}{3}\\
+    \frac{y_o + y_1 + y_2}{3}\\
+  \end{bmatrix}\]
+
+{\bfseries Case 2}
+
+When all points are projected to 2D space, the result is $p_{op} = (x_o, y_o) , p_{1p} = (x_1, y_1), p_{2p} = (x_2, y_2)$
+
+The centroid of these points is \[\begin{bmatrix}
+    \frac{x_o + x_1 + x_2}{3}\\
+    \frac{y_o + y_1 + y_2}{3}\\
+  \end{bmatrix}\]
+  
+which is the same as in Case 1. Thus the centroid is preserved.
+
+
+\subsubsection{Orthocenter}
+The orthocenter of three points is not preserved after projection. Consider the points $p_o = (1, 1, 4), p_1 = (-1, 1, 4)$ and $p_2 = (0, 0, 5)$.\\
+
+\pagebreak
+{\bfseries Case 1}
+
+The orthocenter in is calculated as follows. Find the line $l_o$ that joins $p_o$ and $p_1$, then find the line normal
+to $l_o$ that intersects $p_2$. Do the same for $l_1$ that joins $p_1$ and $p_2$ and find the intersection to 
+determine the orthocenter.
+
+\[ l_o = \begin{bmatrix}
+          0 \\
+          1 \\
+          4 \\
+         \end{bmatrix} + t
+         \begin{bmatrix}
+          1 \\
+          0 \\
+          0 \\
+         \end{bmatrix} \hspace{2cm}
+  l_1 = \begin{bmatrix}
+	    -1 \\
+	    1 \\
+	    4 \\
+	  \end{bmatrix} + t
+	  \begin{bmatrix}
+	    1 \\
+	    -1 \\
+	    1 \\
+	  \end{bmatrix}
+\]
+
+The line passing through $p_2 = (0, 0, 5)$ and intersects with $l_1$ is
+
+\[
+  n_o = \begin{bmatrix}
+          0 \\
+          0 \\
+          5 \\
+         \end{bmatrix} + u_o
+         \begin{bmatrix}
+          0 \\
+          1 \\
+          -1 \\
+         \end{bmatrix} \hspace{2cm}
+\] and intersects $l_o$ at $u_o = 1$
+
+Similarly, the line passing through $p_1 = (1, 1, 4)$ and intersects/is normal with $l_1$ is
+
+\[
+  n_1 = \begin{bmatrix}
+          1 \\
+          1 \\
+          1 \\
+         \end{bmatrix} + u_1
+         \begin{bmatrix}
+          -4 \\
+          -2 \\
+          2 \\
+         \end{bmatrix} \hspace{2cm}
+\]
+
+The intersect and therefore orthocenter of the triangle in 3D space is at $u_o = 0.5$ and $u_1 = 0.25$
+at point $(0, 0.5, 4.5)$.\\
+
+After projection, the orthocenter is $(0, 0.5)$\\
+
+{\bfseries Case 2}
+
+After projection from 3D to 2D, the points are $p_o = (1, 1), p_1 = (-1, 1)$ and $p_2 = (0, 0)$.\\
+
+This is a right angled triangle. The orthocenter of a right angled triangle is a vertex, and in this case is $p_2 = (0,0)$
+
+Since $(0, 0.5) \ne (0, 0)$ the orthocenters do not match, thus they are not preserved after projection.
 
 \section{Surfaces}
 
