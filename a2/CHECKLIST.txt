@@ -2,8 +2,8 @@
 Assignment 2 Checklist/Grading sheet
 -------------------------------------
 
-Name: 
-Student ID:
+Name: Philip Lee
+Student ID: 999074932 (c5leephi)
 
 -----------------------------------------------------------------------------------------
 A. PLEASE ANSWER THE FOLLOWING QUESTIONS (your assignment will not be graded otherwise!)
@@ -13,12 +13,12 @@ A. PLEASE ANSWER THE FOLLOWING QUESTIONS (your assignment will not be graded oth
    Academic Honesty policy stated in 
    http://www.artsci.utoronto.ca/osai/students/academic-integrity-basics
 
-   ___Yes   ___No
+   __X_Yes   ___No
 
 
 2. I collaborated on this assignment with another student 
 
-   ___Yes   ___No
+   ___Yes   _X__No
 
    If you checked yes, please supply the following
 
@@ -37,18 +37,18 @@ B. PLACE AN (X) IN FRONT OF PORTIONS OF THE ASSIGNMENT THAT YOU COMPLETED IN FUL
    WE WILL BE ABLE TO MAKE AN ACCURATE ASSESSMENT
 
    
-___   (10 points) Part 2a     3D penguin design
+__X_   (10 points) Part 2a     3D penguin design
                   
-___   (10 points) Part 2b     Basic polygon rendering
+_X__   (10 points) Part 2b     Basic polygon rendering
 
-___   ( 5 points) Part 2c     Rendering metallic and matte penguin
+__X_   ( 5 points) Part 2c     Rendering metallic and matte penguin
 
-___   (10 points) Part 2d     Light source control
+__X_   (10 points) Part 2d     Light source control
                   
-___   ( 5 points) Part 2e     Keyframe functionality & supplied keyframe file
+__X_   ( 5 points) Part 2e     Keyframe functionality & supplied keyframe file (student_genereated_keyframe_1 & 2.txt)
 
-___   ( 5 points) Part 2f     Catmull-Rom interpolation functionality
+__X_   ( 5 points) Part 2f     Catmull-Rom interpolation functionality
 
-___   ( 5 points) Part 2g     Written report
+__X_   ( 5 points) Part 2g     Written report
 
 -------------------------------------------------------------------------------- 

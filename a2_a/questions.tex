@@ -408,5 +408,18 @@ The dot product is $0$ so the tangent vector of $q(\lambda)$ and the normal of t
 
 So therefore the tangent vector of $q(\lambda)$ lies on the tangent plane.
 
+
+\section{}
+
+\subsection{}
+Some segments can be excluded from rendering by considering the viewing direction of the eye. If the
+polygon is outside the eye's field of view, it can be excluded from rendering. This is a simple check that 
+can be used to skip some segments of the BSP tree. \\
+
+For example, if the viewing direction was along the outward normal of the $h$ polygon, then $b, g, i, e, c, d$ can be excluded
+because they lie outside the eye's viewing volume.
+
+
+
 \end{document}
  
