@@ -266,6 +266,23 @@ The world to camera matrix is $M_{WC} = M_{CW}^-1$
 	      0 & 0 & 0 & 1\\
             \end{bmatrix}\]
 
+\subsection{}            
+
+Affine projection from 3D to 2D is given by \[A = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}\]
+
+Points in the positive z direction must map to the plane $z = d$ because the view direction is $(0, 0, 1)$ and the image plane is at distance $d$ from the eye.
+Using similar triangles an homogenous coordinates, this matrix is
+
+\[ B =\begin{bmatrix}1 & 0 & 0 & 0\\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & \frac{1}{d} & 0 \\
+\end{bmatrix}\]
+            
+The product of these two matrices gives the projection matrix \[ P = AB = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1/d & 0 \end{bmatrix}\] 
+
+Thus the 2D point is \[ \begin{bmatrix} x \\ y \\ 1\end{bmatrix} = P \begin{bmatrix} x_o \\ y_o \\ z_o \\ 1\end{bmatrix} = \begin{bmatrix} x_o \\ y_o \\ z_o/d\end{bmatrix} = \begin{bmatrix}x_od/z_o \\ y_od/z_o \\ 1\end{bmatrix}\]
+        
 \section{Surfaces}
 
 $f(x,y,z) = (R - \sqrt{(x^2 + y^2) \,})^2 + z^2 - r^2 = 0$, where $ R > r$
