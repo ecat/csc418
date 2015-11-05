@@ -199,6 +199,7 @@ This is a right angled triangle. The orthocenter of a right angled triangle is a
 
 Since $(0, 0.5) \ne (0, 0)$ the orthocenters do not match, thus they are not preserved after projection.
 
+
 \section{Cameras}
 
 \subsection{}
@@ -282,7 +283,44 @@ Using similar triangles an homogenous coordinates, this matrix is
 The product of these two matrices gives the projection matrix \[ P = AB = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1/d & 0 \end{bmatrix}\] 
 
 Thus the 2D point is \[ \begin{bmatrix} x \\ y \\ 1\end{bmatrix} = P \begin{bmatrix} x_o \\ y_o \\ z_o \\ 1\end{bmatrix} = \begin{bmatrix} x_o \\ y_o \\ z_o/d\end{bmatrix} = \begin{bmatrix}x_od/z_o \\ y_od/z_o \\ 1\end{bmatrix}\]
-        
+
+
+\subsection{}
+
+In general, parallel lines in the world do not remain parallel after they are projected to camera C. The only
+case in which they would remain parallel after being projected is if the lines are perpendicular to the viewing
+direction. \\
+
+Consider the line $l$ with direction vector $\vec b = (b_x, b_y, b_z)$. Then any point on the line can be represented as
+\[ P_o = P_{xyz} + t\vec b\] where $P_{xyz}$ is a point that lies on the line $l$. If the matrix $P$ which represents
+camera $C$ is applied to $P_o$:
+
+\[ P = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1/d & 0 \end{bmatrix}\]
+
+Every point on the line in 3D space gets mapped to $P_o\,projected$:
+
+\[ P_{o\,projected} = \begin{bmatrix} P_x + tb_x\\ P_y + tb_y\\ (P_z + tb_z)/d \end{bmatrix}= \begin{bmatrix}  d(P_x + tb_x)/(P_z + tb_z)\\ d(P_y + tb_y)/(P_z + tb_z)\\1 \end{bmatrix}\]
+
+Now consider two lines $l_1$ and $l_2$. For the lines to be parallel in 3D world space, $\vec b = (b_x, b_y, b_z)$ 
+must be the same for both $l_1$ and $l_2$. This means that $d, b_x, b_y, b_z$ are the same for $l_1$ and $l_2$, while
+$P_x, P_y, P_z$ can be different.\\
+
+What is the point of convergence as the line stretches to infinity in 3D space? If we assume $b_z$ to be positive, evaluate:
+\[ \lim_{t \to \infty} P_{o\,projected} = \lim_{t \to \infty} \begin{bmatrix}  d(P_x + tb_x)/(P_z + tb_z)\\ d(P_y + tb_y)/(P_z + tb_z)\\1 \end{bmatrix} =
+  \begin{bmatrix} db_x/b_z \\ db_y/b_z \\ 1\end{bmatrix}\]
+  
+Thus two parallel lines will converge at the point $(db_x/b_z, db_y/b_z)$ when projected from 3D space to 2D space. This point of convergence
+does not depend on $P_x, P_y, P_z$. If $b_z = 0$ (the lines are perpendicular to the viewing axis), 
+then the lines 'converge' at $(\infty, \infty)$, which indicates that they do not converge on 2D space.\\
+
+{\bfseries Conclusion:}\\
+
+Lines that are perpendicular to viewing axis do not converge when projected.\\
+All other lines converge at $(db_x/b_z, db_y/b_z)$ upon being projected.
+
+
+
+
 \section{Surfaces}
 
 $f(x,y,z) = (R - \sqrt{(x^2 + y^2) \,})^2 + z^2 - r^2 = 0$, where $ R > r$
