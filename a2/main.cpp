@@ -735,6 +735,9 @@ void initGl(void)
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
 
+    // Enable  rescaling of normals to unit length
+    glEnable(GL_RESCALE_NORMAL);
+
 }
 
 
@@ -988,7 +991,7 @@ void display(void)
 
 			// Turn on light source
 			float* lightValues = new float[3];
-			lightValues[0] = lightValues[1] = lightValues[2] = 0.15f;
+			lightValues[0] = lightValues[1] = lightValues[2] = 0.25f;
 			glEnable(GL_LIGHT0); 
 			glLightfv(GL_LIGHT0, GL_AMBIENT, lightValues);
 			glLightfv(GL_LIGHT0, GL_DIFFUSE, lightValues);			
@@ -1242,11 +1245,11 @@ void drawCube()
 		glVertex3f(-1.0,  1.0, -1.0);
 		glVertex3f( 1.0,  1.0, -1.0);
 
-		// draw left face
+		// draw left face	
 		glNormal3f(-1, 0, 0);
 		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-1.0, -1.0,  1.0);
-		glVertex3f(-1.0,  1.0,  1.0);
+		glVertex3f(-1.0, -1.0,  1.0);	
+		glVertex3f(-1.0,  1.0,  1.0);			
 		glVertex3f(-1.0,  1.0, -1.0);
 
 		// draw right face
@@ -1291,14 +1294,14 @@ void drawFrustrum(){
 		glVertex3f( 0.5,  1.0, -0.5);
 
 		// draw left face
-		glNormal3f(-0.9, 0.4, 0); // not exactly normal but close	
+		glNormal3f(-0.9, 0.4, 0);
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0,  1.0);
 		glVertex3f(-0.5,  1.0,  0.5);
 		glVertex3f(-0.5,  1.0, -0.5);
 
 		// draw right face
-		glNormal3f(0.9, 0.4, 0); // not exactly normal but close
+		glNormal3f(0.9, 0.4, 0);
 		glVertex3f( 1.0, -1.0,  1.0);
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f( 0.5,  1.0, -0.5);
@@ -1339,14 +1342,14 @@ void drawArm(){
 		glVertex3f( 1.0,  1.0, -1.0);
 
 		// draw left face
-		glNormal3f(-1, 0, 0); // not exactly normal but close
+		glNormal3f(-1, 0, 0);
 		glVertex3f(-0.6, -1.0, -1.0);
 		glVertex3f(-0.6, -1.0,  1.0);
 		glVertex3f(-1.0,  1.0,  1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
 
 		// draw right face
-		glNormal3f(1, 0, 0); // not exactly normal but close
+		glNormal3f(1, 0, 0); // specify normal for polygon
 		glVertex3f( 0.8, -1.0,  1.0);
 		glVertex3f( 0.8, -1.0, -1.0);
 		glVertex3f( 1.0,  1.0, -1.0);
@@ -1386,7 +1389,7 @@ void drawFoot(){
 		glVertex3f( 1.0,  1.0, 0.0);
 
 		// draw left face
-		glNormal3f(0, 0, 1);
+		glNormal3f(-1, 0, 0);
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0,  1.0);
 		glVertex3f(-1.0,  1.0,  1.0);
