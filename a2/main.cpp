@@ -1000,7 +1000,7 @@ void display(void)
 
 			// Specify xyz position of light, w last value is 1 because it is point source in homogenous object coordinates
 			// It rotates in the xy plane and is center at (0, 0, 5), so that it illuminates the front of the penguin
-			GLfloat light_position[] = {radius * cos(angle * 2 * PI/360), radius * sin(angle * 2 * PI/360), 18, 1};
+			GLfloat light_position[] = {radius * cos(angle * 2 * PI/360), radius * sin(angle * 2 * PI/360), 8, 1};
 			glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 			renderPenguin();
@@ -1234,40 +1234,35 @@ void drawCube()
 		glVertex3f( 1.0, -1.0, 1.0);
 		glVertex3f( 1.0,  1.0, 1.0);
 		glVertex3f(-1.0,  1.0, 1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw back face
 		glNormal3f(0, 0, -1);
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
 		glVertex3f( 1.0,  1.0, -1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw left face
 		glNormal3f(-1, 0, 0);
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0,  1.0);
 		glVertex3f(-1.0,  1.0,  1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw right face
 		glNormal3f(1, 0, 0);
 		glVertex3f( 1.0, -1.0,  1.0);
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f( 1.0,  1.0, -1.0);
 		glVertex3f( 1.0,  1.0,  1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw top
 		glNormal3f(0, 1, 0);
 		glVertex3f(-1.0,  1.0,  1.0);
 		glVertex3f( 1.0,  1.0,  1.0);
 		glVertex3f( 1.0,  1.0, -1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw bottom
 		glNormal3f(0, -1, 0);
 		glVertex3f(-1.0, -1.0, -1.0);
@@ -1282,45 +1277,40 @@ void drawCube()
 void drawFrustrum(){
 	glBegin(GL_QUADS);
 		// draw front face
-		glNormal3f(0, 0, 1);
+		glNormal3f(0, 0.4, 0.91);
 		glVertex3f(-1.0, -1.0, 1.0);
 		glVertex3f( 1.0, -1.0, 1.0);
 		glVertex3f( 0.5,  1.0, 0.5);
 		glVertex3f(-0.5,  1.0, 0.5);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw back face
-		glNormal3f(0, 0, -1);
+		glNormal3f(0, 0.4, -0.91);
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-0.5,  1.0, -0.5);
 		glVertex3f( 0.5,  1.0, -0.5);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw left face
-		glNormal3f(-1, 0, 0); // not exactly normal but close	
+		glNormal3f(-0.9, 0.4, 0); // not exactly normal but close	
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0,  1.0);
 		glVertex3f(-0.5,  1.0,  0.5);
 		glVertex3f(-0.5,  1.0, -0.5);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw right face
-		glNormal3f(1, 0, 0); // not exactly normal but close
+		glNormal3f(0.9, 0.4, 0); // not exactly normal but close
 		glVertex3f( 1.0, -1.0,  1.0);
 		glVertex3f( 1.0, -1.0, -1.0);
 		glVertex3f( 0.5,  1.0, -0.5);
 		glVertex3f( 0.5,  1.0,  0.5);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw top, y = 1.0
 		glNormal3f(0, 1, 0);
 		glVertex3f(-0.5,  1.0,  0.5);
 		glVertex3f( 0.5,  1.0,  0.5);
 		glVertex3f( 0.5,  1.0, -0.5);
 		glVertex3f(-0.5,  1.0, -0.5);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw bottom, y = -1.0
 		glNormal3f(0, -1, 0);
 		glVertex3f(-1.0, -1.0, -1.0);
@@ -1340,40 +1330,35 @@ void drawArm(){
 		glVertex3f( 0.8, -1.0, 1.0);
 		glVertex3f( 1.0,  1.0, 1.0);
 		glVertex3f(-1.0,  1.0, 1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw back face
 		glNormal3f(0, 0, -1);
 		glVertex3f( 0.8, -1.0, -1.0);
 		glVertex3f(-0.6, -1.0, -1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
 		glVertex3f( 1.0,  1.0, -1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw left face
 		glNormal3f(-1, 0, 0); // not exactly normal but close
 		glVertex3f(-0.6, -1.0, -1.0);
 		glVertex3f(-0.6, -1.0,  1.0);
 		glVertex3f(-1.0,  1.0,  1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw right face
 		glNormal3f(1, 0, 0); // not exactly normal but close
 		glVertex3f( 0.8, -1.0,  1.0);
 		glVertex3f( 0.8, -1.0, -1.0);
 		glVertex3f( 1.0,  1.0, -1.0);
 		glVertex3f( 1.0,  1.0,  1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw top
 		glNormal3f(0, 1, 0);
 		glVertex3f(-1.0,  1.0,  1.0);
 		glVertex3f( 1.0,  1.0,  1.0);
 		glVertex3f( 1.0,  1.0, -1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw bottom
 		glNormal3f(0, -1, 0);
 		glVertex3f(-0.6, -1.0, -1.0);
@@ -1387,34 +1372,33 @@ void drawArm(){
 void drawFoot(){
 	glBegin(GL_QUADS);
 		// draw front face
+		glNormal3f(-0.714, 0, 0.714);	
 		glVertex3f(-1.0, -1.0, 1.0);
 		glVertex3f( 1.0, -1.0, 0.0);
 		glVertex3f( 1.0,  1.0, 0.0);
 		glVertex3f(-1.0,  1.0, 1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw back face
+		glNormal3f(-0.714, 0, -0.714);
 		glVertex3f( 1.0, -1.0, 0.0);
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
 		glVertex3f( 1.0,  1.0, 0.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw left face
+		glNormal3f(0, 0, 1);
 		glVertex3f(-1.0, -1.0, -1.0);
 		glVertex3f(-1.0, -1.0,  1.0);
 		glVertex3f(-1.0,  1.0,  1.0);
 		glVertex3f(-1.0,  1.0, -1.0);
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw top, y = 1.0, specify four vertices for triangle because using GL_QUADS
 		glNormal3f(0, 1, 0);
 		glVertex3f(-1.0,  1.0,  1.0);
 		glVertex3f( 1.0,  1.0,  0.0);
 		glVertex3f( -1.0,  1.0, -1.0);
 		glVertex3f( -1.0,  1.0, -1.0);		
-	glEnd();
-	glBegin(GL_QUADS);
+
 		// draw bottom, y = -1.0
 		glNormal3f(0, -1, 0);
 		glVertex3f(-1.0,  -1.0,  1.0);
