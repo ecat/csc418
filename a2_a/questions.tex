@@ -199,6 +199,73 @@ This is a right angled triangle. The orthocenter of a right angled triangle is a
 
 Since $(0, 0.5) \ne (0, 0)$ the orthocenters do not match, thus they are not preserved after projection.
 
+\section{Cameras}
+
+\subsection{}
+
+The lens in a real camera serves to focus incoming light rays. Because the lens is able to focus
+all parallel incoming rays, the brightness of the image is improved over that of a regular pinhole camera.
+Increasing the aperture size increases the amount of light coming through but causes features to appear more blurry.
+The focal length determines the distance from the lens that rays converge. The focal length determines
+the angle of view and the magnification of the image. A shorter focal length reduces the magnification but
+increases the field of view. A longer focal length improves magnification but reduces field of view.
+
+\subsection{}
+
+Given: $p_{eye} = (2, 1, 3)$, look-at point $p_{ref} = (-1, 2, 1)$ and up vector $v_{up} = (0, 1, 0)$
+
+To determine the camera matrix, we require three basis vectors. The first vector $\vec w$ is obtained
+as: 
+
+\[ \vec w = p_{eye} - p_{ref}\]
+\[ \vec w = (3, -1, 2)\]
+
+Normalize $\vec w $
+\[ \vec w_n = (3, -1, 2)/\sqrt{14}\]
+
+Determine $\vec u = \vec w_n \times \vec v_{up}$ and normalize it
+
+\[ \vec u = \begin{vmatrix} \vec i &\vec j &\vec k \\
+	      3 & -1 & 2 \\
+	      0 & 1 & 0\\             
+            \end{vmatrix} = (-2, 0, 3)
+\]
+
+\[ \vec u_n = (-2, 0, 3) / \sqrt{13}\]
+
+Determine $\vec v = \vec u \times \vec w$
+
+\[ \vec v = \begin{vmatrix} \vec i &\vec j &\vec k \\
+	      -2 & 0 & 3\\             
+	      3 & -1 & 2 \\	      
+            \end{vmatrix} = (-3, -13, -2)\]
+            
+\[ \vec v_n = (-3, -13, -2) / \sqrt{182}\]
+
+
+So the camera matrix is:
+
+\[ M_{CW} = \begin{bmatrix}
+	      (\vec u_n) & (\vec v_n) & (\vec w_n) & (p_{ref}) \\
+	      0 & 0 & 0 & 1
+            \end{bmatrix} = 
+            \begin{bmatrix}
+	      -2/\sqrt{13} & -3/\sqrt{182} & 3/\sqrt{14} & 2 \\\
+	      0 & -13/\sqrt{182} & -1/\sqrt{14} & 1 \\
+	      3/\sqrt{13} & -2/\sqrt{182} & 2/\sqrt{14} & 3 \\
+	      0 & 0 & 0 & 1\\
+            \end{bmatrix}            
+\]
+
+The world to camera matrix is $M_{WC} = M_{CW}^-1$
+
+\[ M_{WC} =    \begin{bmatrix}
+	      -0.5547 & 0 & 0.8321 & -1.3 \\\
+	      -0.22 & -0.963 & -0.14 & 1.85 \\
+	      0.802 & -0.2673 & 0.53 & -2.94 \\
+	      0 & 0 & 0 & 1\\
+            \end{bmatrix}\]
+
 \section{Surfaces}
 
 $f(x,y,z) = (R - \sqrt{(x^2 + y^2) \,})^2 + z^2 - r^2 = 0$, where $ R > r$
