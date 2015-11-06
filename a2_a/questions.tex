@@ -1,9 +1,11 @@
 \documentclass[a4paper,10pt]{scrartcl}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
+\usepackage[pdftex]{graphicx}
 %\usepackage{algorithm}
 %\usepackage{algpseudocode}
 \usepackage{tikz}
+\usepackage{float}
 %opening
 \title{CSC418 Assignment 2}
 \author{Philip Lee - 9999074932}
@@ -419,8 +421,17 @@ can be used to skip some segments of the BSP tree. \\
 For example, if the viewing direction was along the outward normal of the $h$ polygon, then $b, g, i, e, c, d$ can be excluded
 because they lie outside the eye's viewing volume.
 
-
 \subsection{}
+
+Below is the BSP tree for the planes. Some polygons ($c$ and $h$) were divided into multiple polygons.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[trim = 2cm 4.5cm 1cm 0, clip, width=\linewidth, height=15cm]{q4.png}
+\end{figure}
+
+
+
 
 \subsection{}
 
@@ -434,6 +445,7 @@ Repeat until the entire tree is traversed. \\
 
 This gives the following result:
 
+$c_2 \to h_2 \to a \to f \to h_3 \to b \to d \to e \to c_1 \to i \to g \to h_1$
 
 
 
