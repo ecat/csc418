@@ -420,6 +420,22 @@ For example, if the viewing direction was along the outward normal of the $h$ po
 because they lie outside the eye's viewing volume.
 
 
+\subsection{}
+
+\subsection{}
+
+The tree is traversed by following the algorithm:
+
+Is the eye behind or in front of plane $X$? \\
+If the eye is in front of plane $X$, draw everything behind $X$, then draw $X$, then draw everything in front of $X$\\
+If the eye is behind plane $X$, draw everything in front of $X$, then draw $X$, then draw everything behind $X$ \\
+
+Repeat until the entire tree is traversed. \\
+
+This gives the following result:
+
+
+
 
 \end{document}
  
