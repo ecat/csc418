@@ -224,6 +224,7 @@ void drawFrustrum();
 void drawArm();
 void drawFoot();
 void renderPenguin();
+void specifyNormalAndVertex(float x, float y, float z);
 
 // Image functions
 void writeFrame(char* filename, bool pgm, bool frontBuffer);
@@ -967,6 +968,9 @@ void display(void)
 			// Enable lighting calculations
 			glEnable(GL_LIGHTING);
 
+			// Enable smooth shading
+			glShadeModel(GL_SMOOTH);
+
  			if(renderStyle == METALLIC){
 			// Set appropriate diffuse, ambient, specular, shininess parameters to simulate metal
 				GLfloat ambient[] = {0.192, 0.192, 0.192, 1.0};
@@ -979,9 +983,9 @@ void display(void)
 				glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shine);
 			}else if(renderStyle == MATTE){
 			// Set appropriate diffuse, ambient, specular, shininess parameters to simulate matte material
-				GLfloat ambient[] = {0.05, 0.05, 0.0, 1.0};
-				GLfloat diffuse[] = {0.8, 0.8, 0.5};
-				GLfloat specular[] = {0.7, 0.7, 0.04};			
+				GLfloat ambient[] = {0.25, 0.25, 0.0, 1.0};
+				GLfloat diffuse[] = {0.9, 0.9, 0.5};
+				GLfloat specular[] = {0.5, 0.5, 0.04};			
 				float shine = 0.01;
 				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);					
 				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);	
@@ -1225,6 +1229,12 @@ void motion(int x, int y)
 	}
 }
 
+// Helper function to specify the normal of each vertex as being the position of the point
+// This can be done because shape drawing is centered at the origin and normal resizing is enabled
+void specifyNormalAndVertex(float x, float y, float z){
+	glNormal3f(x,y,z);
+	glVertex3f(x,y,z);
+}
 
 // Draw a unit cube, centered at the current location
 // README: Helper code for drawing a cube
@@ -1232,46 +1242,40 @@ void drawCube()
 {
 	glBegin(GL_QUADS);
 		// draw front face
-		glNormal3f(0, 0, 1);
-		glVertex3f(-1.0, -1.0, 1.0);
-		glVertex3f( 1.0, -1.0, 1.0);
-		glVertex3f( 1.0,  1.0, 1.0);
-		glVertex3f(-1.0,  1.0, 1.0);
+		specifyNormalAndVertex(-1.0, -1.0, 1.0);
+		specifyNormalAndVertex( 1.0, -1.0, 1.0);
+		specifyNormalAndVertex( 1.0,  1.0, 1.0);
+		specifyNormalAndVertex(-1.0,  1.0, 1.0);
 
 		// draw back face
-		glNormal3f(0, 0, -1);
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
+		specifyNormalAndVertex( 1.0, -1.0, -1.0);
+		specifyNormalAndVertex(-1.0, -1.0, -1.0);
+		specifyNormalAndVertex(-1.0,  1.0, -1.0);
+		specifyNormalAndVertex( 1.0,  1.0, -1.0);
 
 		// draw left face	
-		glNormal3f(-1, 0, 0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-1.0, -1.0,  1.0);	
-		glVertex3f(-1.0,  1.0,  1.0);			
-		glVertex3f(-1.0,  1.0, -1.0);
+		specifyNormalAndVertex(-1.0, -1.0, -1.0);
+		specifyNormalAndVertex(-1.0, -1.0,  1.0);	
+		specifyNormalAndVertex(-1.0,  1.0,  1.0);			
+		specifyNormalAndVertex(-1.0,  1.0, -1.0);
 
 		// draw right face
-		glNormal3f(1, 0, 0);
-		glVertex3f( 1.0, -1.0,  1.0);
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
-		glVertex3f( 1.0,  1.0,  1.0);
+		specifyNormalAndVertex( 1.0, -1.0,  1.0);
+		specifyNormalAndVertex( 1.0, -1.0, -1.0);
+		specifyNormalAndVertex( 1.0,  1.0, -1.0);
+		specifyNormalAndVertex( 1.0,  1.0,  1.0);
 
 		// draw top
-		glNormal3f(0, 1, 0);
-		glVertex3f(-1.0,  1.0,  1.0);
-		glVertex3f( 1.0,  1.0,  1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
+		specifyNormalAndVertex(-1.0,  1.0,  1.0);
+		specifyNormalAndVertex( 1.0,  1.0,  1.0);
+		specifyNormalAndVertex( 1.0,  1.0, -1.0);
+		specifyNormalAndVertex(-1.0,  1.0, -1.0);
 
 		// draw bottom
-		glNormal3f(0, -1, 0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f( 1.0, -1.0,  1.0);
-		glVertex3f(-1.0, -1.0,  1.0);
+		specifyNormalAndVertex(-1.0, -1.0, -1.0);
+		specifyNormalAndVertex( 1.0, -1.0, -1.0);
+		specifyNormalAndVertex( 1.0, -1.0,  1.0);
+		specifyNormalAndVertex(-1.0, -1.0,  1.0);
 	glEnd();
 }
 
@@ -1280,46 +1284,40 @@ void drawCube()
 void drawFrustrum(){
 	glBegin(GL_QUADS);
 		// draw front face
-		glNormal3f(0, 0.4, 0.91);
-		glVertex3f(-1.0, -1.0, 1.0);
-		glVertex3f( 1.0, -1.0, 1.0);
-		glVertex3f( 0.5,  1.0, 0.5);
-		glVertex3f(-0.5,  1.0, 0.5);
+		specifyNormalAndVertex(-1.0, -1.0, 1.0);
+		specifyNormalAndVertex( 1.0, -1.0, 1.0);
+		specifyNormalAndVertex( 0.5,  1.0, 0.5);
+		specifyNormalAndVertex(-0.5,  1.0, 0.5);
 
 		// draw back face
-		glNormal3f(0, 0.4, -0.91);
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-0.5,  1.0, -0.5);
-		glVertex3f( 0.5,  1.0, -0.5);
+		specifyNormalAndVertex( 1.0, -1.0, -1.0);
+		specifyNormalAndVertex(-1.0, -1.0, -1.0);
+		specifyNormalAndVertex(-0.5,  1.0, -0.5);
+		specifyNormalAndVertex( 0.5,  1.0, -0.5);
 
 		// draw left face
-		glNormal3f(-0.9, 0.4, 0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-1.0, -1.0,  1.0);
-		glVertex3f(-0.5,  1.0,  0.5);
-		glVertex3f(-0.5,  1.0, -0.5);
+		specifyNormalAndVertex(-1.0, -1.0, -1.0);
+		specifyNormalAndVertex(-1.0, -1.0,  1.0);
+		specifyNormalAndVertex(-0.5,  1.0,  0.5);
+		specifyNormalAndVertex(-0.5,  1.0, -0.5);
 
 		// draw right face
-		glNormal3f(0.9, 0.4, 0);
-		glVertex3f( 1.0, -1.0,  1.0);
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f( 0.5,  1.0, -0.5);
-		glVertex3f( 0.5,  1.0,  0.5);
+		specifyNormalAndVertex( 1.0, -1.0,  1.0);
+		specifyNormalAndVertex( 1.0, -1.0, -1.0);
+		specifyNormalAndVertex( 0.5,  1.0, -0.5);
+		specifyNormalAndVertex( 0.5,  1.0,  0.5);
 
 		// draw top, y = 1.0
-		glNormal3f(0, 1, 0);
-		glVertex3f(-0.5,  1.0,  0.5);
-		glVertex3f( 0.5,  1.0,  0.5);
-		glVertex3f( 0.5,  1.0, -0.5);
-		glVertex3f(-0.5,  1.0, -0.5);
+		specifyNormalAndVertex(-0.5,  1.0,  0.5);
+		specifyNormalAndVertex( 0.5,  1.0,  0.5);
+		specifyNormalAndVertex( 0.5,  1.0, -0.5);
+		specifyNormalAndVertex(-0.5,  1.0, -0.5);
 
 		// draw bottom, y = -1.0
-		glNormal3f(0, -1, 0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f( 1.0, -1.0,  1.0);
-		glVertex3f(-1.0, -1.0,  1.0);
+		specifyNormalAndVertex(-1.0, -1.0, -1.0);
+		specifyNormalAndVertex( 1.0, -1.0, -1.0);
+		specifyNormalAndVertex( 1.0, -1.0,  1.0);
+		specifyNormalAndVertex(-1.0, -1.0,  1.0);
 	glEnd();
 }
 
@@ -1328,46 +1326,40 @@ void drawFrustrum(){
 void drawArm(){
 	glBegin(GL_QUADS);
 		// draw front face
-		glNormal3f(0, 0, 1);
-		glVertex3f(-0.6, -1.0, 1.0);
-		glVertex3f( 0.8, -1.0, 1.0);
-		glVertex3f( 1.0,  1.0, 1.0);
-		glVertex3f(-1.0,  1.0, 1.0);
+		specifyNormalAndVertex(-0.6, -1.0, 1.0);
+		specifyNormalAndVertex( 0.8, -1.0, 1.0);
+		specifyNormalAndVertex( 1.0,  1.0, 1.0);
+		specifyNormalAndVertex(-1.0,  1.0, 1.0);
 
 		// draw back face
-		glNormal3f(0, 0, -1);
-		glVertex3f( 0.8, -1.0, -1.0);
-		glVertex3f(-0.6, -1.0, -1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
+		specifyNormalAndVertex( 0.8, -1.0, -1.0);
+		specifyNormalAndVertex(-0.6, -1.0, -1.0);
+		specifyNormalAndVertex(-1.0,  1.0, -1.0);
+		specifyNormalAndVertex( 1.0,  1.0, -1.0);
 
 		// draw left face
-		glNormal3f(-1, 0, 0);
-		glVertex3f(-0.6, -1.0, -1.0);
-		glVertex3f(-0.6, -1.0,  1.0);
-		glVertex3f(-1.0,  1.0,  1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
+		specifyNormalAndVertex(-0.6, -1.0, -1.0);
+		specifyNormalAndVertex(-0.6, -1.0,  1.0);
+		specifyNormalAndVertex(-1.0,  1.0,  1.0);
+		specifyNormalAndVertex(-1.0,  1.0, -1.0);
 
 		// draw right face
-		glNormal3f(1, 0, 0); // specify normal for polygon
-		glVertex3f( 0.8, -1.0,  1.0);
-		glVertex3f( 0.8, -1.0, -1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
-		glVertex3f( 1.0,  1.0,  1.0);
+		specifyNormalAndVertex( 0.8, -1.0,  1.0);
+		specifyNormalAndVertex( 0.8, -1.0, -1.0);
+		specifyNormalAndVertex( 1.0,  1.0, -1.0);
+		specifyNormalAndVertex( 1.0,  1.0,  1.0);
 
 		// draw top
-		glNormal3f(0, 1, 0);
-		glVertex3f(-1.0,  1.0,  1.0);
-		glVertex3f( 1.0,  1.0,  1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
+		specifyNormalAndVertex(-1.0,  1.0,  1.0);
+		specifyNormalAndVertex( 1.0,  1.0,  1.0);
+		specifyNormalAndVertex( 1.0,  1.0, -1.0);
+		specifyNormalAndVertex(-1.0,  1.0, -1.0);
 
 		// draw bottom
-		glNormal3f(0, -1, 0);
-		glVertex3f(-0.6, -1.0, -1.0);
-		glVertex3f( 0.8, -1.0, -1.0);
-		glVertex3f( 0.8, -1.0,  1.0);
-		glVertex3f(-0.6, -1.0,  1.0);
+		specifyNormalAndVertex(-0.6, -1.0, -1.0);
+		specifyNormalAndVertex( 0.8, -1.0, -1.0);
+		specifyNormalAndVertex( 0.8, -1.0,  1.0);
+		specifyNormalAndVertex(-0.6, -1.0,  1.0);
 	glEnd();
 }
 
@@ -1375,39 +1367,34 @@ void drawArm(){
 void drawFoot(){
 	glBegin(GL_QUADS);
 		// draw front face
-		glNormal3f(-0.714, 0, 0.714);	
-		glVertex3f(-1.0, -1.0, 1.0);
-		glVertex3f( 1.0, -1.0, 0.0);
-		glVertex3f( 1.0,  1.0, 0.0);
-		glVertex3f(-1.0,  1.0, 1.0);
+		specifyNormalAndVertex(-1.0, -1.0, 1.0);
+		specifyNormalAndVertex( 1.0, -1.0, 0.0);
+		specifyNormalAndVertex( 1.0,  1.0, 0.0);
+		specifyNormalAndVertex(-1.0,  1.0, 1.0);
 
 		// draw back face
-		glNormal3f(-0.714, 0, -0.714);
-		glVertex3f( 1.0, -1.0, 0.0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
-		glVertex3f( 1.0,  1.0, 0.0);
+		specifyNormalAndVertex( 1.0, -1.0, 0.0);
+		specifyNormalAndVertex(-1.0, -1.0, -1.0);
+		specifyNormalAndVertex(-1.0,  1.0, -1.0);
+		specifyNormalAndVertex( 1.0,  1.0, 0.0);
 
 		// draw left face
-		glNormal3f(-1, 0, 0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-1.0, -1.0,  1.0);
-		glVertex3f(-1.0,  1.0,  1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
+		specifyNormalAndVertex(-1.0, -1.0, -1.0);
+		specifyNormalAndVertex(-1.0, -1.0,  1.0);
+		specifyNormalAndVertex(-1.0,  1.0,  1.0);
+		specifyNormalAndVertex(-1.0,  1.0, -1.0);
 
 		// draw top, y = 1.0, specify four vertices for triangle because using GL_QUADS
-		glNormal3f(0, 1, 0);
-		glVertex3f(-1.0,  1.0,  1.0);
-		glVertex3f( 1.0,  1.0,  0.0);
-		glVertex3f( -1.0,  1.0, -1.0);
-		glVertex3f( -1.0,  1.0, -1.0);		
+		specifyNormalAndVertex(-1.0,  1.0,  1.0);
+		specifyNormalAndVertex( 1.0,  1.0,  0.0);
+		specifyNormalAndVertex( -1.0,  1.0, -1.0);
+		specifyNormalAndVertex( -1.0,  1.0, -1.0);		
 
 		// draw bottom, y = -1.0
-		glNormal3f(0, -1, 0);
-		glVertex3f(-1.0,  -1.0,  1.0);
-		glVertex3f( 1.0,  -1.0,  0.0);
-		glVertex3f( -1.0, -1.0, -1.0);
-		glVertex3f( -1.0, -1.0, -1.0);		
+		specifyNormalAndVertex(-1.0,  -1.0,  1.0);
+		specifyNormalAndVertex( 1.0,  -1.0,  0.0);
+		specifyNormalAndVertex( -1.0, -1.0, -1.0);
+		specifyNormalAndVertex( -1.0, -1.0, -1.0);		
 	glEnd();
 }
 
