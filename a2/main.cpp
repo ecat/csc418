@@ -975,8 +975,8 @@ void display(void)
 			// Set appropriate diffuse, ambient, specular, shininess parameters to simulate metal
 				GLfloat ambient[] = {0.192, 0.192, 0.192, 1.0};
 				GLfloat diffuse[] = {0.508, 0.508, 0.508};
-				GLfloat specular[] = {0.508, 0.508, 0.508};			
-				float shine = 0.4;
+				GLfloat specular[] = {0.308, 0.308, 0.308};			
+				float shine = 0.6;
 				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);					
 				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);	
 				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
