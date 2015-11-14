@@ -40,7 +40,7 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	double x_check = r_objectSpace.origin[0] + t * r_objectSpace.dir[0];
 	double y_check = r_objectSpace.origin[1] + t * r_objectSpace.dir[1];
 
-	if(abs(x_check) < 0.5 && abs(y_check) < 0.5){
+	if(abs(x_check) < 1.0 && abs(y_check) < 1.0){
 		// Intersection lies within unit square
 
 		// Check that there was no previous intersection and that the intersection is nearest

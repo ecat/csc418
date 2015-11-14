@@ -249,7 +249,7 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
     Matrix4x4 viewToWorld;
     _scrWidth = width;
     _scrHeight = height;
-    double factor = (double(height)/2)/tan(fov*M_PI/360.0);
+    double factor = (double(height)/2)/tan(fov*M_PI/180.0);
 
     initPixelBuffer();
     viewToWorld = initInvViewMatrix(eye, view, up);
@@ -268,7 +268,7 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 			// TODO: Convert ray to world space and call 
 			// shadeRay(ray) to generate pixel colour. 	
 			
-			Ray3D ray(origin, Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
+			Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
 			ray.dir.normalize();
 
 			Colour col = shadeRay(ray); 
