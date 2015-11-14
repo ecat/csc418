@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 	Point3D eye(0., 0., 1.);
 	Vector3D view(0., 0., -1.);
 	Vector3D up(0., 1., 0.);
-	double fov = 60;
+	double fov = 95;
 
 	// Defines a material for shading.
     Material::Ptr gold = std::make_shared<Material>( Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648), 
