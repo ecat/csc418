@@ -103,15 +103,22 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		double t_1 = (intersection_1 - q).length();
 		double t_2 = (intersection_2 - q).length();
 
+		// Both intersections lie behind the origin
+		if(t_1 <= 0 && t_2 <= 0){
+			return false;
+		}
+
 		// There is an intersection with circle
 		if(ray.intersection.none || t_1 < ray.intersection.t_value || t_2 < ray.intersection.t_value){
 
 			// Bring the points and normals back to world space
-			if(t_1 < t_2){
+			// Intersection 2 will always be closer to origin so it sufficies to check
+			// that it is not behind the ray origin (t_1 > t_2) is always true
+			if(t_2 < 0){
 				ray.intersection.t_value = t_1;
 				ray.intersection.point = modelToWorld * intersection_1;
 				ray.intersection.normal = worldToModel.transpose() * (intersection_1 - c);
-			}else{
+			}else {
 				ray.intersection.t_value = t_2;
 				ray.intersection.point = modelToWorld * intersection_2;
 				ray.intersection.normal = worldToModel.transpose() * (intersection_2 - c);
