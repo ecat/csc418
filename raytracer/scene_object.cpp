@@ -76,7 +76,56 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	//
 	// HINT: Remember to first transform the ray into object space  
 	// to simplify the intersection test.
-	
+
+	// Convert ray to object space
+	Ray3D r_objectSpace(worldToModel * ray.origin, worldToModel * ray.dir);
+	r_objectSpace.dir.normalize(); // Need to normalize this vector so that projection works
+
+	// Find vector qc pointing from origin of ray to center of sphere, c is center of circle, q is ray origin
+	Point3D q = r_objectSpace.origin;
+	Point3D c = Point3D(0., 0., 0.);
+	Vector3D qc = c - q;
+	double d = 0.5;
+
+	// Project vector R onto ray direction to get length
+	double projectedLength = qc.dot(r_objectSpace.dir);
+	// Find length of vector of triangle formed by this projected length, center of circle, and ray origin
+	double k_squared = pow(d, 2) - (pow(qc.length(), 2) - pow(projectedLength, 2));
+
+	// Compare length to unit circle radius
+	if(k_squared > 0){
+
+		// Calculate intersections
+		Point3D intersection_1 = q + (qc.dot(r_objectSpace.dir) + sqrt(k_squared)) * r_objectSpace.dir;
+		Point3D intersection_2 = q + (qc.dot(r_objectSpace.dir) - sqrt(k_squared)) * r_objectSpace.dir;
+
+		// Choose intersection that has the smaller t value, this works since ray.dir is unit length
+		double t_1 = (intersection_1 - q).length();
+		double t_2 = (intersection_2 - q).length();
+
+		// There is an intersection with circle
+		if(ray.intersection.none || t_1 < ray.intersection.t_value || t_2 < ray.intersection.t_value){
+
+			// Bring the points and normals back to world space
+			if(t_1 < t_2){
+				ray.intersection.t_value = t_1;
+				ray.intersection.point = modelToWorld * intersection_1;
+				ray.intersection.normal = worldToModel.transpose() * (intersection_1 - c);
+			}else{
+				ray.intersection.t_value = t_2;
+				ray.intersection.point = modelToWorld * intersection_2;
+				ray.intersection.normal = worldToModel.transpose() * (intersection_2 - c);
+			}
+
+			ray.intersection.normal.normalize();
+
+			ray.intersection.none = false;
+
+			return true;
+		}
+
+
+	}
 	return false;
 }
 
