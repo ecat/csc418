@@ -6,3 +6,5 @@ a2/penguin
 *.log
 *.pdf
 *.backup
+*.bmp
+raytracer/raytracer
