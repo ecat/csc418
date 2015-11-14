@@ -54,6 +54,7 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 			// Bringing normals back to world space requires special math
 			ray.intersection.normal = worldToModel.transpose() * Vector3D(0, 0, 1);
+			ray.intersection.normal.normalize();
 
 			ray.intersection.none = false;
 
