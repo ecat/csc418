@@ -245,11 +245,13 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
     	// Create a new ray with a new origin and direction
     	// The reflected ray direction is calculated using snell's law
     	Vector3D reflectedRayDirection = -ray.dir - 2 * (-ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
-    	Ray3D reflectedRay(ray.intersection.point, reflectedRayDirection, ray.num_reflections + 1);	
+
+    	// Start the ray a little bit away from the surface to remove artifacts
+    	Ray3D reflectedRay(ray.intersection.point - 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
     	reflectedRay.dir.normalize();
 
     	Colour reflectedCol = shadeRay(reflectedRay);
-    	
+
     	// Blend the reflected colors according to the specular reflection component
     	// If the specular component is zero, then take the local illuminated color
     	double r_scale = ray.intersection.mat->specular[0];

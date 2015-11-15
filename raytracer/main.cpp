@@ -26,10 +26,10 @@ int main(int argc, char* argv[])
 	}
 
 	// Camera parameters.
-	//Point3D eye(0., 0., 1.);
-	//Vector3D view(0., 0., -1.);
-	Point3D eye(5., 5., 0.1);
-	Vector3D view(-1., -1., 0.);
+	Point3D eye(0., 0., 1.);
+	Vector3D view(0., 0., -1.);
+	//Point3D eye(5., 5., 0.1);
+	//Vector3D view(-1., -1., 0.);
 	Vector3D up(0., 1., 0.);
 	double fov = 95;
 
@@ -52,6 +52,7 @@ int main(int argc, char* argv[])
 	// Add a unit square into the scene with material mat.
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), gold );
     SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
+    SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
 	
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 1.0, 2.0, 1.0 };
@@ -61,9 +62,13 @@ int main(int argc, char* argv[])
 	raytracer.rotate(sphere, 'z', 45); 
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
 
-	raytracer.translate(plane, Vector3D(0., 0., -7.));	
-	raytracer.rotate(plane, 'z', 45); 
+	raytracer.translate(plane, Vector3D(-5., 0., -7.));	
+	raytracer.rotate(plane, 'y', 80); 
 	raytracer.scale(plane, Point3D(0., 0., 0.), factor2);
+
+	raytracer.translate(plane2, Vector3D(5, 0, -7));
+	raytracer.rotate(plane2, 'y', -80); 
+	raytracer.scale(plane2, Point3D(0., 0., 0.), factor2);	
 
 	// Render the scene, feel free to make the image smaller for
 	// testing purposes.	
