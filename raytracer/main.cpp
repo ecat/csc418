@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     Material::Ptr jade = std::make_shared<Material>( Colour(0, 0, 0), Colour(0.54, 0.89, 0.63), 
 			Colour(0.316228, 0.316228, 0.316228), 
 			12.8 );
-    // HIghly specular material
+    // Highly specular material
     Material::Ptr mirror = std::make_shared<Material>( Colour(0.3, 0.3, 0.3), Colour(0.0, 0.0, 0.0), 
 			Colour(0.9, 0.9, 0.9), 
 			5.8 );
@@ -53,11 +53,14 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), gold );
     SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
+    SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
+    SceneDagNode::Ptr plane4 = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
+    //SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
 	
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 1.0, 2.0, 1.0 };
 	double factor2[3] = { 6.0, 6.0, 6.0 };
-	raytracer.translate(sphere, Vector3D(0., 0., -5.));	
+	raytracer.translate(sphere, Vector3D(0., 0., -6.));	
 	raytracer.rotate(sphere, 'x', -45); 
 	raytracer.rotate(sphere, 'z', 45); 
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
@@ -69,6 +72,17 @@ int main(int argc, char* argv[])
 	raytracer.translate(plane2, Vector3D(5, 0, -7));
 	raytracer.rotate(plane2, 'y', -80); 
 	raytracer.scale(plane2, Point3D(0., 0., 0.), factor2);	
+
+	raytracer.translate(plane3, Vector3D(0, 6, -7));
+	raytracer.rotate(plane3, 'x', 90); 
+	raytracer.scale(plane3, Point3D(0., 0., 0.), factor2);	
+
+	raytracer.translate(plane4, Vector3D(0, -6, -7));
+	raytracer.rotate(plane4, 'x', -90); 
+	raytracer.scale(plane4, Point3D(0., 0., 0.), factor2);	
+
+	//raytracer.translate(backPlane, Vector3D(0, 0, -12));
+	//raytracer.scale(backPlane, Point3D(0., 0., 0.), factor2);	
 
 	// Render the scene, feel free to make the image smaller for
 	// testing purposes.	

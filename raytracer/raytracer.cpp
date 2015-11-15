@@ -244,10 +244,11 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
     if (!ray.intersection.none && ray.num_reflections < MAX_NUM_REFLECTIONS){
     	// Create a new ray with a new origin and direction
     	// The reflected ray direction is calculated using snell's law
-    	Vector3D reflectedRayDirection = -ray.dir - 2 * (-ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
+    	Vector3D reflectedRayDirection = ray.dir - 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
 
     	// Start the ray a little bit away from the surface to remove artifacts
-    	Ray3D reflectedRay(ray.intersection.point - 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
+    	Ray3D reflectedRay(ray.intersection.point + 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
+    	//Ray3D reflectedRay(ray.intersection.point, reflectedRayDirection, ray.num_reflections + 1);	
     	reflectedRay.dir.normalize();
 
     	Colour reflectedCol = shadeRay(reflectedRay);
@@ -260,6 +261,13 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
     	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
     	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
     	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
+    	//std::cout << "Ray origin: " << ray.intersection.point << std::endl;
+    	//if(reflectedCol[1] != 0 || reflectedCol[0] != 0 || reflectedCol[2] != 0)
+    	/*if(reflectedRay.origin[1] > 0.5){
+    		//std::cout << "Reflection " << reflectedCol << " Mat col "  << ray.col << " spec values: " << ray.intersection.mat->specular << std::endl;
+    		//std::cout << reflectedRay.origin << std::endl;
+    		std::cout << "Point: " << reflectedRay.origin << " Dir: " << reflectedRay.dir << std::endl;    		
+		}*/
     }
 
 
@@ -277,28 +285,53 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
     initPixelBuffer();
     viewToWorld = initInvViewMatrix(eye, view, up);
 
-    // Construct a ray for each pixel.
+
+    bool enableMultiSampling = false; // DEBUG
+
+    // Construct multiple rays for each pixel.
     for (int i = 0; i < _scrHeight; i++) {
         for (int j = 0; j < _scrWidth; j++) {
             // Sets up ray origin and direction in view space, 
             // image plane is at z = -1.
             Point3D origin(0., 0., 0.);
-			Point3D imagePlane;
-			imagePlane[0] = (-double(width)/2 + 0.5 + j)/factor;
-			imagePlane[1] = (-double(height)/2 + 0.5 + i)/factor;
-			imagePlane[2] = -1;
 
-			// TODO: Convert ray to world space and call 
-			// shadeRay(ray) to generate pixel colour. 	
-			
-			Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
-			ray.dir.normalize();
+            if(enableMultiSampling){
+            	int num_samples = 4;
+	            for(int u = 0; u < 2; u++){
+	            	for(int v = 0; v < 2; v++){
+						Point3D imagePlane;
+						imagePlane[0] = (-double(width)/2 + u * 0.33 + j)/factor;
+						imagePlane[1] = (-double(height)/2 + v * 0.33 + i)/factor;
+						imagePlane[2] = -1;
 
-			Colour col = shadeRay(ray); 
+						// TODO: Convert ray to world space and call 
+						// shadeRay(ray) to generate pixel colour. 	
+						
+						Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
+						ray.dir.normalize();
 
-			_rbuffer[i*width+j] = int(col[0]*255);
-			_gbuffer[i*width+j] = int(col[1]*255);
-			_bbuffer[i*width+j] = int(col[2]*255);
+						Colour col = shadeRay(ray); 
+
+						_rbuffer[i*width+j] += int(col[0]*255/ num_samples);
+						_gbuffer[i*width+j] += int(col[1]*255/ num_samples);
+						_bbuffer[i*width+j] += int(col[2]*255/ num_samples);            		
+	            	}
+	            }
+            }else{
+	            Point3D imagePlane;
+				imagePlane[0] = (-double(width)/2 + 0.5 + j)/factor;
+				imagePlane[1] = (-double(height)/2 + 0.5 + i)/factor;
+				imagePlane[2] = -1;
+
+				Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
+				ray.dir.normalize();
+
+				Colour col = shadeRay(ray); 
+
+				_rbuffer[i*width+j] += int(col[0]*255);
+				_gbuffer[i*width+j] += int(col[1]*255);
+				_bbuffer[i*width+j] += int(col[2]*255);
+			}	
 		}
 	}
 
