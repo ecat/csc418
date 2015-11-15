@@ -26,8 +26,10 @@ int main(int argc, char* argv[])
 	}
 
 	// Camera parameters.
-	Point3D eye(0., 0., 1.);
-	Vector3D view(0., 0., -1.);
+	//Point3D eye(0., 0., 1.);
+	//Vector3D view(0., 0., -1.);
+	Point3D eye(5., 5., 0.1);
+	Vector3D view(-1., -1., 0.);
 	Vector3D up(0., 1., 0.);
 	double fov = 95;
 
@@ -38,6 +40,10 @@ int main(int argc, char* argv[])
     Material::Ptr jade = std::make_shared<Material>( Colour(0, 0, 0), Colour(0.54, 0.89, 0.63), 
 			Colour(0.316228, 0.316228, 0.316228), 
 			12.8 );
+    // HIghly specular material
+    Material::Ptr mirror = std::make_shared<Material>( Colour(0.3, 0.3, 0.3), Colour(0.0, 0.0, 0.0), 
+			Colour(0.9, 0.9, 0.9), 
+			5.8 );
 
 	// Defines a point light source.
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
@@ -45,7 +51,7 @@ int main(int argc, char* argv[])
 
 	// Add a unit square into the scene with material mat.
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), gold );
-    SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
+    SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
 	
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 1.0, 2.0, 1.0 };

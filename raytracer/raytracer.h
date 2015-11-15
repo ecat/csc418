@@ -97,6 +97,9 @@ public:
 
 	// Apply scaling about a fixed point origin.
 	void scale( SceneDagNode::Ptr node, Point3D origin, double factor[3] );
+
+	// Maximum number of reflections that are calculated
+	const int MAX_NUM_REFLECTIONS = 4;
 	
 private:
 	// Allocates and initializes the pixel buffer for rendering, you

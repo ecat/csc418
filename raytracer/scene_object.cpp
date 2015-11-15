@@ -85,6 +85,7 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	Point3D q = r_objectSpace.origin;
 	Point3D c = Point3D(0., 0., 0.);
 	Vector3D qc = c - q;
+	// Radius of circle is 0.5
 	double d = 0.5;
 
 	// Project vector R onto ray direction to get length

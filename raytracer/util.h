@@ -177,9 +177,16 @@ struct Intersection {
 struct Ray3D {
     Ray3D() {
         intersection.none = true; 
+        num_reflections = 0;        
     }
     Ray3D( Point3D p, Vector3D v ) : origin(p), dir(v) {
         intersection.none = true;
+        num_reflections = 0;
+    }
+
+    Ray3D( Point3D p, Vector3D v, int r) : origin(p), dir(v) {
+        intersection.none = true;
+        num_reflections = r;   
     }
     // Origin and direction of the ray.
     Point3D origin;
@@ -190,6 +197,8 @@ struct Ray3D {
     // Current colour of the ray, should be computed by the shading
     // function.
     Colour col;
+    // Number of times this ray has been reflected
+    int num_reflections;
 };
 #endif
 

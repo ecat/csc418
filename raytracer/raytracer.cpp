@@ -240,6 +240,27 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
     // You'll want to call shadeRay recursively (with a different ray, 
     // of course) here to implement reflection/refraction effects.  
 
+    // Check if there was an intersection and that we have not exceeded the max number of reflections
+    if (!ray.intersection.none && ray.num_reflections < MAX_NUM_REFLECTIONS){
+    	// Create a new ray with a new origin and direction
+    	// The reflected ray direction is calculated using snell's law
+    	Vector3D reflectedRayDirection = -ray.dir - 2 * (-ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
+    	Ray3D reflectedRay(ray.intersection.point, reflectedRayDirection, ray.num_reflections + 1);	
+    	reflectedRay.dir.normalize();
+
+    	Colour reflectedCol = shadeRay(reflectedRay);
+    	
+    	// Blend the reflected colors according to the specular reflection component
+    	// If the specular component is zero, then take the local illuminated color
+    	double r_scale = ray.intersection.mat->specular[0];
+    	double g_scale = ray.intersection.mat->specular[1];	
+    	double b_scale = ray.intersection.mat->specular[2];    	
+    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
+    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
+    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
+    }
+
+
     return col; 
 }	
 
