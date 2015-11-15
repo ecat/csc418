@@ -248,26 +248,21 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 
     	// Start the ray a little bit away from the surface to remove artifacts
     	Ray3D reflectedRay(ray.intersection.point + 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
-    	//Ray3D reflectedRay(ray.intersection.point, reflectedRayDirection, ray.num_reflections + 1);	
     	reflectedRay.dir.normalize();
 
     	Colour reflectedCol = shadeRay(reflectedRay);
 
-    	// Blend the reflected colors according to the specular reflection component
-    	// If the specular component is zero, then take the local illuminated color
-    	double r_scale = ray.intersection.mat->specular[0];
-    	double g_scale = ray.intersection.mat->specular[1];	
-    	double b_scale = ray.intersection.mat->specular[2];    	
-    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
-    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
-    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
-    	//std::cout << "Ray origin: " << ray.intersection.point << std::endl;
-    	//if(reflectedCol[1] != 0 || reflectedCol[0] != 0 || reflectedCol[2] != 0)
-    	/*if(reflectedRay.origin[1] > 0.5){
-    		//std::cout << "Reflection " << reflectedCol << " Mat col "  << ray.col << " spec values: " << ray.intersection.mat->specular << std::endl;
-    		//std::cout << reflectedRay.origin << std::endl;
-    		std::cout << "Point: " << reflectedRay.origin << " Dir: " << reflectedRay.dir << std::endl;    		
-		}*/
+    	// We don't care if the reflected ray went into the background 
+    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
+	    	// Blend the reflected colors according to the specular reflection component
+	    	// If the specular component is zero, then take the local illuminated color
+	    	double r_scale = ray.intersection.mat->specular[0];
+	    	double g_scale = ray.intersection.mat->specular[1];	
+	    	double b_scale = ray.intersection.mat->specular[2];    	
+	    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
+	    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
+	    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
+    	}
     }
 
 
@@ -296,12 +291,14 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
             Point3D origin(0., 0., 0.);
 
             if(enableMultiSampling){
-            	int num_samples = 4;
-	            for(int u = 0; u < 2; u++){
-	            	for(int v = 0; v < 2; v++){
+            	int num_samples = 9;
+	            for(int u = 0; u < 3; u++){
+	            	for(int v = 0; v < 3; v++){
+	            		double dx = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
+	            		double dy = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	            		
 						Point3D imagePlane;
-						imagePlane[0] = (-double(width)/2 + u * 0.33 + j)/factor;
-						imagePlane[1] = (-double(height)/2 + v * 0.33 + i)/factor;
+						imagePlane[0] = (-double(width)/2 + dx + j)/factor;
+						imagePlane[1] = (-double(height)/2 + dy + i)/factor;
 						imagePlane[2] = -1;
 
 						// TODO: Convert ray to world space and call 
@@ -312,9 +309,9 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 
 						Colour col = shadeRay(ray); 
 
-						_rbuffer[i*width+j] += int(col[0]*255/ num_samples);
-						_gbuffer[i*width+j] += int(col[1]*255/ num_samples);
-						_bbuffer[i*width+j] += int(col[2]*255/ num_samples);            		
+						_rbuffer[i*width+j] += int(col[0]*255./ num_samples);
+						_gbuffer[i*width+j] += int(col[1]*255./ num_samples);
+						_bbuffer[i*width+j] += int(col[2]*255./ num_samples);            		
 	            	}
 	            }
             }else{

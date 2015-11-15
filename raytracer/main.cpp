@@ -9,6 +9,8 @@
 
 ***********************************************************/
 #include "raytracer.h"
+#include <ctime>
+#include <cstdlib>        
 int main(int argc, char* argv[])
 {	
 	// Build your scene and setup your camera here, by calling 
@@ -17,13 +19,18 @@ int main(int argc, char* argv[])
 	// change this if you're just implementing part one of the 
 	// assignment.  
 	Raytracer raytracer;
-	int width = 320; 
-	int height = 240; 
+	//int width = 1920; 
+	//int height = 1080; 
+	int width = 640; 
+	int height = 480; 
 
 	if (argc == 3) {
 		width = atoi(argv[1]);
 		height = atoi(argv[2]);
 	}
+
+	// Seed random  number generator for stochastic raytracing
+	srand (static_cast <unsigned> (time(0)));
 
 	// Camera parameters.
 	Point3D eye(0., 0., 1.);
@@ -41,9 +48,9 @@ int main(int argc, char* argv[])
 			Colour(0.316228, 0.316228, 0.316228), 
 			12.8 );
     // Highly specular material
-    Material::Ptr mirror = std::make_shared<Material>( Colour(0.3, 0.3, 0.3), Colour(0.0, 0.0, 0.0), 
+    Material::Ptr mirror = std::make_shared<Material>( Colour(0.05, 0.05, 0.05), Colour(0.0, 0.0, 0.0), 
 			Colour(0.9, 0.9, 0.9), 
-			5.8 );
+			100.8 );
 
 	// Defines a point light source.
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
@@ -58,7 +65,7 @@ int main(int argc, char* argv[])
     //SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
 	
 	// Apply some transformations to the unit square.
-	double factor1[3] = { 1.0, 2.0, 1.0 };
+	double factor1[3] = { 2.0, 1.0, 2.0 };
 	double factor2[3] = { 6.0, 6.0, 6.0 };
 	raytracer.translate(sphere, Vector3D(0., 0., -6.));	
 	raytracer.rotate(sphere, 'x', -45); 
