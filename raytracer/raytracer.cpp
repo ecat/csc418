@@ -243,11 +243,12 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
     // Check if there was an intersection and that we have not exceeded the max number of reflections
     if (!ray.intersection.none && ray.num_reflections < MAX_NUM_REFLECTIONS){
     	// Create a new ray with a new origin and direction
-    	// The reflected ray direction is calculated using snell's law
+    	// The reflected ray direction is calculated using Snell's law
     	Vector3D reflectedRayDirection = ray.dir - 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
 
-    	// Start the ray a little bit away from the surface to remove artifacts
+    	// Start the ray a little bit away from the surface to remove artifacts, note that it is addition here
     	Ray3D reflectedRay(ray.intersection.point + 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
+    	reflectedRay.refractive_index = ray.refractive_index;
     	reflectedRay.dir.normalize();
 
     	Colour reflectedCol = shadeRay(reflectedRay);
@@ -262,6 +263,36 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 	    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
 	    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
 	    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
+    	}
+    }
+
+    // Do refraction effect
+    if (!ray.intersection.none && ray.intersection.mat->transparent && ray.num_reflections < MAX_NUM_REFLECTIONS){
+
+    	double theta_incident = ray.dir.dot(-ray.intersection.normal);
+		double n_1 = ray.refractive_index;
+		double n_2 = ray.intersection.mat->n; // refractive index of material ray is entering
+    	
+    	// Check for total internal reflection
+    	if(sin(theta_incident) < n_2/n_1){
+	    	// Create new ray for refracted vector
+	    	Vector3D refractedRayDirection = n_1/n_2 * ray.dir + 
+	    		(n_1/n_2 * cos(theta_incident) - 
+	    		sqrt(1 - pow(sin(theta_incident), 2))) * ray.intersection.normal;
+
+	    	// Start the ray a little bit away from the surface to remove artifacts
+	    	// note that it is subtraction here because we are crossing material interface
+	    	Ray3D refractedRay(ray.intersection.point - 0.001 * ray.intersection.normal, refractedRayDirection, ray.num_reflections + 1);
+	    	refractedRay.refractive_index = n_2;    	
+	    	refractedRay.dir.normalize();
+
+	    	Colour refractedCol = shadeRay(refractedRay);
+
+	    	std::cout << "n1 " << n_1 << " n_2 " << n_2 << std::endl;
+	    	// TODO approximate fresnel equations
+	    	col[0] = 0.5 * col[0] + 0.5 * refractedCol[0];
+	    	col[1] = 0.5 * col[0] + 0.5 * refractedCol[1];
+	    	col[2] = 0.5 * col[0] + 0.5 * refractedCol[2];	    	
     	}
     }
 
@@ -292,10 +323,9 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 
             if(enableMultiSampling){
             	int num_samples = 9;
-	            for(int u = 0; u < 3; u++){
-	            	for(int v = 0; v < 3; v++){
+	            for(int u = 0; u < num_samples; u++){
 	            		double dx = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
-	            		double dy = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	            		
+	            		double dy = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
 						Point3D imagePlane;
 						imagePlane[0] = (-double(width)/2 + dx + j)/factor;
 						imagePlane[1] = (-double(height)/2 + dy + i)/factor;
@@ -309,10 +339,14 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 
 						Colour col = shadeRay(ray); 
 
-						_rbuffer[i*width+j] += int(col[0]*255./ num_samples);
-						_gbuffer[i*width+j] += int(col[1]*255./ num_samples);
-						_bbuffer[i*width+j] += int(col[2]*255./ num_samples);            		
-	            	}
+						// prevent buffer overflow
+						int _rbuffertmp = _rbuffer[i*width+j] + int(col[0]*255./ num_samples);
+						int _gbuffertmp = _gbuffer[i*width+j] + int(col[1]*255./ num_samples);
+						int _bbuffertmp = _bbuffer[i*width+j] + int(col[2]*255./ num_samples);            		
+
+						_rbuffer[i*width+j] = std::min(_rbuffertmp, 255);
+						_gbuffer[i*width+j] = std::min(_gbuffertmp, 255);
+						_bbuffer[i*width+j] = std::min(_bbuffertmp, 255);						
 	            }
             }else{
 	            Point3D imagePlane;

@@ -51,6 +51,11 @@ int main(int argc, char* argv[])
     Material::Ptr mirror = std::make_shared<Material>( Colour(0.05, 0.05, 0.05), Colour(0.0, 0.0, 0.0), 
 			Colour(0.9, 0.9, 0.9), 
 			100.8 );
+    // Transparent material
+    Material::Ptr glass = std::make_shared<Material> ( Colour(0.05, 0.05, 0.25), Colour(0.0, 0.0, 0.0),
+    		Colour(0.00, 0.00, 0.00),
+    		100.8,
+    		1.5);
 
 	// Defines a point light source.
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
@@ -62,7 +67,8 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     SceneDagNode::Ptr plane4 = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
-    //SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
+    SceneDagNode::Ptr glassPiece = raytracer.addObject( std::make_shared<UnitSquare>(), glass );
+
 	
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 2.0, 1.0, 2.0 };
@@ -71,6 +77,9 @@ int main(int argc, char* argv[])
 	raytracer.rotate(sphere, 'x', -45); 
 	raytracer.rotate(sphere, 'z', 45); 
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
+	
+	raytracer.translate(glassPiece, Vector3D(0., -1., -3.));	
+	raytracer.scale(glassPiece, Point3D(0., 0., 0.), factor1);
 
 	raytracer.translate(plane, Vector3D(-5., 0., -7.));	
 	raytracer.rotate(plane, 'y', 80); 

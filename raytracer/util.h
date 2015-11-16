@@ -145,7 +145,17 @@ struct Material {
     using Ptr = std::shared_ptr<Material>;
     Material( Colour ambient, Colour diffuse, Colour specular, double exp ) :
         ambient(ambient), diffuse(diffuse), specular(specular), 
-        specular_exp(exp) {}
+        specular_exp(exp) {
+            n = 1.0;
+            transparent = false;
+        }
+
+    Material( Colour ambient, Colour diffuse, Colour specular, double exp, double _n ) :
+        ambient(ambient), diffuse(diffuse), specular(specular), 
+        specular_exp(exp) {
+            n = _n;
+            transparent = true;
+        }
     
     // Ambient components for Phong shading.
     Colour ambient; 
@@ -155,6 +165,9 @@ struct Material {
     Colour specular;
     // Specular expoent.
     double specular_exp;
+    // Refractive index of material
+    double n;    
+    bool transparent;
 };
 
 struct Intersection {
@@ -177,16 +190,19 @@ struct Intersection {
 struct Ray3D {
     Ray3D() {
         intersection.none = true; 
-        num_reflections = 0;        
+        num_reflections = 0;     
+        refractive_index = 1.0;   
     }
     Ray3D( Point3D p, Vector3D v ) : origin(p), dir(v) {
         intersection.none = true;
         num_reflections = 0;
+        refractive_index = 1.0;        
     }
 
     Ray3D( Point3D p, Vector3D v, int r) : origin(p), dir(v) {
         intersection.none = true;
         num_reflections = r;   
+        refractive_index = 1.0;        
     }
     // Origin and direction of the ray.
     Point3D origin;
@@ -197,8 +213,10 @@ struct Ray3D {
     // Current colour of the ray, should be computed by the shading
     // function.
     Colour col;
-    // Number of times this ray has been reflected
+    // Number of times this ray has been reflected or refracted
     int num_reflections;
+    // Refractive index of the medium that the ray's origin is in
+    double refractive_index;
 };
 #endif
 
