@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 			Colour(0.9, 0.9, 0.9), 
 			100.8 );
     // Transparent material
-    Material::Ptr glass = std::make_shared<Material> ( Colour(0.05, 0.05, 0.25), Colour(0.0, 0.0, 0.0),
+    Material::Ptr glass = std::make_shared<Material> ( Colour(0.0, 0.0, 0.0), Colour(0.0, 0.0, 0.0),
     		Colour(0.00, 0.00, 0.00),
     		100.8,
     		1.5);

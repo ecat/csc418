@@ -239,7 +239,7 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 
     // You'll want to call shadeRay recursively (with a different ray, 
     // of course) here to implement reflection/refraction effects.  
-
+/*
     // Check if there was an intersection and that we have not exceeded the max number of reflections
     if (!ray.intersection.none && ray.num_reflections < MAX_NUM_REFLECTIONS){
     	// Create a new ray with a new origin and direction
@@ -265,15 +265,16 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 	    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
     	}
     }
-
+*/
     // Do refraction effect
     if (!ray.intersection.none && ray.intersection.mat->transparent && ray.num_reflections < MAX_NUM_REFLECTIONS){
 
-    	double theta_incident = ray.dir.dot(-ray.intersection.normal);
 		double n_1 = ray.refractive_index;
 		double n_2 = ray.intersection.mat->n; // refractive index of material ray is entering
-    	
-    	// Check for total internal reflection
+    	double theta_incident = ray.dir.dot(-ray.intersection.normal);
+    	double theta_transmitted = asin(sin(theta_incident) * n_1/n_2);    	
+
+    	// Assume not total internal reflection
     	if(sin(theta_incident) < n_2/n_1){
 	    	// Create new ray for refracted vector
 	    	Vector3D refractedRayDirection = n_1/n_2 * ray.dir + 
@@ -288,11 +289,28 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 
 	    	Colour refractedCol = shadeRay(refractedRay);
 
-	    	std::cout << "n1 " << n_1 << " n_2 " << n_2 << std::endl;
-	    	// TODO approximate fresnel equations
-	    	col[0] = 0.5 * col[0] + 0.5 * refractedCol[0];
-	    	col[1] = 0.5 * col[0] + 0.5 * refractedCol[1];
-	    	col[2] = 0.5 * col[0] + 0.5 * refractedCol[2];	    	
+	    	// Calculate Fresnel equations
+	    	double reflectance_perp = (n_1 * cos(theta_incident) - n_2 * cos(theta_transmitted))/
+	    								(n_1 * cos(theta_incident + n_2 * cos(theta_transmitted)));
+			reflectance_perp = pow(reflectance_perp, 2);
+
+			double reflectance_para = (n_2 * cos(theta_incident) - n_1 * cos(theta_transmitted))/
+										(n_2 * cos(theta_incident) + n_1 * cos(theta_transmitted));
+			reflectance_para = pow(reflectance_para, 2);	    	
+
+			// Total reflectance
+			double total_reflectance = (reflectance_para + reflectance_perp) / 2;
+			double total_transmittance = 1.0 - total_reflectance;
+
+
+	    	//std::cout << "n1 " << n_1 << " n_2 " << n_2 << std::endl;
+	    	//std::cout << "ref " << total_reflectance << " trans " << total_transmittance << std::endl;
+	    	//std::cout << "i " << theta_incident * 180/M_PI << " t " << theta_transmitted  * 180/M_PI<< std::endl;
+	    	//std::cout << "orig dir: " << ray.dir << " dir: " << refractedRay.dir << std::endl;
+
+	    	col[0] = total_reflectance * col[0] + total_transmittance * refractedCol[0];
+	    	col[1] = total_reflectance * col[1] + total_transmittance * refractedCol[1];
+	    	col[2] = total_reflectance * col[2] + total_transmittance * refractedCol[2];	    	
     	}
     }
 
