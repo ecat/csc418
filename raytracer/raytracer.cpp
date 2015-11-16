@@ -239,80 +239,107 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 
     // You'll want to call shadeRay recursively (with a different ray, 
     // of course) here to implement reflection/refraction effects.  
-/*
+
     // Check if there was an intersection and that we have not exceeded the max number of reflections
     if (!ray.intersection.none && ray.num_reflections < MAX_NUM_REFLECTIONS){
-    	// Create a new ray with a new origin and direction
-    	// The reflected ray direction is calculated using Snell's law
-    	Vector3D reflectedRayDirection = ray.dir - 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
 
-    	// Start the ray a little bit away from the surface to remove artifacts, note that it is addition here
-    	Ray3D reflectedRay(ray.intersection.point + 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
-    	reflectedRay.refractive_index = ray.refractive_index;
-    	reflectedRay.dir.normalize();
+	    // Do refraction effect
+	    if (ray.intersection.mat->transparent){
 
-    	Colour reflectedCol = shadeRay(reflectedRay);
+			double n_1 = ray.refractive_index;
+			double n_2 = ray.intersection.mat->n; // refractive index of material ray is entering
+	    	double theta_incident = ray.dir.dot(-ray.intersection.normal);
+	    	double total_reflectance = 1.0;
+	    	double total_transmittance = 0.0;
 
-    	// We don't care if the reflected ray went into the background 
-    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
-	    	// Blend the reflected colors according to the specular reflection component
-	    	// If the specular component is zero, then take the local illuminated color
-	    	double r_scale = ray.intersection.mat->specular[0];
-	    	double g_scale = ray.intersection.mat->specular[1];	
-	    	double b_scale = ray.intersection.mat->specular[2];    	
-	    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
-	    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
-	    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
-    	}
+	    	// Not total internal reflection
+	    	if(sin(theta_incident) < n_2/n_1){
+	    		double theta_transmitted = asin(sin(theta_incident) * n_1/n_2);    	
+
+		    	// Create new ray for refracted vector
+		    	Vector3D refractedRayDirection = n_1/n_2 * ray.dir + 
+		    		(n_1/n_2 * cos(theta_incident) - 
+		    		sqrt(1 - pow(sin(theta_incident), 2))) * ray.intersection.normal;
+
+		    	// Start the ray a little bit away from the surface to remove artifacts
+		    	// note that it is subtraction here because we are crossing material interface
+		    	Ray3D refractedRay(ray.intersection.point - 0.001 * ray.intersection.normal, refractedRayDirection, ray.num_reflections + 1);
+		    	refractedRay.refractive_index = n_2;    	
+		    	refractedRay.dir.normalize();
+
+		    	Colour refractedCol = shadeRay(refractedRay);
+
+		    	// Calculate Fresnel equations
+		    	double reflectance_perp = (n_1 * cos(theta_incident) - n_2 * cos(theta_transmitted))/
+		    								(n_1 * cos(theta_incident) + n_2 * cos(theta_transmitted));
+				reflectance_perp = pow(reflectance_perp, 2);
+
+				double reflectance_para = (n_2 * cos(theta_incident) - n_1 * cos(theta_transmitted))/
+											(n_2 * cos(theta_incident) + n_1 * cos(theta_transmitted));
+				reflectance_para = pow(reflectance_para, 2);	    	
+
+				// Calculate total reflectance
+				total_reflectance = (reflectance_para + reflectance_perp) / 2;
+				total_transmittance = 1.0 - total_reflectance;
+
+
+		    	//std::cout << "n1 " << n_1 << " n_2 " << n_2 << std::endl;
+		    	//std::cout << "ref " << total_reflectance << " trans " << total_transmittance << std::endl;
+		    	//std::cout << "i " << theta_incident * 180/M_PI << " t " << theta_transmitted  * 180/M_PI<< std::endl;
+		    	//std::cout << "orig dir: " << ray.dir << " dir: " << refractedRay.dir << std::endl;
+
+		    	col[0] = col[0] + total_transmittance * refractedCol[0];
+		    	col[1] = col[1] + total_transmittance * refractedCol[1];
+		    	col[2] = col[2] + total_transmittance * refractedCol[2];	    	
+	    	}/*else{
+
+		    	// Total internal reflection
+		    	Vector3D reflectedRayDirection = ray.dir - 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
+
+		    	// Start the ray a little bit away from the surface to remove artifacts, note that it is addition here
+		    	Ray3D reflectedRay(ray.intersection.point + 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
+		    	reflectedRay.refractive_index = ray.refractive_index;
+		    	reflectedRay.dir.normalize();
+
+		    	Colour reflectedCol = shadeRay(reflectedRay);
+
+		    	// We don't care if the reflected ray went into the background 
+		    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){			    	  	
+			    	col[0] = reflectedCol[0];
+			    	col[1] = reflectedCol[1];
+			    	col[2] = reflectedCol[2];
+		    	}	    		
+	    		std::cout << "totalinternal ref" << col << std::endl;
+	    	}*/
+	    }else{
+	    	// Do reflection effect
+	    	// Create a new ray with a new origin and direction
+	    	// The reflected ray direction is calculated using Snell's law
+	    	Vector3D reflectedRayDirection = ray.dir - 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
+
+	    	// Start the ray a little bit away from the surface to remove artifacts, note that it is addition here
+	    	Ray3D reflectedRay(ray.intersection.point + 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
+	    	reflectedRay.refractive_index = ray.refractive_index;
+	    	reflectedRay.dir.normalize();
+
+	    	Colour reflectedCol = shadeRay(reflectedRay);
+
+	    	// We don't care if the reflected ray went into the background 
+	    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
+		    	// Blend the reflected colors according to the specular reflection component
+		    	// If the specular component is zero, then take the local illuminated color
+		    	double r_scale = ray.intersection.mat->specular[0];
+		    	double g_scale = ray.intersection.mat->specular[1];	
+		    	double b_scale = ray.intersection.mat->specular[2];    	
+		    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
+		    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
+		    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
+	    	}
+	    }
+
+
     }
-*/
-    // Do refraction effect
-    if (!ray.intersection.none && ray.intersection.mat->transparent && ray.num_reflections < MAX_NUM_REFLECTIONS){
 
-		double n_1 = ray.refractive_index;
-		double n_2 = ray.intersection.mat->n; // refractive index of material ray is entering
-    	double theta_incident = ray.dir.dot(-ray.intersection.normal);
-    	double theta_transmitted = asin(sin(theta_incident) * n_1/n_2);    	
-
-    	// Assume not total internal reflection
-    	if(sin(theta_incident) < n_2/n_1){
-	    	// Create new ray for refracted vector
-	    	Vector3D refractedRayDirection = n_1/n_2 * ray.dir + 
-	    		(n_1/n_2 * cos(theta_incident) - 
-	    		sqrt(1 - pow(sin(theta_incident), 2))) * ray.intersection.normal;
-
-	    	// Start the ray a little bit away from the surface to remove artifacts
-	    	// note that it is subtraction here because we are crossing material interface
-	    	Ray3D refractedRay(ray.intersection.point - 0.001 * ray.intersection.normal, refractedRayDirection, ray.num_reflections + 1);
-	    	refractedRay.refractive_index = n_2;    	
-	    	refractedRay.dir.normalize();
-
-	    	Colour refractedCol = shadeRay(refractedRay);
-
-	    	// Calculate Fresnel equations
-	    	double reflectance_perp = (n_1 * cos(theta_incident) - n_2 * cos(theta_transmitted))/
-	    								(n_1 * cos(theta_incident + n_2 * cos(theta_transmitted)));
-			reflectance_perp = pow(reflectance_perp, 2);
-
-			double reflectance_para = (n_2 * cos(theta_incident) - n_1 * cos(theta_transmitted))/
-										(n_2 * cos(theta_incident) + n_1 * cos(theta_transmitted));
-			reflectance_para = pow(reflectance_para, 2);	    	
-
-			// Total reflectance
-			double total_reflectance = (reflectance_para + reflectance_perp) / 2;
-			double total_transmittance = 1.0 - total_reflectance;
-
-
-	    	//std::cout << "n1 " << n_1 << " n_2 " << n_2 << std::endl;
-	    	//std::cout << "ref " << total_reflectance << " trans " << total_transmittance << std::endl;
-	    	//std::cout << "i " << theta_incident * 180/M_PI << " t " << theta_transmitted  * 180/M_PI<< std::endl;
-	    	//std::cout << "orig dir: " << ray.dir << " dir: " << refractedRay.dir << std::endl;
-
-	    	col[0] = total_reflectance * col[0] + total_transmittance * refractedCol[0];
-	    	col[1] = total_reflectance * col[1] + total_transmittance * refractedCol[1];
-	    	col[2] = total_reflectance * col[2] + total_transmittance * refractedCol[2];	    	
-    	}
-    }
 
 
     return col; 
