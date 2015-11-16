@@ -248,31 +248,40 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 
 			double n_1 = ray.refractive_index;
 			double n_2 = ray.intersection.mat->n; // refractive index of material ray is entering
-	    	double theta_incident = ray.dir.dot(-ray.intersection.normal);
+	    	double theta_incident = acos(ray.dir.dot(-ray.intersection.normal));
 	    	
 	    	bool approachingFromBack = false;
 
-	    	// If theta_incident is negative, then we are approaching from back of material
+	    	// If dotproduct is negative, then we are approaching from back of material
 	    	// We only support air to glass and glass to air interfaces
-	    	if(theta_incident < 0){
+	    	if(ray.dir.dot(-ray.intersection.normal) < 0){
 	    		double tmp = n_1;
 	    		n_1 = n_2;
 	    		n_2 = 1.0;
-	    		theta_incident = - theta_incident;
+	    		theta_incident = acos(ray.dir.dot(ray.intersection.normal));
 	    		approachingFromBack = true;
 	    	}
 
 	    	double total_reflectance = 1.0;
 	    	double total_transmittance = 0.0;
+	    	double critical_angle = asin(n_2/n_1);
 
 	    	// Not total internal reflection
-	    	if(sin(theta_incident) < n_2/n_1){
+	    	if(theta_incident < critical_angle || n_2 > n_1){
 	    		double theta_transmitted = asin(sin(theta_incident) * n_1/n_2);    	
 
 		    	// Create new ray for refracted vector
-		    	Vector3D refractedRayDirection = n_1/n_2 * ray.dir + 
-		    		(n_1/n_2 * cos(theta_incident) - 
-		    		sqrt(1 - pow(sin(theta_incident), 2))) * ray.intersection.normal;
+		    	Vector3D refractedRayDirection;
+
+		    	if(approachingFromBack){
+		    		refractedRayDirection = n_1/n_2 * ray.dir + 
+			    		(n_1/n_2 * cos(theta_incident) - 
+			    		sqrt(1 - pow(sin(theta_transmitted), 2))) * (-ray.intersection.normal);	
+		    	}else{
+			    	refractedRayDirection = n_1/n_2 * ray.dir + 
+			    		(n_1/n_2 * cos(theta_incident) - 
+			    		sqrt(1 - pow(sin(theta_transmitted), 2))) * ray.intersection.normal;	
+		    	} 
 
 		    	// Start the ray a little bit away from the surface to remove artifacts
 		    	// note that it is subtraction here because we are crossing material interface
@@ -302,12 +311,13 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 				total_reflectance = (reflectance_para + reflectance_perp) / 2;
 				total_transmittance = 1.0 - total_reflectance;
 
-    			std::cout << " reflection number " << ray.num_reflections << std::endl;
+				std::cout << " reflection number " << ray.num_reflections << std::endl;
 		    	std::cout << " approaching from back: " << approachingFromBack << std::endl; 
 		    	std::cout << " n1 " << n_1 << " n_2 " << n_2 << " t " << ray.intersection.t_value << std::endl;
+		    	std::cout << " theta_incident " << theta_incident * 180/M_PI << " theta_t " << theta_transmitted * 180/M_PI << std::endl;
 		    	std::cout << " ray.direction " << ray.dir << " refracted.direction " << refractedRay.dir << std::endl;
 		    	std::cout << " ray intersection " << ray.intersection.point << std::endl;
-		    	std::cout << " theta_incident " << theta_incident << " normal: " << ray.intersection.normal << std::endl;
+		    	std::cout << " normal: " << ray.intersection.normal << std::endl;
 		    	std::cout << " ray.origin " << ray.origin << " refracted.origin " << refractedRay.origin << std::endl;
 		    	std::cout << " color: " << refractedCol << std::endl;
 		    	std::cout << " transmittance " << total_transmittance << " reflectance " << total_reflectance<< std::endl;
@@ -318,6 +328,7 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	col[2] = total_reflectance * col[2] + total_transmittance * refractedCol[2];	    	
 	    	}
 	    }else{
+	    	/*
 	    	// Do reflection effect
 	    	// Create a new ray with a new origin and direction
 	    	// The reflected ray direction is calculated using Snell's law
@@ -344,7 +355,7 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
 		    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
 		    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
-	    	}
+	    	}*/
 	    }
 
 
