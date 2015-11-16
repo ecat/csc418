@@ -116,7 +116,7 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 			// Bring the points and normals back to world space
 			// Intersection 2 will always be closer to origin so it sufficies to check
 			// that it is not behind the ray origin (t_1 > t_2) is always true
-			if(t_2 < 0){
+			if(t_2 < 0 || t_1 < t_2){
 				ray.intersection.t_value = t_1;
 				ray.intersection.point = modelToWorld * intersection_1;
 				ray.intersection.normal = worldToModel.transpose() * (intersection_1 - c);

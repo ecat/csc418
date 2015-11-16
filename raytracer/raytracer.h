@@ -99,8 +99,8 @@ public:
 	void scale( SceneDagNode::Ptr node, Point3D origin, double factor[3] );
 
 	// Maximum number of reflections that are calculated
-	const int MAX_NUM_REFLECTIONS = 3;
-	
+	const int MAX_NUM_REFLECTIONS = 2;
+		
 private:
 	// Allocates and initializes the pixel buffer for rendering, you
 	// could add an interesting background to your scene by modifying 

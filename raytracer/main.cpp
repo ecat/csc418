@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 	Raytracer raytracer;
 	//int width = 1920; 
 	//int height = 1080; 
-	int width = 640; 
-	int height = 480; 
+	int width = 320; 
+	int height = 240; 
 
 	if (argc == 3) {
 		width = atoi(argv[1]);
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	//Point3D eye(5., 5., 0.1);
 	//Vector3D view(-1., -1., 0.);
 	Vector3D up(0., 1., 0.);
-	double fov = 95;
+	double fov = 90;
 
 	// Defines a material for shading.
     Material::Ptr gold = std::make_shared<Material>( Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648), 
@@ -63,23 +63,32 @@ int main(int argc, char* argv[])
 
 	// Add a unit square into the scene with material mat.
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), gold );
-    SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
-    SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
-    SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
-    SceneDagNode::Ptr plane4 = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
-    SceneDagNode::Ptr glassPiece = raytracer.addObject( std::make_shared<UnitSquare>(), glass );
+    //SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
+    //SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
+    //SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
+    //SceneDagNode::Ptr plane4 = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
+    //SceneDagNode::Ptr glassPieceFwd = raytracer.addObject( std::make_shared<UnitSquare>(), glass );
+    //SceneDagNode::Ptr glassPieceBkwd = raytracer.addObject( std::make_shared<UnitSquare>(), glass );    
+  	SceneDagNode::Ptr jadePiece = raytracer.addObject( std::make_shared<UnitSquare>(), jade);
 
 	
 	// Apply some transformations to the unit square.
-	double factor1[3] = { 2.0, 1.0, 2.0 };
+	double factor1[3] = { 2.0, 2.0, 2.0 };
 	double factor2[3] = { 6.0, 6.0, 6.0 };
 	raytracer.translate(sphere, Vector3D(0., 0., -6.));	
 	raytracer.rotate(sphere, 'x', -45); 
 	raytracer.rotate(sphere, 'z', 45); 
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
-	
-	raytracer.translate(glassPiece, Vector3D(0., -1., -3.));	
-	raytracer.scale(glassPiece, Point3D(0., 0., 0.), factor1);
+
+	raytracer.translate(jadePiece, Vector3D(0, 0, -12));
+	raytracer.scale(jadePiece, Point3D(0, 0,  0), factor2);
+	/*
+	raytracer.translate(glassPieceFwd, Vector3D(0., -1., -3.));	
+	raytracer.scale(glassPieceFwd, Point3D(0., 0., 0.), factor1);
+
+	raytracer.translate(glassPieceBkwd, Vector3D(0., -1., -3.26));	
+	raytracer.rotate(glassPieceBkwd, 'y', 180);	
+	raytracer.scale(glassPieceBkwd, Point3D(0., 0., 0.), factor1);	
 
 	raytracer.translate(plane, Vector3D(-5., 0., -7.));	
 	raytracer.rotate(plane, 'y', 80); 
@@ -96,6 +105,7 @@ int main(int argc, char* argv[])
 	raytracer.translate(plane4, Vector3D(0, -6, -7));
 	raytracer.rotate(plane4, 'x', -90); 
 	raytracer.scale(plane4, Point3D(0., 0., 0.), factor2);	
+	*/
 
 	//raytracer.translate(backPlane, Vector3D(0, 0, -12));
 	//raytracer.scale(backPlane, Point3D(0., 0., 0.), factor2);	
