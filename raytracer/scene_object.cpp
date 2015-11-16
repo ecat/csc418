@@ -100,9 +100,10 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		Point3D intersection_1 = q + (qc.dot(r_objectSpace.dir) + sqrt(k_squared)) * r_objectSpace.dir;
 		Point3D intersection_2 = q + (qc.dot(r_objectSpace.dir) - sqrt(k_squared)) * r_objectSpace.dir;
 
-		// Choose intersection that has the smaller t value, this works since ray.dir is unit length
-		double t_1 = (intersection_1 - q).length();
-		double t_2 = (intersection_2 - q).length();
+		// Choose intersection that has the non negative t value that is smaller
+		// this works since ray.dir is unit length
+		double t_1 = (intersection_1 - q).dot(r_objectSpace.dir);
+		double t_2 = (intersection_2 - q).dot(r_objectSpace.dir);
 
 		// Both intersections lie behind the origin
 		if(t_1 <= 0 && t_2 <= 0){
