@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 	Raytracer raytracer;
 	//int width = 1920; 
 	//int height = 1080; 
-	int width = 320; 
-	int height = 240; 
+	int width = 640; 
+	int height = 480; 
 
 	if (argc == 3) {
 		width = atoi(argv[1]);
@@ -56,6 +56,8 @@ int main(int argc, char* argv[])
     		Colour(0.00, 0.00, 0.00),
     		100.8,
     		1.5);
+    Material::Ptr blue = std::make_shared<Material> ( Colour(0.0, 0.0, 0.6), Colour(0.0, 0.0, 0.4),
+    		Colour(0.5, 0.5, 0.7), 68);
 
 	// Defines a point light source.
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
@@ -63,6 +65,7 @@ int main(int argc, char* argv[])
 
 	// Add a unit square into the scene with material mat.
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
+    SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
     //SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     //SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     //SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
@@ -74,14 +77,19 @@ int main(int argc, char* argv[])
 	
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 2.0, 2.0, 2.0 };
-	double factor2[3] = { 6.0, 6.0, 6.0 };
-	raytracer.translate(sphere, Vector3D(0., 0., -6.));	
-	raytracer.rotate(sphere, 'x', -45); 
-	raytracer.rotate(sphere, 'z', 45); 
+	double factor2[3] = { 4.0, 4.0, 4.0 };
+	double factor3[3] = { 55.0, 55.0, 6.0};
+
+	raytracer.translate(sphere, Vector3D(0., 0., -4.));	
+	//raytracer.rotate(sphere, 'x', -45); 
+	//raytracer.rotate(sphere, 'z', 45); 
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
 
-	raytracer.translate(jadePiece, Vector3D(0, 0, -12));
-	raytracer.scale(jadePiece, Point3D(0, 0,  0), factor2);
+	raytracer.translate(sphere2, Vector3D(0., 0., -12));
+	raytracer.scale(sphere2, Point3D(0., 0., 0.), factor2);
+
+	raytracer.translate(jadePiece, Vector3D(0, 0, -16));
+	raytracer.scale(jadePiece, Point3D(0, 0,  0), factor3);
 	/*
 	raytracer.translate(glassPieceFwd, Vector3D(0., -1., -3.));	
 	raytracer.scale(glassPieceFwd, Point3D(0., 0., 0.), factor1);

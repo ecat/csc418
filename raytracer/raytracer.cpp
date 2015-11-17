@@ -255,7 +255,6 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 	    	// If dotproduct is negative, then we are approaching from back of material
 	    	// We only support air to glass and glass to air interfaces
 	    	if(ray.dir.dot(-ray.intersection.normal) < 0){
-	    		double tmp = n_1;
 	    		n_1 = n_2;
 	    		n_2 = 1.0;
 	    		theta_incident = acos(ray.dir.dot(ray.intersection.normal));
@@ -288,9 +287,9 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	Ray3D refractedRay(ray.intersection.point, refractedRayDirection, ray.num_reflections + 1);
 
 		    	if(approachingFromBack){
-		    		refractedRay.origin = refractedRay.origin + 0.001 * ray.intersection.normal;
+		    		refractedRay.origin = refractedRay.origin + EPSILON * ray.intersection.normal;
 		    	}else{
-		    		refractedRay.origin = refractedRay.origin - 0.001 * ray.intersection.normal;
+		    		refractedRay.origin = refractedRay.origin - EPSILON * ray.intersection.normal;
 		    	}
 
 		    	refractedRay.refractive_index = n_2;    	
@@ -310,7 +309,7 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 				// Calculate total reflectance
 				total_reflectance = (reflectance_para + reflectance_perp) / 2;
 				total_transmittance = 1.0 - total_reflectance;
-
+/*
 				std::cout << " reflection number " << ray.num_reflections << std::endl;
 		    	std::cout << " approaching from back: " << approachingFromBack << std::endl; 
 		    	std::cout << " n1 " << n_1 << " n_2 " << n_2 << " t " << ray.intersection.t_value << std::endl;
@@ -321,30 +320,30 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	std::cout << " ray.origin " << ray.origin << " refracted.origin " << refractedRay.origin << std::endl;
 		    	std::cout << " color: " << refractedCol << std::endl;
 		    	std::cout << " transmittance " << total_transmittance << " reflectance " << total_reflectance<< std::endl;
-
+*/
 
 		    	col[0] = total_reflectance * col[0] + total_transmittance * refractedCol[0];
 		    	col[1] = total_reflectance * col[1] + total_transmittance * refractedCol[1];
 		    	col[2] = total_reflectance * col[2] + total_transmittance * refractedCol[2];	    	
 	    	}
-	    }else{
-	    	/*
+	    }
+	    	
 	    	// Do reflection effect
 	    	// Create a new ray with a new origin and direction
 	    	// The reflected ray direction is calculated using Snell's law
 	    	Vector3D reflectedRayDirection = ray.dir + 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
 
 	    	// Start the ray a little bit away from the surface to remove artifacts, note that it is addition here
-	    	Ray3D reflectedRay(ray.intersection.point + 0.001 * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
+	    	Ray3D reflectedRay(ray.intersection.point + EPSILON * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
 	    	reflectedRay.refractive_index = ray.refractive_index;
 	    	reflectedRay.dir.normalize();
 
 	    	Colour reflectedCol = shadeRay(reflectedRay);
-
+/*
 			std::cout << " reflection number " << ray.num_reflections << std::endl;
 	    	std::cout << "ray.origin : " << ray.origin << " ray.dir: " << ray.dir << std::endl;			
 	    	std::cout << "reflectedRay.origin : " << reflectedRay.origin << " reflectedRay.dir: " << reflectedRay.dir << std::endl;
-
+*/
 	    	// We don't care if the reflected ray went into the background 
 	    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
 		    	// Blend the reflected colors according to the specular reflection component
@@ -355,8 +354,8 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
 		    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
 		    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
-	    	}*/
-	    }
+	    	}
+	    
 
 
     }
@@ -378,7 +377,7 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
     viewToWorld = initInvViewMatrix(eye, view, up);
 
 
-    bool enableMultiSampling = false; // DEBUG
+    bool enableMultiSampling = true; // DEBUG
 
     // Construct multiple rays for each pixel.
     for (int i = 0; i < _scrHeight; i++) {
@@ -388,7 +387,10 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
             Point3D origin(0., 0., 0.);
 
             if(enableMultiSampling){
-            	int num_samples = 9;
+            	double _rbuffertmp = 0;
+            	double _gbuffertmp = 0;
+            	double _bbuffertmp = 0;
+            	int num_samples = 7;
 	            for(int u = 0; u < num_samples; u++){
 	            		double dx = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
 	            		double dy = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
@@ -406,14 +408,15 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 						Colour col = shadeRay(ray); 
 
 						// prevent buffer overflow
-						int _rbuffertmp = _rbuffer[i*width+j] + int(col[0]*255./ num_samples);
-						int _gbuffertmp = _gbuffer[i*width+j] + int(col[1]*255./ num_samples);
-						int _bbuffertmp = _bbuffer[i*width+j] + int(col[2]*255./ num_samples);            		
-
-						_rbuffer[i*width+j] = std::min(_rbuffertmp, 255);
-						_gbuffer[i*width+j] = std::min(_gbuffertmp, 255);
-						_bbuffer[i*width+j] = std::min(_bbuffertmp, 255);						
+						_rbuffertmp += col[0];
+						_gbuffertmp += col[1];
+						_bbuffertmp += col[2];
 	            }
+
+				_rbuffer[i*width+j] = std::min((int) (255./num_samples * _rbuffertmp), 255);
+				_gbuffer[i*width+j] = std::min((int) (255./num_samples * _gbuffertmp), 255);
+				_bbuffer[i*width+j] = std::min((int) (255./num_samples * _bbuffertmp), 255);
+
             }else{
 	            Point3D imagePlane;
 				imagePlane[0] = (-double(width)/2 + 0.5 + j)/factor;
