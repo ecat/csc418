@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 	Raytracer raytracer;
 	//int width = 1920; 
 	//int height = 1080; 
-	int width = 360; 
-	int height = 240; 
+	int width = 480; 
+	int height = 360; 
 
 	if (argc == 3) {
 		width = atoi(argv[1]);
@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
 
 	// Seed random  number generator for stochastic raytracing
 	srand (static_cast <unsigned> (time(0)));
+	const clock_t begin_time = std::clock();
 
 	// Camera parameters.
 	Point3D eye(0., 0., 1.);
@@ -75,6 +76,7 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );    
     backPlane->obj->setTexture("jade_tex.bmp");
     leftPlane->obj->setTexture("jade_tex.bmp");
+    //sphere->obj->setTexture("earth.bmp");
 
     //SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     //SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
@@ -140,6 +142,8 @@ int main(int argc, char* argv[])
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
 	
+	std::cout << "Elapsed time: " << float(std::clock() - begin_time)/CLOCKS_PER_SEC << std::endl;
+
 	return 0;
 }
 

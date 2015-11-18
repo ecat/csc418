@@ -355,6 +355,8 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 	    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
 		    	// Blend the reflected colors according to the specular reflection component
 		    	// If the specular component is zero, then take the local illuminated color
+
+		    	//TODO add damping factor for reflected colour
 		    	double r_scale = ray.intersection.mat->specular[0];
 		    	double g_scale = ray.intersection.mat->specular[1];	
 		    	double b_scale = ray.intersection.mat->specular[2];    	
@@ -391,65 +393,67 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
     initPixelBuffer();
     viewToWorld = initInvViewMatrix(eye, view, up);
 
-
-    bool enableMultiSampling = true; // DEBUG
-
     // Construct multiple rays for each pixel.
     for (int i = 0; i < _scrHeight; i++) {
         for (int j = 0; j < _scrWidth; j++) {
-            // Sets up ray origin and direction in view space, 
-            // image plane is at z = -1.
-            Point3D origin(0., 0., 0.);
-
-            if(enableMultiSampling){
-            	double _rbuffertmp = 0;
-            	double _gbuffertmp = 0;
-            	double _bbuffertmp = 0;
-            	int num_samples = 7;
-	            for(int u = 0; u < num_samples; u++){
-	            		double dx = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
-	            		double dy = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
-						Point3D imagePlane;
-						imagePlane[0] = (-double(width)/2 + dx + j)/factor;
-						imagePlane[1] = (-double(height)/2 + dy + i)/factor;
-						imagePlane[2] = -1;
-
-						// TODO: Convert ray to world space and call 
-						// shadeRay(ray) to generate pixel colour. 	
-						
-						Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
-						ray.dir.normalize();
-
-						Colour col = shadeRay(ray); 
-
-						// prevent buffer overflow
-						_rbuffertmp += col[0];
-						_gbuffertmp += col[1];
-						_bbuffertmp += col[2];
-	            }
-
-				_rbuffer[i*width+j] = std::min((int) (255./num_samples * _rbuffertmp), 255);
-				_gbuffer[i*width+j] = std::min((int) (255./num_samples * _gbuffertmp), 255);
-				_bbuffer[i*width+j] = std::min((int) (255./num_samples * _bbuffertmp), 255);
-
-            }else{
-	            Point3D imagePlane;
-				imagePlane[0] = (-double(width)/2 + 0.5 + j)/factor;
-				imagePlane[1] = (-double(height)/2 + 0.5 + i)/factor;
-				imagePlane[2] = -1;
-
-				Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
-				ray.dir.normalize();
-
-				Colour col = shadeRay(ray); 
-
-				_rbuffer[i*width+j] += int(col[0]*255);
-				_gbuffer[i*width+j] += int(col[1]*255);
-				_bbuffer[i*width+j] += int(col[2]*255);
-			}	
+        	renderHelper(factor, viewToWorld, width, height, i, j);
 		}
 	}
 
 	flushPixelBuffer(fileName);
 }
 
+void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j){
+    bool enableMultiSampling = true; // DEBUG
+
+    // Sets up ray origin and direction in view space, 
+    // image plane is at z = -1.
+    Point3D origin(0., 0., 0.);
+
+    if(enableMultiSampling){
+    	double _rbuffertmp = 0;
+    	double _gbuffertmp = 0;
+    	double _bbuffertmp = 0;
+    	int num_samples = 7;
+        for(int u = 0; u < num_samples; u++){
+        		double dx = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
+        		double dy = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
+				Point3D imagePlane;
+				imagePlane[0] = (-double(width)/2 + dx + j)/factor;
+				imagePlane[1] = (-double(height)/2 + dy + i)/factor;
+				imagePlane[2] = -1;
+
+				// TODO: Convert ray to world space and call 
+				// shadeRay(ray) to generate pixel colour. 	
+				
+				Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
+				ray.dir.normalize();
+
+				Colour col = shadeRay(ray); 
+
+				// prevent buffer overflow
+				_rbuffertmp += col[0];
+				_gbuffertmp += col[1];
+				_bbuffertmp += col[2];
+        }
+
+		_rbuffer[i*width+j] = std::min((int) (255./num_samples * _rbuffertmp), 255);
+		_gbuffer[i*width+j] = std::min((int) (255./num_samples * _gbuffertmp), 255);
+		_bbuffer[i*width+j] = std::min((int) (255./num_samples * _bbuffertmp), 255);
+
+    }else{
+        Point3D imagePlane;
+		imagePlane[0] = (-double(width)/2 + 0.5 + j)/factor;
+		imagePlane[1] = (-double(height)/2 + 0.5 + i)/factor;
+		imagePlane[2] = -1;
+
+		Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
+		ray.dir.normalize();
+
+		Colour col = shadeRay(ray); 
+
+		_rbuffer[i*width+j] += int(col[0]*255);
+		_gbuffer[i*width+j] += int(col[1]*255);
+		_bbuffer[i*width+j] += int(col[2]*255);
+	}	
+}

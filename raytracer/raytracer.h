@@ -132,6 +132,8 @@ private:
     // object in the scene.
     void computeTransforms( SceneDagNode::Ptr node );
 
+    // Function that computes coloring of one pixel
+	void renderHelper(double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j);
 
     // Width and height of the viewport.
     int _scrWidth;

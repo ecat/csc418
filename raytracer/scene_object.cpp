@@ -122,6 +122,9 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		// There is an intersection with circle
 		if(ray.intersection.none || t_1 < ray.intersection.t_value || t_2 < ray.intersection.t_value){
 
+			// Determine mapping for texture coordinates for sphere
+			double u, v;
+
 			// Bring the points and normals back to world space
 			// Intersection 2 will always be closer to origin so it sufficies to check
 			// that it is not behind the ray origin (t_1 > t_2) is always true
@@ -129,19 +132,28 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 				ray.intersection.t_value = t_1;
 				ray.intersection.point = modelToWorld * intersection_1;
 				ray.intersection.normal = worldToModel.transpose() * (intersection_1 - c);
+
+				u = 0.5 + atan2(intersection_1[2], intersection_1[0])/ (2 * M_PI);
+				v = 0.5 - asin(intersection_1[1])/ M_PI;
 			}else {
 				ray.intersection.t_value = t_2;
 				ray.intersection.point = modelToWorld * intersection_2;
 				ray.intersection.normal = worldToModel.transpose() * (intersection_2 - c);
+
+				u = 0.5 + atan2(intersection_2[2], intersection_2[0])/ (2 * M_PI);
+				v = 0.5 - asin(intersection_2[1])/ M_PI;				
 			}
 
 			ray.intersection.normal.normalize();
 
 			ray.intersection.none = false;
 
-			//TODO
-
-			ray.intersection.hasTexture = false;
+			if(width > 0 && height > 0){
+				ray.intersection.hasTexture = true;
+				ray.intersection.texValue = getTextureValue(u, v);
+			}else{
+				ray.intersection.hasTexture = false;
+			}
 
 			return true;
 		}
