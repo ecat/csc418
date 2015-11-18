@@ -48,12 +48,12 @@ public:
 
     // Accesses the texture memory and returns the colour associated with that location
     Colour getTextureValue(double dx, double dy){
-    	int i = (dx + 0.5) * width;
-    	int j = (dy + 0.5) * height;
+    	int i = (dx + 0.5) * height;
+    	int j = (dy + 0.5) * width;
 
-    	double r = _rbuffer[j * width + i]/255.;
-    	double g = _rbuffer[j * width + i]/255.;
-    	double b = _rbuffer[j * width + i]/255.;
+    	double r = _rbuffer[i * width + j]/255.;
+    	double g = _gbuffer[i * width + j]/255.;
+    	double b = _bbuffer[i * width + j]/255.;
     	return Colour(r, g, b);
     };
 };
@@ -66,6 +66,7 @@ public:
 
     // Accesses the texture memory and returns the colour associated with that location
     Colour getTextureValue(double dx, double dy){
+
     	return Colour(0., 0., 0.);
     };
 };
