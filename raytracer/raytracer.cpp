@@ -309,7 +309,7 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 				// Calculate total reflectance
 				total_reflectance = (reflectance_para + reflectance_perp) / 2;
 				total_transmittance = 1.0 - total_reflectance;
-/*
+				/*
 				std::cout << " reflection number " << ray.num_reflections << std::endl;
 		    	std::cout << " approaching from back: " << approachingFromBack << std::endl; 
 		    	std::cout << " n1 " << n_1 << " n_2 " << n_2 << " t " << ray.intersection.t_value << std::endl;
@@ -320,41 +320,45 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	std::cout << " ray.origin " << ray.origin << " refracted.origin " << refractedRay.origin << std::endl;
 		    	std::cout << " color: " << refractedCol << std::endl;
 		    	std::cout << " transmittance " << total_transmittance << " reflectance " << total_reflectance<< std::endl;
-*/
+				*/
 
 		    	col[0] = total_reflectance * col[0] + total_transmittance * refractedCol[0];
 		    	col[1] = total_reflectance * col[1] + total_transmittance * refractedCol[1];
 		    	col[2] = total_reflectance * col[2] + total_transmittance * refractedCol[2];	    	
 	    	}
 	    }
-	    	
-	    	// Do reflection effect
-	    	// Create a new ray with a new origin and direction
-	    	// The reflected ray direction is calculated using Snell's law
-	    	Vector3D reflectedRayDirection = ray.dir + 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
 
-	    	// Start the ray a little bit away from the surface to remove artifacts, note that it is addition here
-	    	Ray3D reflectedRay(ray.intersection.point + EPSILON * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
-	    	reflectedRay.refractive_index = ray.refractive_index;
-	    	reflectedRay.dir.normalize();
+    	// Do reflection effect
+    	// Create a new ray with a new origin and direction
+    	// The reflected ray direction is calculated using Snell's law
+    	Vector3D reflectedRayDirection = ray.dir - 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
 
-	    	Colour reflectedCol = shadeRay(reflectedRay);
-/*
-			std::cout << " reflection number " << ray.num_reflections << std::endl;
-	    	std::cout << "ray.origin : " << ray.origin << " ray.dir: " << ray.dir << std::endl;			
-	    	std::cout << "reflectedRay.origin : " << reflectedRay.origin << " reflectedRay.dir: " << reflectedRay.dir << std::endl;
-*/
-	    	// We don't care if the reflected ray went into the background 
-	    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
-		    	// Blend the reflected colors according to the specular reflection component
-		    	// If the specular component is zero, then take the local illuminated color
-		    	double r_scale = ray.intersection.mat->specular[0];
-		    	double g_scale = ray.intersection.mat->specular[1];	
-		    	double b_scale = ray.intersection.mat->specular[2];    	
-		    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
-		    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
-		    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
-	    	}
+    	// Start the ray a little bit away from the surface to remove artifacts, note that it is addition here
+    	Ray3D reflectedRay(ray.intersection.point + EPSILON * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
+    	reflectedRay.refractive_index = ray.refractive_index;
+    	reflectedRay.dir.normalize();
+
+    	Colour reflectedCol = shadeRay(reflectedRay);
+
+    	// We don't care if the reflected ray went into the background 
+    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
+	    	// Blend the reflected colors according to the specular reflection component
+	    	// If the specular component is zero, then take the local illuminated color
+	    	double r_scale = ray.intersection.mat->specular[0];
+	    	double g_scale = ray.intersection.mat->specular[1];	
+	    	double b_scale = ray.intersection.mat->specular[2];    	
+	    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
+	    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
+	    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
+	    	/*
+	   		std::cout << " reflection number " << ray.num_reflections << std::endl;
+    		std::cout << "ray.origin : " << ray.origin << " ray.dir: " << ray.dir << std::endl;			
+	   		std::cout << "intersection " << ray.intersection.point <<
+	   		" reflected intersection " << reflectedRay.intersection.point << std::endl;
+    		std::cout << "reflectedRay.origin : " << reflectedRay.origin << " reflectedRay.dir: " << reflectedRay.dir << std::endl;
+    		std::cout << " color: " << reflectedCol << std::endl;
+			*/
+    	}
 	    
 
 
