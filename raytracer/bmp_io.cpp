@@ -1924,7 +1924,7 @@ bool bmp_read_test ( char const *file_in_name )
 //    Output, bool BMP_READ_TEST, is true if an error occurred.
 //
 {
-# define VERBOSE false
+# define VERBOSE true
 
   unsigned char *barray;
   bool error;
