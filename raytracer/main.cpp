@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	//Point3D eye(5., 5., 0.1);
 	//Vector3D view(-1., -1., 0.);
 	Vector3D up(0., 1., 0.);
-	double fov = 90;
+	double fov = 100;
 
 	// Defines a material for shading.
     Material::Ptr gold = std::make_shared<Material>( Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648), 
@@ -53,20 +53,26 @@ int main(int argc, char* argv[])
 			100.8 );
     // Transparent material
     Material::Ptr glass = std::make_shared<Material> ( Colour(0.0, 0.0, 0.0), Colour(0.0, 0.0, 0.0),
-    		Colour(0.4, 0.4, 0.4),
+    		Colour(0.0, 0.0, 0.0),
     		100.8,
     		1.5);
-    Material::Ptr blue = std::make_shared<Material> ( Colour(0.0, 0.0, 0.6), Colour(0.0, 0.0, 0.4),
-    		Colour(0.5, 0.5, 0.7), 68);
+    Material::Ptr blue = std::make_shared<Material> ( Colour(0.0, 0.0, 0.2), Colour(0.0, 0.0, 0.4),
+    		Colour(0.3, 0.3, 0.3), 68);
+    Material::Ptr red = std::make_shared<Material>  ( Colour(0.2, 0.0, 0.0), Colour(0.4, 0.0, 0.0),
+    		Colour(0.3, 0.3, 0.3), 68);
+    Material::Ptr green = std::make_shared<Material>  ( Colour(0.0, 0.2, 0.0), Colour(0.54, 0.89, 0.63),
+    		Colour(0.0, 0.0, 0.0), 68);
 
 	// Defines a point light source.
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
 				Colour(0.9, 0.9, 0.9) ) );
 
 	// Add a unit square into the scene with material mat.
-    //SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
+    SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
-    SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
+	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
+    SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), green );
+    SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), green );    
     //SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     //SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     //SceneDagNode::Ptr plane4 = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
@@ -78,19 +84,22 @@ int main(int argc, char* argv[])
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 2.0, 2.0, 2.0 };
 	double factor2[3] = { 4.0, 4.0, 4.0 };
-	double factor3[3] = { 55.0, 55.0, 6.0};
-	double factor4[3] = {10.0, 10., 10.};
-/*
+	double factor3[3] = { 25.0, 25.0, 8.0};
+	double factor4[3] = { 10.0, 25., 40.};
+
 	raytracer.translate(sphere, Vector3D(0., 0., -4.));	
 	//raytracer.rotate(sphere, 'x', -45); 
 	//raytracer.rotate(sphere, 'z', 45); 
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
-*/
-	raytracer.translate(sphere2, Vector3D(0., 0., -12));
+
+	raytracer.translate(sphere2, Vector3D(0., -2., -10));
 	raytracer.scale(sphere2, Point3D(0., 0., 0.), factor2);
 
-	//raytracer.translate(jadePiece, Vector3D(0, 0, -16));
-	//raytracer.scale(jadePiece, Point3D(0, 0,  0), factor3);
+	raytracer.translate(sphere3, Vector3D(0., 2., -10));
+	raytracer.scale(sphere3, Point3D(0., 0., 0.), factor2);	
+
+	raytracer.translate(backPlane, Vector3D(0, 0, -16));
+	raytracer.scale(backPlane, Point3D(0, 0,  0), factor3);
 	/*
 	raytracer.translate(glassPieceFwd, Vector3D(0., -1., -3.));	
 	raytracer.scale(glassPieceFwd, Point3D(0., 0., 0.), factor1);
@@ -99,9 +108,9 @@ int main(int argc, char* argv[])
 	raytracer.rotate(glassPieceBkwd, 'y', 180);	
 	raytracer.scale(glassPieceBkwd, Point3D(0., 0., 0.), factor1);	
 */
-	raytracer.translate(plane, Vector3D(-6., 0., -12));	
-	raytracer.rotate(plane, 'y', 90); 
-	raytracer.scale(plane, Point3D(0., 0., 0.), factor4);
+	raytracer.translate(leftPlane, Vector3D(-25, 0., 0));	
+	raytracer.scale(leftPlane, Point3D(0., 0., 0.), factor4);
+	raytracer.rotate(leftPlane, 'y', 90); 
 /*
 	raytracer.translate(plane2, Vector3D(5, 0, -7));
 	raytracer.rotate(plane2, 'y', -80); 
