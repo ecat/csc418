@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	//Point3D eye(5., 5., 0.1);
 	//Vector3D view(-1., -1., 0.);
 	Vector3D up(0., 1., 0.);
-	double fov = 100;
+	double fov = 120;
 
 	// Defines a material for shading.
     Material::Ptr gold = std::make_shared<Material>( Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648), 
@@ -62,7 +62,6 @@ int main(int argc, char* argv[])
     		Colour(0.3, 0.3, 0.3), 68);
     Material::Ptr green = std::make_shared<Material>  ( Colour(0.0, 0.2, 0.0), Colour(0.54, 0.89, 0.63),
     		Colour(0.0, 0.0, 0.0), 68);
-    green->setTexture("jade_tex.bmp", 388, 159);
     
 	// Defines a point light source.
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
@@ -73,7 +72,8 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
     SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), green );
-    SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), green );    
+    SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );    
+    backPlane->obj->setTexture("jade_tex.bmp");
 
     //SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     //SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 2.0, 2.0, 2.0 };
 	double factor2[3] = { 4.0, 4.0, 4.0 };
-	double factor3[3] = { 25.0, 25.0, 8.0};
+	double factor3[3] = { 20.0, 20.0, 1.0};
 	double factor4[3] = { 10.0, 25., 40.};
 
 	raytracer.translate(sphere, Vector3D(0., 0., -4.));	

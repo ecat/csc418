@@ -40,9 +40,8 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	double x_check = r_objectSpace.origin[0] + t * r_objectSpace.dir[0];
 	double y_check = r_objectSpace.origin[1] + t * r_objectSpace.dir[1];
 
-	if(abs(x_check) < 1.0 && abs(y_check) < 1.0){
+	if(fabs(x_check) < 0.5 && fabs(y_check) < 0.5){
 		// Intersection lies within unit square
-
 		// Check that there was no previous intersection and that the intersection is nearest
 		// the eye
 		if(ray.intersection.none || t < ray.intersection.t_value){
@@ -58,12 +57,22 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 			ray.intersection.none = false;
 
+			if(width > 0 && height > 0){
+				ray.intersection.hasTexture = true;
+				ray.intersection.texValue = getTextureValue(x_check, y_check);
+			}else{
+				ray.intersection.hasTexture = false;
+			}
+
+				
 			return true;
 		}
 	}
 
 	return false;
 }
+
+
 
 bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		const Matrix4x4& modelToWorld ) {
@@ -129,6 +138,10 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 			ray.intersection.normal.normalize();
 
 			ray.intersection.none = false;
+
+			//TODO
+
+			ray.intersection.hasTexture = false;
 
 			return true;
 		}

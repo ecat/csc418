@@ -17,7 +17,6 @@
 #include <cmath>
 #include <array>
 #include <memory>
-#include "bmp_io.h"
 
 #ifndef M_PI
 #define M_PI    3.14159265358979323846
@@ -157,14 +156,6 @@ struct Material {
             n = _n;
             transparent = true;
         }
-    
-    void setTexture( std::string _texturePath, int _width, int _height ){
-        texturePath = _texturePath;
-        width = _width;
-        height = _height;
-        bmp_read_test(texturePath.c_str());
-        bmp_read(texturePath.c_str(), &width, &height, _rbuffer, _gbuffer, _bbuffer);
-    };
 
     // Ambient components for Phong shading.
     Colour ambient; 
@@ -177,15 +168,6 @@ struct Material {
     // Refractive index of material
     double n;    
     bool transparent;
-
-    // Variables for managing textures
-    std::string texturePath;
-    long unsigned int width;
-    long int height;
-
-    unsigned char** _rbuffer;
-    unsigned char** _gbuffer;
-    unsigned char** _bbuffer;    
 };
 
 struct Intersection {
@@ -202,6 +184,10 @@ struct Intersection {
     double t_value;     
     // Set to true when no intersection has occured.
     bool none;
+
+    // Texture value at the intersection 
+    bool hasTexture;
+    Colour texValue;
 };
 
 // Ray structure. 

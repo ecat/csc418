@@ -38,6 +38,12 @@ void PointLight::shade( Ray3D& ray ) {
 			+ std::max(0.0, std::pow(V.dot(R), ray.intersection.mat->specular_exp)) * ray.intersection.mat->specular * _col_specular
 			;
 
+	if(ray.intersection.hasTexture){
+		ray.col[0] *= ray.intersection.texValue[0];
+		ray.col[1] *= ray.intersection.texValue[1];		
+		ray.col[2] *= ray.intersection.texValue[2];		
+	}
+
 	// Clamp value of color so that there is no overflow
 	ray.col.clamp();
 }
