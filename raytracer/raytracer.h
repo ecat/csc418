@@ -99,7 +99,7 @@ public:
 	void scale( SceneDagNode::Ptr node, Point3D origin, double factor[3] );
 
 	// Maximum number of reflections that are calculated
-	const int MAX_NUM_REFLECTIONS = 2;
+	const int MAX_NUM_REFLECTIONS = 5;
 	// Offset from intersection in normal direction
 	const double EPSILON = 0.001;
 

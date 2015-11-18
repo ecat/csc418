@@ -243,6 +243,12 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
     // Check if there was an intersection and that we have not exceeded the max number of reflections
     if (!ray.intersection.none && ray.num_reflections < MAX_NUM_REFLECTIONS){
 
+    	bool approachingFromBack = false;
+
+    	if(ray.dir.dot(-ray.intersection.normal) < 0){
+    		approachingFromBack = true;
+    	}
+
 	    // Do refraction effect
 	    if (ray.intersection.mat->transparent){
 
@@ -250,15 +256,12 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 			double n_2 = ray.intersection.mat->n; // refractive index of material ray is entering
 	    	double theta_incident = acos(ray.dir.dot(-ray.intersection.normal));
 	    	
-	    	bool approachingFromBack = false;
-
 	    	// If dotproduct is negative, then we are approaching from back of material
 	    	// We only support air to glass and glass to air interfaces
 	    	if(ray.dir.dot(-ray.intersection.normal) < 0){
 	    		n_1 = n_2;
 	    		n_2 = 1.0;
 	    		theta_incident = acos(ray.dir.dot(ray.intersection.normal));
-	    		approachingFromBack = true;
 	    	}
 
 	    	double total_reflectance = 1.0;
@@ -326,40 +329,48 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	col[1] = total_reflectance * col[1] + total_transmittance * refractedCol[1];
 		    	col[2] = total_reflectance * col[2] + total_transmittance * refractedCol[2];	    	
 	    	}
+	    }else{
+
+	    	// Do reflection effect
+	    	// Create a new ray with a new origin and direction
+	    	// The reflected ray direction is calculated using Snell's law
+	    	Vector3D reflectedRayDirection = ray.dir - 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
+
+	    	// Start the ray a little bit away from the surface to remove artifacts
+	    	// This calculation is reversed from the refraction calculation
+	    	Ray3D reflectedRay(ray.intersection.point, reflectedRayDirection, ray.num_reflections + 1);	
+
+	    	if(approachingFromBack){
+	    		reflectedRay.origin = reflectedRay.origin - EPSILON * ray.intersection.normal;
+	    	}else{
+	    		reflectedRay.origin = reflectedRay.origin + EPSILON * ray.intersection.normal;
+	    	}
+
+	    	reflectedRay.refractive_index = ray.refractive_index;
+	    	reflectedRay.dir.normalize();
+
+	    	Colour reflectedCol = shadeRay(reflectedRay);
+
+	    	// We don't care if the reflected ray went into the background 
+	    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
+		    	// Blend the reflected colors according to the specular reflection component
+		    	// If the specular component is zero, then take the local illuminated color
+		    	double r_scale = ray.intersection.mat->specular[0];
+		    	double g_scale = ray.intersection.mat->specular[1];	
+		    	double b_scale = ray.intersection.mat->specular[2];    	
+		    	col[0] += (r_scale) * reflectedCol[0];
+		    	col[1] += (g_scale) * reflectedCol[1];
+		    	col[2] += (b_scale) * reflectedCol[2];
+		    	
+		   		//std::cout << " reflection number " << ray.num_reflections << std::endl;
+	    		//std::cout << "ray.origin : " << ray.origin << " ray.dir: " << ray.dir << std::endl;			
+		   		//std::cout << "intersection " << ray.intersection.point <<
+		   		//" reflected intersection " << reflectedRay.intersection.point << std::endl;
+	    		//std::cout << "reflectedRay.origin : " << reflectedRay.origin << " reflectedRay.dir: " << reflectedRay.dir << std::endl;
+	    		//std::cout << " color: " << reflectedCol << std::endl;
+				
+	    	}
 	    }
-
-    	// Do reflection effect
-    	// Create a new ray with a new origin and direction
-    	// The reflected ray direction is calculated using Snell's law
-    	Vector3D reflectedRayDirection = ray.dir - 2 * (ray.dir.dot(ray.intersection.normal)) * ray.intersection.normal;
-
-    	// Start the ray a little bit away from the surface to remove artifacts, note that it is addition here
-    	Ray3D reflectedRay(ray.intersection.point + EPSILON * ray.intersection.normal, reflectedRayDirection, ray.num_reflections + 1);	
-    	reflectedRay.refractive_index = ray.refractive_index;
-    	reflectedRay.dir.normalize();
-
-    	Colour reflectedCol = shadeRay(reflectedRay);
-
-    	// We don't care if the reflected ray went into the background 
-    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
-	    	// Blend the reflected colors according to the specular reflection component
-	    	// If the specular component is zero, then take the local illuminated color
-	    	double r_scale = ray.intersection.mat->specular[0];
-	    	double g_scale = ray.intersection.mat->specular[1];	
-	    	double b_scale = ray.intersection.mat->specular[2];    	
-	    	col[0] = (1 - r_scale) * col[0] + (r_scale) * reflectedCol[0];
-	    	col[1] = (1 - g_scale) * col[1] + (g_scale) * reflectedCol[1];
-	    	col[2] = (1 - b_scale) * col[2] + (b_scale) * reflectedCol[2];
-	    	/*
-	   		std::cout << " reflection number " << ray.num_reflections << std::endl;
-    		std::cout << "ray.origin : " << ray.origin << " ray.dir: " << ray.dir << std::endl;			
-	   		std::cout << "intersection " << ray.intersection.point <<
-	   		" reflected intersection " << reflectedRay.intersection.point << std::endl;
-    		std::cout << "reflectedRay.origin : " << reflectedRay.origin << " reflectedRay.dir: " << reflectedRay.dir << std::endl;
-    		std::cout << " color: " << reflectedCol << std::endl;
-			*/
-    	}
-	    
 
 
     }
