@@ -71,9 +71,10 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
-    SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), green );
+    SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );    
     backPlane->obj->setTexture("jade_tex.bmp");
+    leftPlane->obj->setTexture("jade_tex.bmp");
 
     //SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     //SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
@@ -87,7 +88,7 @@ int main(int argc, char* argv[])
 	double factor1[3] = { 2.0, 2.0, 2.0 };
 	double factor2[3] = { 4.0, 4.0, 4.0 };
 	double factor3[3] = { 20.0, 20.0, 1.0};
-	double factor4[3] = { 10.0, 25., 40.};
+	double factor4[3] = { 10.0, 20., 20.};
 
 	raytracer.translate(sphere, Vector3D(0., 0., -4.));	
 	//raytracer.rotate(sphere, 'x', -45); 
@@ -110,7 +111,7 @@ int main(int argc, char* argv[])
 	raytracer.rotate(glassPieceBkwd, 'y', 180);	
 	raytracer.scale(glassPieceBkwd, Point3D(0., 0., 0.), factor1);	
 */
-	raytracer.translate(leftPlane, Vector3D(-25, 0., 0));	
+	raytracer.translate(leftPlane, Vector3D(-10, 0., -6));	
 	raytracer.scale(leftPlane, Point3D(0., 0., 0.), factor4);
 	raytracer.rotate(leftPlane, 'y', 90); 
 /*
@@ -135,8 +136,8 @@ int main(int argc, char* argv[])
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
 	
 	// Render it from a different point of view.
-	Point3D eye2(4., 2., 1.);
-	Vector3D view2(-4., -2., -6.);
+	Point3D eye2(6., 0., 3.);
+	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
 	
 	return 0;
