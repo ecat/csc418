@@ -203,9 +203,19 @@ void Raytracer::computeShading( Ray3D& ray ) {
         // Each lightSource provides its own shading function.
 
         // Implement shadows here if needed.
+        // TODO use area light source here
+        // Calculate ray between light source and shading intersection point
+		Vector3D lightingRayDirection = curLight->light->get_position() - ray.intersection.point;        
+        Ray3D lightingRay(ray.intersection.point + EPSILON * ray.intersection.normal, lightingRayDirection);
+        lightingRay.dir.normalize();
+        traverseScene(_root, lightingRay);
 
-        curLight->light->shade(ray);
+        if(lightingRay.intersection.none || lightingRay.intersection.mat->transparent){
+	        curLight->light->shade(ray);
+        }
+
         curLight = curLight->next;
+
     }
 }
 
