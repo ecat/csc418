@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -g -O2 -Wall -std=c++11
+CXXFLAGS = -g -O2 -Wall -std=c++11 -fopenmp
 LDFLAGS = -g
 LIBS = -lm
 HDRS=bmp_io.h  light_source.h  raytracer.h  scene_object.h  util.h
