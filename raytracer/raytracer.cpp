@@ -201,21 +201,64 @@ void Raytracer::computeShading( Ray3D& ray ) {
     for (;;) {
         if (curLight == nullptr) break;
         // Each lightSource provides its own shading function.
+        bool enableAreaLightSource = true;
 
         // Implement shadows here if needed.
-        // TODO use area light source here
         // Calculate ray between light source and shading intersection point
-		Vector3D lightingRayDirection = curLight->light->get_position() - ray.intersection.point;        
-        Ray3D lightingRay(ray.intersection.point + EPSILON * ray.intersection.normal, lightingRayDirection);
-        lightingRay.dir.normalize();
-        traverseScene(_root, lightingRay);
+        if(enableAreaLightSource){
+        	// Use this to calculate soft shadows and simulate an area source
+			Vector3D pointLightingRayDirection = curLight->light->get_position() - ray.intersection.point;        
 
-        if(lightingRay.intersection.none || lightingRay.intersection.mat->transparent){
+			// Find plane that light resides in
+			Vector3D v1 = cross(pointLightingRayDirection, Vector3D(1, 0, 1));
+			v1.normalize();
+			Vector3D v2 = cross(v1, pointLightingRayDirection);
+			v2.normalize();
+
+        	int numSources = 20;    	
+        	int numIntersects = 0;
+        	double areaLightRadius = 2;
+
+        	for(int i = 0 ; i < numSources; i++){
+				// Calculate a dr and dtheta uniformly distributed to simulate circle
+	    		double dr = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
+	    		double dtheta = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
+
+	    		// - PI < dtheta < PI
+	    		// 0 < dr < R
+	    		dr = dr * areaLightRadius;
+	    		dtheta = (dtheta * 2 * M_PI) - M_PI;
+
+        		Point3D lightOrigin = curLight->light->get_position() + dr * (cos(dtheta) * v1 + sin(dtheta) * v2);
+        		Vector3D areaLightingRayDirection = lightOrigin - ray.intersection.point;
+		        Ray3D lightingRay(ray.intersection.point + EPSILON * ray.intersection.normal, areaLightingRayDirection);
+		        lightingRay.dir.normalize();
+		        traverseScene(_root, lightingRay);
+
+		        if(lightingRay.intersection.none || lightingRay.intersection.mat->transparent){
+		        	// light ray didn't intersect anything
+		        }else{
+		        	// light ray intersected an object
+		        	numIntersects ++;
+		        }     		
+        	}
+
 	        curLight->light->shade(ray);
-        }
+	        ray.col = ((double) (numSources - numIntersects)/(double)numSources) * ray.col;
+
+        }else{
+        	// Shadows for point source
+			Vector3D lightingRayDirection = curLight->light->get_position() - ray.intersection.point;        
+	        Ray3D lightingRay(ray.intersection.point + EPSILON * ray.intersection.normal, lightingRayDirection);
+	        lightingRay.dir.normalize();
+	        traverseScene(_root, lightingRay);
+
+	        if(lightingRay.intersection.none || lightingRay.intersection.mat->transparent){
+		        curLight->light->shade(ray);
+	        }
+    	}
 
         curLight = curLight->next;
-
     }
 }
 
