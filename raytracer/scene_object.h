@@ -25,6 +25,7 @@ public:
         texturePath = _texturePath;
         bmp_read_test(texturePath.c_str());
         bmp_read(texturePath.c_str(), &width, &height, &_rbuffer, &_gbuffer, &_bbuffer);
+        //bmp_write("test.bmp", width, height, _rbuffer, _gbuffer, _bbuffer);
     };;
     virtual ~SceneObject() {}
 
@@ -50,6 +51,12 @@ public:
     Colour getTextureValue(double dx, double dy){
     	int i = (dx + 0.5) * height;
     	int j = (dy + 0.5) * width;
+
+        // There is a strange bug with reading in a bmp. It seems like the width wraps
+        // around (this is evident if you read a texture and immediately write to it)
+        // widths and heights with multiples of four does not fix it
+        // As such, crop roughly 5% of the width
+        j = (j + 0.05 * width) * (width-1)/(1.05 * width);
 
     	double r = _rbuffer[i * width + j]/255.;
     	double g = _gbuffer[i * width + j]/255.;
