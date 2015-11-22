@@ -33,16 +33,33 @@ void PointLight::shade( Ray3D& ray ) {
 	V.normalize();
 
 	// Take product of material color and light source color to calculalte phong shading model
-	ray.col = ray.intersection.mat->ambient * _col_ambient
-			+ std::max(0.0, ray.intersection.normal.dot(L)) * ray.intersection.mat->diffuse * _col_diffuse
-			+ std::max(0.0, std::pow(V.dot(R), ray.intersection.mat->specular_exp)) * ray.intersection.mat->specular * _col_specular
-			;
-
 	if(ray.intersection.hasTexture){
-		ray.col[0] *= ray.intersection.texValue[0];
-		ray.col[1] *= ray.intersection.texValue[1];		
-		ray.col[2] *= ray.intersection.texValue[2];		
+
+		if(ray.intersection.hasColourTexture){
+			// Blend colour with colour texture and ignore ambient material properties
+			ray.col = ray.intersection.texValue * _col_ambient
+					+ std::max(0.0, ray.intersection.normal.dot(L)) * ray.intersection.mat->diffuse * _col_diffuse
+					+ std::max(0.0, std::pow(V.dot(R), ray.intersection.mat->specular_exp)) * ray.intersection.mat->specular * _col_specular
+					;					
+		}else{
+			// Blend colour with a black and white texture
+			ray.col = ray.intersection.mat->ambient * _col_ambient
+					+ std::max(0.0, ray.intersection.normal.dot(L)) * ray.intersection.mat->diffuse * _col_diffuse
+					+ std::max(0.0, std::pow(V.dot(R), ray.intersection.mat->specular_exp)) * ray.intersection.mat->specular * _col_specular
+					;		
+
+			ray.col[0] *= ray.intersection.texValue[0];
+			ray.col[1] *= ray.intersection.texValue[1];		
+			ray.col[2] *= ray.intersection.texValue[2];						
+		}
+	}else{
+		// Normal shading, take the colour properties of object
+		ray.col = ray.intersection.mat->ambient * _col_ambient
+				+ std::max(0.0, ray.intersection.normal.dot(L)) * ray.intersection.mat->diffuse * _col_diffuse
+				+ std::max(0.0, std::pow(V.dot(R), ray.intersection.mat->specular_exp)) * ray.intersection.mat->specular * _col_specular
+				;				
 	}
+
 
 	// Clamp value of color so that there is no overflow
 	ray.col.clamp();

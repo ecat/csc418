@@ -74,9 +74,9 @@ int main(int argc, char* argv[])
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
     SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );    
-    backPlane->obj->setTexture("jade_tex.bmp");
-    leftPlane->obj->setTexture("jade_tex.bmp");
-    //sphere->obj->setTexture("earth.bmp");
+    backPlane->obj->setTextureGrayScale("jade_tex.bmp");
+    leftPlane->obj->setTextureGrayScale("jade_tex.bmp");
+    sphere2->obj->setTextureColour("earth.bmp");
 
     //SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
     //SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );

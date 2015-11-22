@@ -185,8 +185,11 @@ struct Intersection {
     // Set to true when no intersection has occured.
     bool none;
 
-    // Texture value at the intersection 
+    // Check whether the intersection intersects an object with texture
     bool hasTexture;
+    // Does that intersection have colour or is it grayscale
+    bool hasColourTexture; 
+    // Texture value at the intersection     
     Colour texValue;
 };
 

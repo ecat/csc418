@@ -21,22 +21,36 @@ public:
     using Ptr = std::shared_ptr<SceneObject>;
 	virtual bool intersect( Ray3D&, const Matrix4x4&, const Matrix4x4& ) = 0;
 	virtual Colour getTextureValue(double dx, double dy) = 0;
-	void setTexture(std::string _texturePath){
-        texturePath = _texturePath;
-        bmp_read_test(texturePath.c_str());
-        bmp_read(texturePath.c_str(), &width, &height, &_rbuffer, &_gbuffer, &_bbuffer);
-        //bmp_write("test.bmp", width, height, _rbuffer, _gbuffer, _bbuffer);
-    };;
+	
+    void setTextureGrayScale(std::string _texturePath){
+        isColourTexture = false;
+        setTexture(_texturePath);
+    };
+
+    // Doing this overwrites the ambient colour properties of the object
+    void setTextureColour(std::string _texturePath){
+        isColourTexture = true;        
+        setTexture(_texturePath);
+    };
+
     virtual ~SceneObject() {}
 
     // Variables for managing textures
     std::string texturePath;
+    bool isColourTexture;    
     long unsigned int width;
     long int height;
 
     unsigned char* _rbuffer;
     unsigned char* _gbuffer;
     unsigned char* _bbuffer;    
+
+private:
+    void setTexture(std::string _texturePath){
+        texturePath = _texturePath;   
+        bmp_read_test(texturePath.c_str());
+        bmp_read(texturePath.c_str(), &width, &height, &_rbuffer, &_gbuffer, &_bbuffer);
+    };
 
 };
 
@@ -72,9 +86,16 @@ public:
 
 
     // Accesses the texture memory and returns the colour associated with that location
-    Colour getTextureValue(double dx, double dy){
+    Colour getTextureValue(double u, double v){
+        // u, v is scaled between 0 and 1
 
-    	return Colour(0., 0., 0.);
+        int i = (u) * height;
+        int j = (v) * width;    
+
+        double r = _rbuffer[i * width + j]/255.;
+        double g = _gbuffer[i * width + j]/255.;
+        double b = _bbuffer[i * width + j]/255.;
+        return Colour(r, g, b);
     };
 };
 

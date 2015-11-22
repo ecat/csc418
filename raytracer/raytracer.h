@@ -100,6 +100,10 @@ public:
 
 	// Maximum number of reflections that are calculated
 	const int MAX_NUM_REFLECTIONS = 5;
+
+	// Number of points for calculating soft shadows
+	const int NUM_SOFT_SHADOW_SOURCES = 20;
+
 	// Offset from intersection in normal direction
 	const double EPSILON = 0.001;
 
