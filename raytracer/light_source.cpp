@@ -37,10 +37,10 @@ void PointLight::shade( Ray3D& ray ) {
 
 		if(ray.intersection.hasColourTexture){
 			// Blend colour with colour texture and ignore ambient material properties
-			ray.col = ray.intersection.texValue * _col_ambient
+			ray.col = ray.intersection.texValue * _col_ambient/*
 					+ std::max(0.0, ray.intersection.normal.dot(L)) * ray.intersection.mat->diffuse * _col_diffuse
-					+ std::max(0.0, std::pow(V.dot(R), ray.intersection.mat->specular_exp)) * ray.intersection.mat->specular * _col_specular
-					;					
+					+ std::max(0.0, std::pow(V.dot(R), ray.intersection.mat->specular_exp)) * ray.intersection.mat->specular * _col_specular*/
+					;			
 		}else{
 			// Blend colour with a black and white texture
 			ray.col = ray.intersection.mat->ambient * _col_ambient

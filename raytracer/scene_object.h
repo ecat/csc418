@@ -95,7 +95,13 @@ public:
         double r = _rbuffer[i * width + j]/255.;
         double g = _gbuffer[i * width + j]/255.;
         double b = _bbuffer[i * width + j]/255.;
-        return Colour(r, g, b);
+        if(isColourTexture){
+            // For some weird reason, the bgr  channels are flipped when reading from texture
+            // colour. Verified this by loading a red and got purely green
+            return Colour(g, b, r);
+        }else{
+            return Colour(r, g, b);
+        }
     };
 };
 
