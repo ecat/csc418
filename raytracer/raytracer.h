@@ -104,8 +104,12 @@ public:
 	// Number of points for calculating soft shadows
 	const int NUM_SOFT_SHADOW_SOURCES = 20;
 
+	// Enable or disable soft shadows
+	const bool ENABLE_SOFT_SHADOWS = true;
+
 	// Offset from intersection in normal direction
 	const double EPSILON = 0.001;
+
 
 private:
 	// Allocates and initializes the pixel buffer for rendering, you

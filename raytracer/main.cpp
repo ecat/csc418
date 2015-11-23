@@ -19,10 +19,10 @@ int main(int argc, char* argv[])
 	// change this if you're just implementing part one of the 
 	// assignment.  
 	Raytracer raytracer;
-	//int width = 1920; 
-	//int height = 1080; 
-	int width = 480; 
-	int height = 360; 
+	int width = 1920; 
+	int height = 1080; 
+	//int width = 480; 
+	//int height = 360; 
 
 	if (argc == 3) {
 		width = atoi(argv[1]);
@@ -69,21 +69,17 @@ int main(int argc, char* argv[])
 				Colour(0.9, 0.9, 0.9) ) );
 
 	// Add a unit square into the scene with material mat.
-    SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
+    /*SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
+    sphere2->obj->setTextureColour("earth.bmp");    
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
     SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
+    leftPlane->obj->setTextureGrayScale("jade_tex.bmp");    
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );    
-    backPlane->obj->setTextureGrayScale("jade_tex.bmp");
-    leftPlane->obj->setTextureGrayScale("jade_tex.bmp");
-    sphere2->obj->setTextureColour("earth.bmp");
+	backPlane->obj->setTextureGrayScale("jade_tex.bmp");    
+    */SceneDagNode::Ptr earthSphere = raytracer.addObject( std::make_shared<UnitSphere>(), blue);    
+    earthSphere->obj->setTextureColour("earth2.bmp");
 
-    //SceneDagNode::Ptr plane2 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
-    //SceneDagNode::Ptr plane3 = raytracer.addObject( std::make_shared<UnitSquare>(), mirror );
-    //SceneDagNode::Ptr plane4 = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
-    //SceneDagNode::Ptr glassPieceFwd = raytracer.addObject( std::make_shared<UnitSquare>(), glass );
-    //SceneDagNode::Ptr glassPieceBkwd = raytracer.addObject( std::make_shared<UnitSquare>(), glass );    
-  	//SceneDagNode::Ptr jadePiece = raytracer.addObject( std::make_shared<UnitSquare>(), jade);
 
 	
 	// Apply some transformations to the unit square.
@@ -91,7 +87,8 @@ int main(int argc, char* argv[])
 	double factor2[3] = { 4.0, 4.0, 4.0 };
 	double factor3[3] = { 20.0, 20.0, 1.0};
 	double factor4[3] = { 10.0, 20., 20.};
-
+	double earthFactor[3] = {7.5, 7.5, 7.5};
+/*
 	raytracer.translate(sphere, Vector3D(0., 0., -4.));	
 	//raytracer.rotate(sphere, 'x', -45); 
 	//raytracer.rotate(sphere, 'z', 45); 
@@ -105,33 +102,19 @@ int main(int argc, char* argv[])
 
 	raytracer.translate(backPlane, Vector3D(0, 0, -16));
 	raytracer.scale(backPlane, Point3D(0, 0,  0), factor3);
-	/*
-	raytracer.translate(glassPieceFwd, Vector3D(0., -1., -3.));	
-	raytracer.scale(glassPieceFwd, Point3D(0., 0., 0.), factor1);
 
-	raytracer.translate(glassPieceBkwd, Vector3D(0., -1., -3.26));	
-	raytracer.rotate(glassPieceBkwd, 'y', 180);	
-	raytracer.scale(glassPieceBkwd, Point3D(0., 0., 0.), factor1);	
-*/
 	raytracer.translate(leftPlane, Vector3D(-10, 0., -6));	
 	raytracer.scale(leftPlane, Point3D(0., 0., 0.), factor4);
 	raytracer.rotate(leftPlane, 'y', 90); 
-/*
-	raytracer.translate(plane2, Vector3D(5, 0, -7));
-	raytracer.rotate(plane2, 'y', -80); 
-	raytracer.scale(plane2, Point3D(0., 0., 0.), factor2);	
+*/
+	raytracer.translate(earthSphere, Vector3D(0., 0., -8));
+	raytracer.rotate(earthSphere, 'y',60); // Change this angle to rotate globe
+	// the following rotations make the earth sphere appear right side up
+	raytracer.rotate(earthSphere, 'x', 90);
+	raytracer.rotate(earthSphere, 'y', 90);
+	raytracer.rotate(earthSphere, 'z', 90);
+	raytracer.scale(earthSphere, Point3D(0., 0., 0.), earthFactor);
 
-	raytracer.translate(plane3, Vector3D(0, 6, -7));
-	raytracer.rotate(plane3, 'x', 90); 
-	raytracer.scale(plane3, Point3D(0., 0., 0.), factor2);	
-
-	raytracer.translate(plane4, Vector3D(0, -6, -7));
-	raytracer.rotate(plane4, 'x', -90); 
-	raytracer.scale(plane4, Point3D(0., 0., 0.), factor2);	
-	*/
-
-	//raytracer.translate(backPlane, Vector3D(0, 0, -12));
-	//raytracer.scale(backPlane, Point3D(0., 0., 0.), factor2);	
 
 	// Render the scene, feel free to make the image smaller for
 	// testing purposes.	

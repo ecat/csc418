@@ -135,14 +135,14 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 				ray.intersection.normal = worldToModel.transpose() * (intersection_1 - c);
 
 				u = 0.5 + atan2(intersection_1[2], intersection_1[0])/ (2 * M_PI);
-				v = 0.5 - asin(intersection_1[1])/ M_PI;
+				v = 0.5 - asin(intersection_1[1]/d)/ M_PI;
 			}else {
 				ray.intersection.t_value = t_2;
 				ray.intersection.point = modelToWorld * intersection_2;
 				ray.intersection.normal = worldToModel.transpose() * (intersection_2 - c);
 
 				u = 0.5 + atan2(intersection_2[2], intersection_2[0])/ (2 * M_PI);
-				v = 0.5 - asin(intersection_2[1])/ M_PI;				
+				v = 0.5 - asin(intersection_2[1]/d)/ M_PI;
 			}
 
 			ray.intersection.normal.normalize();

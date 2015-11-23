@@ -201,11 +201,10 @@ void Raytracer::computeShading( Ray3D& ray ) {
     for (;;) {
         if (curLight == nullptr) break;
         // Each lightSource provides its own shading function.
-        bool enableAreaLightSource = true;
 
         // Implement shadows here if needed.
         // Calculate ray between light source and shading intersection point
-        if(enableAreaLightSource){
+        if(ENABLE_SOFT_SHADOWS){
         	// Use this to calculate soft shadows and simulate an area source
 			Vector3D pointLightingRayDirection = curLight->light->get_position() - ray.intersection.point;        
 

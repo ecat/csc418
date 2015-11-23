@@ -89,12 +89,12 @@ public:
     Colour getTextureValue(double u, double v){
         // u, v is scaled between 0 and 1
 
-        int i = (u) * height;
-        int j = (v) * width;    
+        int i = (u) * width;
+        int j = (v) * height;    
 
-        double r = _rbuffer[i * width + j]/255.;
-        double g = _gbuffer[i * width + j]/255.;
-        double b = _bbuffer[i * width + j]/255.;
+        double r = _rbuffer[j * width + i]/255.;
+        double g = _gbuffer[j * width + i]/255.;
+        double b = _bbuffer[j * width + i]/255.;
         if(isColourTexture){
             // For some weird reason, the bgr  channels are flipped when reading from texture
             // colour. Verified this by loading a red and got purely green
