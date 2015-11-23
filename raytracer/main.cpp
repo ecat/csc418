@@ -69,17 +69,21 @@ int main(int argc, char* argv[])
 				Colour(0.9, 0.9, 0.9) ) );
 
 	// Add a unit square into the scene with material mat.
-    /*SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
+    SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
-    sphere2->obj->setTextureColour("earth.bmp");    
+    sphere2->obj->setTextureColour("earth2.bmp");    
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
     SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
     leftPlane->obj->setTextureGrayScale("jade_tex.bmp");    
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );    
 	backPlane->obj->setTextureGrayScale("jade_tex.bmp");    
-    */SceneDagNode::Ptr earthSphere = raytracer.addObject( std::make_shared<UnitSphere>(), blue);    
+    SceneDagNode::Ptr rightPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
+    rightPlane->obj->setTextureGrayScale("jade_tex.bmp");    	
+    SceneDagNode::Ptr bottomPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
+    bottomPlane->obj->setTextureGrayScale("jade_tex.bmp");      
+    /*SceneDagNode::Ptr earthSphere = raytracer.addObject( std::make_shared<UnitSphere>(), blue);    
     earthSphere->obj->setTextureColour("earth2.bmp");
-
+*/
 
 	
 	// Apply some transformations to the unit square.
@@ -87,14 +91,18 @@ int main(int argc, char* argv[])
 	double factor2[3] = { 4.0, 4.0, 4.0 };
 	double factor3[3] = { 20.0, 20.0, 1.0};
 	double factor4[3] = { 10.0, 20., 20.};
+	double factor5[3] = { 20.0, 1.0, 20.0};
 	double earthFactor[3] = {7.5, 7.5, 7.5};
-/*
-	raytracer.translate(sphere, Vector3D(0., 0., -4.));	
+
+	raytracer.translate(sphere, Vector3D(0., 0., -3.));	
 	//raytracer.rotate(sphere, 'x', -45); 
 	//raytracer.rotate(sphere, 'z', 45); 
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
 
 	raytracer.translate(sphere2, Vector3D(0., -2., -10));
+	raytracer.rotate(sphere2, 'x', 90);
+	raytracer.rotate(sphere2, 'y', 90);
+	raytracer.rotate(sphere2, 'z', 90);
 	raytracer.scale(sphere2, Point3D(0., 0., 0.), factor2);
 
 	raytracer.translate(sphere3, Vector3D(0., 2., -10));
@@ -106,7 +114,15 @@ int main(int argc, char* argv[])
 	raytracer.translate(leftPlane, Vector3D(-10, 0., -6));	
 	raytracer.scale(leftPlane, Point3D(0., 0., 0.), factor4);
 	raytracer.rotate(leftPlane, 'y', 90); 
-*/
+
+	raytracer.translate(rightPlane, Vector3D(10, 0., -6));	
+	raytracer.scale(rightPlane, Point3D(0., 0., 0.), factor4);
+	raytracer.rotate(rightPlane, 'y', -90); 	
+
+	raytracer.translate(bottomPlane, Vector3D(0, -10, -6));	
+	raytracer.scale(bottomPlane, Point3D(0., 0., 0.), factor5);
+	raytracer.rotate(bottomPlane, 'x', -90); 	
+/*
 	raytracer.translate(earthSphere, Vector3D(0., 0., -8));
 	raytracer.rotate(earthSphere, 'y',60); // Change this angle to rotate globe
 	// the following rotations make the earth sphere appear right side up
@@ -114,7 +130,7 @@ int main(int argc, char* argv[])
 	raytracer.rotate(earthSphere, 'y', 90);
 	raytracer.rotate(earthSphere, 'z', 90);
 	raytracer.scale(earthSphere, Point3D(0., 0., 0.), earthFactor);
-
+*/
 
 	// Render the scene, feel free to make the image smaller for
 	// testing purposes.	

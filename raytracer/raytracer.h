@@ -105,7 +105,10 @@ public:
 	const int NUM_SOFT_SHADOW_SOURCES = 20;
 
 	// Enable or disable soft shadows
-	const bool ENABLE_SOFT_SHADOWS = true;
+	const bool ENABLE_SOFT_SHADOWS = false;
+
+	// Enable or disable antialiasing
+	const bool ENABLE_ANTI_ALIASING = false;
 
 	// Offset from intersection in normal direction
 	const double EPSILON = 0.001;

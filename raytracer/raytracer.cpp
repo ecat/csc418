@@ -370,19 +370,7 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 				// Calculate total reflectance
 				total_reflectance = (reflectance_para + reflectance_perp) / 2;
 				total_transmittance = 1.0 - total_reflectance;
-				/*
-				std::cout << " reflection number " << ray.num_reflections << std::endl;
-		    	std::cout << " approaching from back: " << approachingFromBack << std::endl; 
-		    	std::cout << " n1 " << n_1 << " n_2 " << n_2 << " t " << ray.intersection.t_value << std::endl;
-		    	std::cout << " theta_incident " << theta_incident * 180/M_PI << " theta_t " << theta_transmitted * 180/M_PI << std::endl;
-		    	std::cout << " ray.direction " << ray.dir << " refracted.direction " << refractedRay.dir << std::endl;
-		    	std::cout << " ray intersection " << ray.intersection.point << std::endl;
-		    	std::cout << " normal: " << ray.intersection.normal << std::endl;
-		    	std::cout << " ray.origin " << ray.origin << " refracted.origin " << refractedRay.origin << std::endl;
-		    	std::cout << " color: " << refractedCol << std::endl;
-		    	std::cout << " transmittance " << total_transmittance << " reflectance " << total_reflectance<< std::endl;
-				*/
-
+				
 		    	col[0] = total_reflectance * col[0] + total_transmittance * refractedCol[0];
 		    	col[1] = total_reflectance * col[1] + total_transmittance * refractedCol[1];
 		    	col[2] = total_reflectance * col[2] + total_transmittance * refractedCol[2];	    	
@@ -420,15 +408,8 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	double b_scale = ray.intersection.mat->specular[2];    	
 		    	col[0] += (r_scale) * reflectedCol[0];
 		    	col[1] += (g_scale) * reflectedCol[1];
-		    	col[2] += (b_scale) * reflectedCol[2];
-		    	
-		   		//std::cout << " reflection number " << ray.num_reflections << std::endl;
-	    		//std::cout << "ray.origin : " << ray.origin << " ray.dir: " << ray.dir << std::endl;			
-		   		//std::cout << "intersection " << ray.intersection.point <<
-		   		//" reflected intersection " << reflectedRay.intersection.point << std::endl;
-	    		//std::cout << "reflectedRay.origin : " << reflectedRay.origin << " reflectedRay.dir: " << reflectedRay.dir << std::endl;
-	    		//std::cout << " color: " << reflectedCol << std::endl;
-				
+		    	col[2] += (b_scale) * reflectedCol[2];    	
+		   		
 	    	}
 	    }
 
@@ -462,13 +443,12 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 }
 
 void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j){
-    bool enableMultiSampling = true; // DEBUG
 
     // Sets up ray origin and direction in view space, 
     // image plane is at z = -1.
     Point3D origin(0., 0., 0.);
 
-    if(enableMultiSampling){
+    if(ENABLE_ANTI_ALIASING){
     	double _rbuffertmp = 0;
     	double _gbuffertmp = 0;
     	double _bbuffertmp = 0;
