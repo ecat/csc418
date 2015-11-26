@@ -79,6 +79,19 @@ public:
     };
 };
 
+
+class UnitCube : public SceneObject {
+public:
+    bool intersect( Ray3D& ray, const Matrix4x4& worldToModel,
+            const Matrix4x4& modelToWorld );
+
+    // Accesses the texture memory and returns the colour associated with that location
+    Colour getTextureValue(double dx, double dy){
+        return Colour(0, 0, 0);
+    };
+};
+
+
 class UnitSphere : public SceneObject {
 public:
 	bool intersect( Ray3D& ray, const Matrix4x4& worldToModel,

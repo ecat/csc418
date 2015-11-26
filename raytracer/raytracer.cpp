@@ -434,7 +434,7 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
     bool ENABLE_MULTI_THREAD = false;
 
 	// Unfortunately, multithreading doesn't provide many gains
-	// suspicion is due to rand which is blocking, would have to use rand_r instead
+	// suspicion is due to rand which is blocking, had to switch to rand_r instead
 	if(ENABLE_MULTI_THREAD){
 	    boost::thread_group group;
 	    int numThreads = 8;

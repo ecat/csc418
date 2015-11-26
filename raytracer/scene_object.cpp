@@ -73,7 +73,78 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	return false;
 }
 
+bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
+		const Matrix4x4& modelToWorld ) {
+	// Convert ray to object space
+	Ray3D r_objectSpace(worldToModel * ray.origin, worldToModel * ray.dir);
+	r_objectSpace.dir.normalize(); // Need to normalize this vector so that projection works
 
+	// Determine intersection of unit cube with ray 
+	// Find x projections
+	double t1 = (-0.5 - r_objectSpace.origin[0])/r_objectSpace.dir[0];
+	double t2 = (0.5 - r_objectSpace.origin[0])/r_objectSpace.dir[0];	
+	// Find y projections
+	double t3 = (0.5 - r_objectSpace.origin[1])/r_objectSpace.dir[1];	
+	double t4 = (-0.5 - r_objectSpace.origin[1])/r_objectSpace.dir[1];	
+	// Find z projections
+	double t5 = (0.5 - r_objectSpace.origin[2])/r_objectSpace.dir[2];	
+	double t6 = (-0.5 - r_objectSpace.origin[2])/r_objectSpace.dir[2];	
+
+	double tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+	double tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+
+
+	if(tmin < 0){
+		return false;
+	}
+
+	//std::cout << "tmax " << tmax << " tmin " << tmin << " int " << ray.intersection.t_value << std::endl;
+	// ray doesn't intersect
+	if(!ray.intersection.none){
+		if(tmin > tmax || tmin > ray.intersection.t_value){
+			return false;
+		}
+	}
+	
+	Point3D localIntersection = r_objectSpace.origin + tmin * r_objectSpace.dir;
+
+	for(int i = 0 ; i < 3; i++){
+		if(localIntersection[i] < -0.5 || localIntersection[i] > 0.5){
+			return false;
+		}
+	}
+
+	Vector3D localNormal;
+
+	ray.intersection.t_value = tmin;
+	// Bring the points and normals back to world space
+	ray.intersection.point = modelToWorld * localIntersection;
+
+	double EPS = 0.001;
+	if(localIntersection[0] < -0.5 + EPS){
+		localNormal = Vector3D(-1, 0,  0);
+	}else if(localIntersection[0] > 0.5 - EPS){
+		localNormal = Vector3D(1, 0,  0);
+	}else if(localIntersection[1] < -0.5 + EPS){
+		localNormal = Vector3D(0, -1, 0);
+	}else if(localIntersection[1] > 0.5 - EPS){
+		localNormal = Vector3D(0, 1, 0);
+	}else if(localIntersection[2] > 0.5 - EPS){
+		localNormal = Vector3D(0, 0, 1);
+	}else{
+		localNormal = Vector3D(0, 0, -1);
+	}
+
+	// Bringing normals back to world space requires special math
+	ray.intersection.normal = worldToModel.transpose() * localNormal;
+	ray.intersection.normal.normalize();
+
+	ray.intersection.none = false;
+	ray.intersection.hasTexture = false;
+
+
+	return true;
+}
 
 bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		const Matrix4x4& modelToWorld ) {

@@ -10,6 +10,7 @@
 
 #include <cmath>
 #include "light_source.h"
+#include <iostream>
 
 void PointLight::shade( Ray3D& ray ) {
 	// TODO: implement this function to fill in values for ray.col 
