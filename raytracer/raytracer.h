@@ -117,7 +117,7 @@ public:
 	const bool ENABLE_DEPTH_OF_FIELD = true;
 
 	// Number of view points to generate depth of field
-	const int NUM_DEPTH_OF_FIELD_SAMPLES = 12;
+	const int NUM_DEPTH_OF_FIELD_SAMPLES = 1;
 
 	// Offset from intersection in normal direction
 	const double EPSILON = 0.001;
@@ -151,6 +151,9 @@ private:
     // Precompute the modelToWorld and worldToModel transformations for each
     // object in the scene.
     void computeTransforms( SceneDagNode::Ptr node );
+
+    // Divides the raytracing into image segments for threading
+	void segment(int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up);
 
     // Function that computes coloring of one pixel
 	void renderHelper(double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j);

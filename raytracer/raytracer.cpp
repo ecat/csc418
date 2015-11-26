@@ -14,7 +14,7 @@
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
-#include <boost/filesystem.hpp>
+#include <boost/thread.hpp>
 
 Raytracer::Raytracer() : _lightSource(nullptr) {
 	_root = std::make_shared<SceneDagNode>();
@@ -425,42 +425,64 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 void Raytracer::render( int width, int height, Point3D eye, Vector3D view, 
         Vector3D up, double fov, std::string fileName ) {
     computeTransforms(_root);
-    Matrix4x4 viewToWorld;
     _scrWidth = width;
     _scrHeight = height;
     double factor = (double(height)/2)/tan(fov*M_PI/360.0);
-    double apertureRadius = 0.25; // Higher aperture radius gives more blur
 
     initPixelBuffer();
+
+	// Unfortunately, multithreading doesn't provide many gains
+	// suspicion is due to rand which is blocking, would have to use rand_r instead
+    /*boost::thread_group group;
+    int numThreads = 8;
+
+    for(int i = 0 ; i < numThreads; i++){
+    	group.add_thread(new boost::thread(&Raytracer::segment, this,
+    	i * height/numThreads, (i+1) * height/numThreads, factor, eye, view, up));
+    }
+    group.join_all();
+	*/
+    segment(0, _scrHeight, factor, eye, view, up);
+
+	flushPixelBuffer(fileName);
+}
+
+void Raytracer::segment(int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up){
+
     Point3D focusPoint(0., 0., -3);
+    Matrix4x4 viewToWorld;
+    double apertureRadius = 0.25; // Higher aperture radius gives more blur
+	for(int k = 0 ; k < NUM_DEPTH_OF_FIELD_SAMPLES; k++){
 
-    for(int k = 0 ; k < NUM_DEPTH_OF_FIELD_SAMPLES; k++){
-		// Find plane that camera aperture resides in
-		Vector3D v1 = cross(view, Vector3D(1, 0, 1));
-		v1.normalize();
-		Vector3D v2 = cross(v1, view);
-		v2.normalize();
+		if(ENABLE_DEPTH_OF_FIELD || NUM_DEPTH_OF_FIELD_SAMPLES == 1){
+			// Find plane that camera aperture resides in
+			Vector3D v1 = cross(view, Vector3D(1, 0, 1));
+			v1.normalize();
+			Vector3D v2 = cross(v1, view);
+			v2.normalize();
 
-		double dr = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
-		double dtheta = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
-		dr = dr * apertureRadius;
-		dtheta = (dtheta * 2 * M_PI) - M_PI;
-		
-		Point3D newEye = eye + (cos(dtheta) * dr * v1) + (sin(dtheta) * dr * v2);
-    	// Move eye in an area perpendicular to the viewing axis to do depth of field
-    	Vector3D focusView = focusPoint - newEye;
-    	focusView.normalize();
+			double dr = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
+			double dtheta = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
+			dr = dr * apertureRadius;
+			dtheta = (dtheta * 2 * M_PI) - M_PI;
+			
+			Point3D newEye = eye + (cos(dtheta) * dr * v1) + (sin(dtheta) * dr * v2);
+			// Move eye in an area perpendicular to the viewing axis to do depth of field
+			Vector3D focusView = focusPoint - newEye;
+			focusView.normalize();
 
-	    // Construct multiple rays for each pixel.
-	    for (int i = 0; i < _scrHeight; i++) {
+			viewToWorld = initInvViewMatrix(newEye, focusView, up);
+		}else{
+			viewToWorld = initInvViewMatrix(eye, view, up);
+		}
+	  	// Construct multiple rays for each pixel.
+	    for (int i = row_start; i < row_end; i++) {
 	        for (int j = 0; j < _scrWidth; j++) {
-	    		viewToWorld = initInvViewMatrix(newEye, focusView, up);
-	        	renderHelper(factor, viewToWorld, width, height, i, j);
+
+	        	renderHelper(factor, viewToWorld, _scrWidth, _scrHeight, i, j);
 			}
 		}
 	}
-
-	flushPixelBuffer(fileName);
 }
 
 void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j){
@@ -469,7 +491,7 @@ void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, in
     // image plane is at z = -1.
     Point3D origin(0., 0., 0.);
 
-    if(ENABLE_ANTI_ALIASING || ENABLE_DEPTH_OF_FIELD){
+    if(ENABLE_ANTI_ALIASING){
     	double _rbuffertmp = 0;
     	double _gbuffertmp = 0;
     	double _bbuffertmp = 0;
