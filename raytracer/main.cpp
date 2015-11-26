@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 	Raytracer raytracer;
 	//int width = 1920; 
 	//int height = 1080; 
-	int width = 480; 
-	int height = 360; 
+	int width = 240; 
+	int height = 180; 
 
 	if (argc == 3) {
 		width = atoi(argv[1]);
@@ -31,7 +31,8 @@ int main(int argc, char* argv[])
 
 	// Seed random  number generator for stochastic raytracing
 	srand (static_cast <unsigned> (time(0)));
-	const clock_t begin_time = std::clock();
+	std::time_t start;
+	time(&start);
 
 	// Camera parameters.
 	Point3D eye(0., 0., 1.);
@@ -141,7 +142,9 @@ int main(int argc, char* argv[])
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
 	
-	std::cout << "Elapsed time: " << float(std::clock() - begin_time)/CLOCKS_PER_SEC << std::endl;
+	std::time_t end;
+	time(&end);
+	std::cout << "Elapsed time: " << difftime(end, start) << std::endl;
 
 	return 0;
 }
