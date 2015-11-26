@@ -197,7 +197,7 @@ void Raytracer::traverseScene( SceneDagNode::Ptr node, Ray3D& ray ) {
 
 }
 
-void Raytracer::computeShading( Ray3D& ray ) {
+void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
     LightListNode::Ptr curLight = _lightSource;
     for (;;) {
         if (curLight == nullptr) break;
@@ -219,8 +219,8 @@ void Raytracer::computeShading( Ray3D& ray ) {
         	double rayPower = 0;
         	for(int i = 0 ; i < NUM_SOFT_SHADOW_SOURCES; i++){
 				// Calculate a dr and dtheta uniformly distributed to simulate circle
-	    		double dr = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
-	    		double dtheta = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
+	    		double dr = static_cast <double> (raytracerRand(thread_id)) / static_cast<double>(RAND_MAX);
+	    		double dtheta = static_cast <double> (raytracerRand(thread_id)) / static_cast<double>(RAND_MAX);	
 
 	    		// - PI < dtheta < PI
 	    		// 0 < dr < R
@@ -285,14 +285,14 @@ void Raytracer::flushPixelBuffer( std::string file_name ) {
     delete _bbuffer;
 }
 
-Colour Raytracer::shadeRay( Ray3D& ray ) {
+Colour Raytracer::shadeRay(int thread_id,  Ray3D& ray ) {
     Colour col(0.0, 0.0, 0.0); 
     traverseScene(_root, ray); 
 
     // Don't bother shading if the ray didn't hit 
     // anything.
     if (!ray.intersection.none) {
-        computeShading(ray); 
+        computeShading(thread_id, ray); 
         col = ray.col;  
     }
 
@@ -357,7 +357,7 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 		    	refractedRay.refractive_index = n_2;    	
 		    	refractedRay.dir.normalize();
 
-		    	Colour refractedCol = shadeRay(refractedRay);
+		    	Colour refractedCol = shadeRay(thread_id, refractedRay);
 
 		    	// Calculate Fresnel equations
 		    	double reflectance_perp = (n_1 * cos(theta_incident) - n_2 * cos(theta_transmitted))/
@@ -396,7 +396,7 @@ Colour Raytracer::shadeRay( Ray3D& ray ) {
 	    	reflectedRay.refractive_index = ray.refractive_index;
 	    	reflectedRay.dir.normalize();
 
-	    	Colour reflectedCol = shadeRay(reflectedRay);
+	    	Colour reflectedCol = shadeRay(thread_id, reflectedRay);
 
 	    	// We don't care if the reflected ray went into the background 
 	    	if(!reflectedRay.intersection.none || reflectedRay.intersection.none){
@@ -431,38 +431,46 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 
     initPixelBuffer();
 
+    bool ENABLE_MULTI_THREAD = false;
+
 	// Unfortunately, multithreading doesn't provide many gains
 	// suspicion is due to rand which is blocking, would have to use rand_r instead
-    /*boost::thread_group group;
-    int numThreads = 8;
+	if(ENABLE_MULTI_THREAD){
+	    boost::thread_group group;
+	    int numThreads = 8;
+	    _seeds = new unsigned int[numThreads];
 
-    for(int i = 0 ; i < numThreads; i++){
-    	group.add_thread(new boost::thread(&Raytracer::segment, this,
-    	i * height/numThreads, (i+1) * height/numThreads, factor, eye, view, up));
+	    for(int i = 0 ; i < numThreads; i++){
+	    	_seeds[i] = clock();
+	    	group.add_thread(new boost::thread(&Raytracer::segment, this, i,
+	    	i * height/numThreads, (i+1) * height/numThreads, factor, eye, view, up));
+	    }
+	    group.join_all();
+	}else{
+		_seeds = new unsigned int[1];
+		_seeds[0] = clock();
+	    segment(0, 0, _scrHeight, factor, eye, view, up);
     }
-    group.join_all();
-	*/
-    segment(0, _scrHeight, factor, eye, view, up);
 
 	flushPixelBuffer(fileName);
 }
 
-void Raytracer::segment(int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up){
+void Raytracer::segment(int thread_id, int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up){
 
     Point3D focusPoint(0., 0., -3);
     Matrix4x4 viewToWorld;
     double apertureRadius = 0.25; // Higher aperture radius gives more blur
 	for(int k = 0 ; k < NUM_DEPTH_OF_FIELD_SAMPLES; k++){
 
-		if(ENABLE_DEPTH_OF_FIELD || NUM_DEPTH_OF_FIELD_SAMPLES == 1){
+		if(ENABLE_DEPTH_OF_FIELD || NUM_DEPTH_OF_FIELD_SAMPLES > 1){
 			// Find plane that camera aperture resides in
 			Vector3D v1 = cross(view, Vector3D(1, 0, 1));
 			v1.normalize();
 			Vector3D v2 = cross(v1, view);
 			v2.normalize();
 
-			double dr = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
-			double dtheta = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
+			double dr = static_cast <double> (raytracerRand(thread_id)) / static_cast<double>(RAND_MAX);
+			double dtheta = static_cast <double> (raytracerRand(thread_id)) / static_cast<double>(RAND_MAX);	
 			dr = dr * apertureRadius;
 			dtheta = (dtheta * 2 * M_PI) - M_PI;
 			
@@ -479,13 +487,13 @@ void Raytracer::segment(int row_start, int row_end, double factor, Point3D eye, 
 	    for (int i = row_start; i < row_end; i++) {
 	        for (int j = 0; j < _scrWidth; j++) {
 
-	        	renderHelper(factor, viewToWorld, _scrWidth, _scrHeight, i, j);
+	        	renderHelper(thread_id, factor, viewToWorld, _scrWidth, _scrHeight, i, j);
 			}
 		}
 	}
 }
 
-void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j){
+void Raytracer::renderHelper(int thread_id, double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j){
 
     // Sets up ray origin and direction in view space, 
     // image plane is at z = -1.
@@ -497,8 +505,8 @@ void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, in
     	double _bbuffertmp = 0;
     	
         for(int u = 0; u < NUM_ANTIALIASING_SAMPLES; u++){
-        		double dx = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
-        		double dy = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
+        		double dx = static_cast <double> (raytracerRand(thread_id)) / static_cast<double>(RAND_MAX);
+        		double dy = static_cast <double> (raytracerRand(thread_id)) / static_cast<double>(RAND_MAX);	
 				Point3D imagePlane;
 				imagePlane[0] = (-double(width)/2 + dx + j)/factor;
 				imagePlane[1] = (-double(height)/2 + dy + i)/factor;
@@ -510,7 +518,7 @@ void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, in
 				Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
 				ray.dir.normalize();
 
-				Colour col = shadeRay(ray); 
+				Colour col = shadeRay(thread_id, ray); 
 
 				// prevent buffer overflow
 				_rbuffertmp += col[0];
@@ -531,7 +539,7 @@ void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, in
 		Ray3D ray(viewToWorld * origin, viewToWorld * Vector3D(imagePlane[0], imagePlane[1], imagePlane[2]));
 		ray.dir.normalize();
 
-		Colour col = shadeRay(ray); 
+		Colour col = shadeRay(0, ray); 
 
 		_rbuffer[i*width+j] += int(col[0]*255);
 		_gbuffer[i*width+j] += int(col[1]*255);

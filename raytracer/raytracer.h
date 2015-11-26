@@ -114,7 +114,7 @@ public:
 	const int NUM_ANTIALIASING_SAMPLES = 8;
 
 	// Enable or disable depth of field
-	const bool ENABLE_DEPTH_OF_FIELD = true;
+	const bool ENABLE_DEPTH_OF_FIELD = false;
 
 	// Number of view points to generate depth of field
 	const int NUM_DEPTH_OF_FIELD_SAMPLES = 1;
@@ -134,7 +134,7 @@ private:
 
 	// Return the colour of the ray after intersection and shading, call 
 	// this function recursively for reflection and refraction.  
-	Colour shadeRay( Ray3D& ray ); 
+	Colour shadeRay(int thread_id, Ray3D& ray ); 
 
 	// Constructs a view to world transformation matrix based on the
 	// camera parameters.
@@ -146,17 +146,17 @@ private:
 
 	// After intersection, calculate the colour of the ray by shading it
 	// with all light sources in the scene.
-    void computeShading( Ray3D& ray );
+    void computeShading( int thread_id, Ray3D& ray );
 
     // Precompute the modelToWorld and worldToModel transformations for each
     // object in the scene.
     void computeTransforms( SceneDagNode::Ptr node );
 
     // Divides the raytracing into image segments for threading
-	void segment(int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up);
+	void segment(int thread_id, int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up);
 
     // Function that computes coloring of one pixel
-	void renderHelper(double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j);
+	void renderHelper(int thread_id, double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j);
 
     // Width and height of the viewport.
     int _scrWidth;
@@ -175,4 +175,11 @@ private:
     // stack.  These are used during scene traversal. 
     Matrix4x4 _modelToWorld;
     Matrix4x4 _worldToModel;
+
+    unsigned int* _seeds;
+
+    unsigned int raytracerRand(int thread_id){
+    	_seeds[thread_id] = rand_r(&_seeds[thread_id]);
+    	return _seeds[thread_id];
+    }
 };
