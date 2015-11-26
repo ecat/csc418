@@ -105,10 +105,19 @@ public:
 	const int NUM_SOFT_SHADOW_SOURCES = 20;
 
 	// Enable or disable soft shadows
-	const bool ENABLE_SOFT_SHADOWS = false;
+	const bool ENABLE_SOFT_SHADOWS = true;
 
 	// Enable or disable antialiasing
-	const bool ENABLE_ANTI_ALIASING = false;
+	const bool ENABLE_ANTI_ALIASING = true;
+
+	// Number of points to multisample
+	const int NUM_ANTIALIASING_SAMPLES = 8;
+
+	// Enable or disable depth of field
+	const bool ENABLE_DEPTH_OF_FIELD = true;
+
+	// Number of view points to generate depth of field
+	const int NUM_DEPTH_OF_FIELD_SAMPLES = 12;
 
 	// Offset from intersection in normal direction
 	const double EPSILON = 0.001;

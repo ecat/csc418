@@ -19,10 +19,10 @@ int main(int argc, char* argv[])
 	// change this if you're just implementing part one of the 
 	// assignment.  
 	Raytracer raytracer;
-	int width = 1920; 
-	int height = 1080; 
-	//int width = 480; 
-	//int height = 360; 
+	//int width = 1920; 
+	//int height = 1080; 
+	int width = 480; 
+	int height = 360; 
 
 	if (argc == 3) {
 		width = atoi(argv[1]);

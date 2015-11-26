@@ -14,6 +14,7 @@
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
+#include <boost/filesystem.hpp>
 
 Raytracer::Raytracer() : _lightSource(nullptr) {
 	_root = std::make_shared<SceneDagNode>();
@@ -428,14 +429,34 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
     _scrWidth = width;
     _scrHeight = height;
     double factor = (double(height)/2)/tan(fov*M_PI/360.0);
+    double apertureRadius = 0.25; // Higher aperture radius gives more blur
 
     initPixelBuffer();
-    viewToWorld = initInvViewMatrix(eye, view, up);
+    Point3D focusPoint(0., 0., -3);
 
-    // Construct multiple rays for each pixel.
-    for (int i = 0; i < _scrHeight; i++) {
-        for (int j = 0; j < _scrWidth; j++) {
-        	renderHelper(factor, viewToWorld, width, height, i, j);
+    for(int k = 0 ; k < NUM_DEPTH_OF_FIELD_SAMPLES; k++){
+		// Find plane that camera aperture resides in
+		Vector3D v1 = cross(view, Vector3D(1, 0, 1));
+		v1.normalize();
+		Vector3D v2 = cross(v1, view);
+		v2.normalize();
+
+		double dr = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
+		double dtheta = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
+		dr = dr * apertureRadius;
+		dtheta = (dtheta * 2 * M_PI) - M_PI;
+		
+		Point3D newEye = eye + (cos(dtheta) * dr * v1) + (sin(dtheta) * dr * v2);
+    	// Move eye in an area perpendicular to the viewing axis to do depth of field
+    	Vector3D focusView = focusPoint - newEye;
+    	focusView.normalize();
+
+	    // Construct multiple rays for each pixel.
+	    for (int i = 0; i < _scrHeight; i++) {
+	        for (int j = 0; j < _scrWidth; j++) {
+	    		viewToWorld = initInvViewMatrix(newEye, focusView, up);
+	        	renderHelper(factor, viewToWorld, width, height, i, j);
+			}
 		}
 	}
 
@@ -448,12 +469,12 @@ void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, in
     // image plane is at z = -1.
     Point3D origin(0., 0., 0.);
 
-    if(ENABLE_ANTI_ALIASING){
+    if(ENABLE_ANTI_ALIASING || ENABLE_DEPTH_OF_FIELD){
     	double _rbuffertmp = 0;
     	double _gbuffertmp = 0;
     	double _bbuffertmp = 0;
-    	int num_samples = 7;
-        for(int u = 0; u < num_samples; u++){
+    	
+        for(int u = 0; u < NUM_ANTIALIASING_SAMPLES; u++){
         		double dx = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);
         		double dy = static_cast <double> (rand()) / static_cast<double>(RAND_MAX);	
 				Point3D imagePlane;
@@ -475,9 +496,9 @@ void Raytracer::renderHelper(double factor, Matrix4x4 viewToWorld, int width, in
 				_bbuffertmp += col[2];
         }
 
-		_rbuffer[i*width+j] = std::min((int) (255./num_samples * _rbuffertmp), 255);
-		_gbuffer[i*width+j] = std::min((int) (255./num_samples * _gbuffertmp), 255);
-		_bbuffer[i*width+j] = std::min((int) (255./num_samples * _bbuffertmp), 255);
+		_rbuffer[i*width+j] += std::min((int) (255./(NUM_ANTIALIASING_SAMPLES * NUM_DEPTH_OF_FIELD_SAMPLES) * _rbuffertmp), 255);
+		_gbuffer[i*width+j] += std::min((int) (255./(NUM_ANTIALIASING_SAMPLES * NUM_DEPTH_OF_FIELD_SAMPLES) * _gbuffertmp), 255);
+		_bbuffer[i*width+j] += std::min((int) (255./(NUM_ANTIALIASING_SAMPLES * NUM_DEPTH_OF_FIELD_SAMPLES) * _bbuffertmp), 255);
 
     }else{
         Point3D imagePlane;
