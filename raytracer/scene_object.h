@@ -33,6 +33,8 @@ public:
         setTexture(_texturePath);
     };
 
+    virtual void setTextureColour(std::string _texturePath, int face) = 0;
+
     virtual ~SceneObject() {}
 
     // Variables for managing textures
@@ -45,7 +47,7 @@ public:
     unsigned char* _gbuffer;
     unsigned char* _bbuffer;    
 
-private:
+protected:
     void setTexture(std::string _texturePath){
         texturePath = _texturePath;   
         bmp_read_test(texturePath.c_str());
@@ -77,6 +79,10 @@ public:
     	double b = _bbuffer[i * width + j]/255.;
     	return Colour(r, g, b);
     };
+
+    void setTextureColour(std::string _texturePath, int face){
+        std::cerr << "This function is for unit cube only " << std::endl;
+    }
 };
 
 
@@ -85,10 +91,37 @@ public:
     bool intersect( Ray3D& ray, const Matrix4x4& worldToModel,
             const Matrix4x4& modelToWorld );
 
+    using SceneObject::setTextureColour;
+    void setTextureColour(std::string _texturePath, int _face){
+        setTexture(_texturePath);
+        textureFace = _face;
+        isColourTexture = true;
+    }
+
     // Accesses the texture memory and returns the colour associated with that location
     Colour getTextureValue(double dx, double dy){
-        return Colour(0, 0, 0);
+        int i = (dx + 0.5) * height;
+        int j = (dy + 0.5) * width;
+
+        // There is a strange bug with reading in a bmp. It seems like the width wraps
+        // around (this is evident if you read a texture and immediately write to it)
+        // widths and heights with multiples of four does not fix it
+        // As such, crop roughly 5% of the width
+        j = (j + 0.05 * width) * (width-1)/(1.05 * width);
+
+        double r = _rbuffer[i * width + j]/255.;
+        double g = _gbuffer[i * width + j]/255.;
+        double b = _bbuffer[i * width + j]/255.;
+
+        if(isColourTexture){
+            return Colour(g, b, r);
+        }else{
+            return Colour(r, g, b);
+        }
     };
+
+    // Determines what face the texture is on
+    int textureFace = 0;
 };
 
 
@@ -116,5 +149,9 @@ public:
             return Colour(r, g, b);
         }
     };
+
+    void setTextureColour(std::string _texturePath, int face){
+        std::cerr << "This function is for unit cube only " << std::endl;
+    }
 };
 

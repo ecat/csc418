@@ -119,19 +119,39 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	// Bring the points and normals back to world space
 	ray.intersection.point = modelToWorld * localIntersection;
 
+	int intersectionFace = -1;
 	double EPS = 0.001;
+	double x, y;
 	if(localIntersection[0] < -0.5 + EPS){
 		localNormal = Vector3D(-1, 0,  0);
+		intersectionFace = 1;
+		x = localIntersection[1];
+		y = localIntersection[2];
 	}else if(localIntersection[0] > 0.5 - EPS){
 		localNormal = Vector3D(1, 0,  0);
+		intersectionFace = 2;	
+		x = localIntersection[1];
+		y = localIntersection[2];
 	}else if(localIntersection[1] < -0.5 + EPS){
 		localNormal = Vector3D(0, -1, 0);
+		intersectionFace = 3;		
+		x = localIntersection[0];
+		y = localIntersection[2];		
 	}else if(localIntersection[1] > 0.5 - EPS){
 		localNormal = Vector3D(0, 1, 0);
+		intersectionFace = 4;		
+		x = localIntersection[0];
+		y = localIntersection[2];				
 	}else if(localIntersection[2] > 0.5 - EPS){
 		localNormal = Vector3D(0, 0, 1);
+		intersectionFace = 0;
+		x = localIntersection[1];
+		y = localIntersection[0];						
 	}else{
 		localNormal = Vector3D(0, 0, -1);
+		intersectionFace = 5;
+		x = localIntersection[1];
+		y = localIntersection[0];						
 	}
 
 	// Bringing normals back to world space requires special math
@@ -139,8 +159,13 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	ray.intersection.normal.normalize();
 
 	ray.intersection.none = false;
-	ray.intersection.hasTexture = false;
-
+	if(width > 0 && height > 0 && intersectionFace == textureFace){
+		ray.intersection.texValue = getTextureValue(x, y);
+		ray.intersection.hasTexture = true;				
+		ray.intersection.hasColourTexture = true;				
+	}else{
+		ray.intersection.hasTexture = false;
+	}
 
 	return true;
 }
