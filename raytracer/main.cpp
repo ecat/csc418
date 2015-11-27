@@ -75,10 +75,14 @@ int main(int argc, char* argv[])
     		Colour(0,0,0), 68);
     
 	// Defines a point light source.
-	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
-				Colour(0.9, 0.9, 0.9) ) );
+	//raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
+	//				Colour(0.9, 0.9, 0.9) ) );
+
+	raytracer.addLightSource( std::make_shared<SpotLight>(Point3D(0., 0., 5.), Vector3D(0., 0., -1),
+				Colour(0.9, 0.9, 0.9)));
 
 /*
+	// White back wall with a textured cube
 	double factor1[3] = { 2.0, 2.0, 0.3 };
 	double factor3[3] = { 20.0, 20.0, 1.0};
 	double factor5[3] = { 20.0, 1.0, 20.0};
@@ -91,7 +95,7 @@ int main(int argc, char* argv[])
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	cube->obj->setTextureColour("earth2.bmp", 0);
 */
-/*
+
 	// Jade and glass and two spheres
 
 	// Add a unit square into the scene with material mat.
@@ -141,7 +145,7 @@ int main(int argc, char* argv[])
 	raytracer.translate(bottomPlane, Vector3D(0, -10, -6));	
 	raytracer.scale(bottomPlane, Point3D(0., 0., 0.), factor5);
 	raytracer.rotate(bottomPlane, 'x', -90); 	
-*/
+
 /*	// Single earth sphere
 	SceneDagNode::Ptr earthSphere = raytracer.addObject( std::make_shared<UnitSphere>(), blue);    
     earthSphere->obj->setTextureColour("earth2.bmp");

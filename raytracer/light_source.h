@@ -40,3 +40,23 @@ private:
 	Colour _col_diffuse; 
 	Colour _col_specular; 
 };
+
+// Directional light source
+class SpotLight : public LightSource {
+public:
+	SpotLight( Point3D pos, Vector3D dir, Colour col ) : _pos(pos), _dir(dir), _col_ambient(col), 
+	_col_diffuse(col), _col_specular(col) {}
+	SpotLight( Point3D pos, Vector3D dir, Colour ambient, Colour diffuse, Colour specular ) 
+	: _pos(pos), _dir(dir), _col_ambient(ambient), _col_diffuse(diffuse), 
+	_col_specular(specular) {}
+	void shade( Ray3D& ray );
+	Point3D get_position() const { return _pos; }
+	Vector3D get_dir() const {return _dir;}
+	
+private:
+	Point3D _pos;
+	Vector3D _dir;
+	Colour _col_ambient;
+	Colour _col_diffuse; 
+	Colour _col_specular; 
+};

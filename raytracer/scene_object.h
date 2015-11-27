@@ -92,7 +92,13 @@ public:
             const Matrix4x4& modelToWorld );
 
     using SceneObject::setTextureColour;
+
+    // Only one face is supported at the moment
     void setTextureColour(std::string _texturePath, int _face){
+        if(textureFace != -1){
+            std::cerr << "Only one cube texture is supported. " << std::endl;
+        }
+
         setTexture(_texturePath);
         textureFace = _face;
         isColourTexture = true;
@@ -121,7 +127,7 @@ public:
     };
 
     // Determines what face the texture is on
-    int textureFace = 0;
+    int textureFace = -1;
 };
 
 
