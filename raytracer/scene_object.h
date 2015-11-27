@@ -77,7 +77,11 @@ public:
     	double r = _rbuffer[i * width + j]/255.;
     	double g = _gbuffer[i * width + j]/255.;
     	double b = _bbuffer[i * width + j]/255.;
-    	return Colour(r, g, b);
+        if(isColourTexture){
+            return Colour(g, b, r);
+        }else{
+            return Colour(r, g, b);
+        }
     };
 
     void setTextureColour(std::string _texturePath, int face){

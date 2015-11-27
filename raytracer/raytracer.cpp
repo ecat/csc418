@@ -199,6 +199,8 @@ void Raytracer::traverseScene( SceneDagNode::Ptr node, Ray3D& ray ) {
 
 void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
     LightListNode::Ptr curLight = _lightSource;
+    // For keeping track of multiple light sources
+    Colour accumulatedColour;
     for (;;) {
         if (curLight == nullptr) break;
         // Each lightSource provides its own shading function.
@@ -255,6 +257,8 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
 
 	        curLight->light->shade(ray);
 	        ray.col = rayPower * ray.col;
+	        ray.col.clamp();
+
 
         }else{
         	// Shadows for point source
@@ -268,8 +272,13 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
 	        }
     	}
 
+	    accumulatedColour = ray.col + accumulatedColour;
+
         curLight = curLight->next;
     }
+
+	ray.col = accumulatedColour;
+    ray.col.clamp();
 }
 
 void Raytracer::initPixelBuffer() {
@@ -423,7 +432,7 @@ Colour Raytracer::shadeRay(int thread_id,  Ray3D& ray ) {
     }
 
 
-
+    col.clamp();
     return col; 
 }	
 
@@ -432,6 +441,7 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
     computeTransforms(_root);
     _scrWidth = width;
     _scrHeight = height;
+    view.normalize();
     double factor = (double(height)/2)/tan(fov*M_PI/360.0);
 
     initPixelBuffer();

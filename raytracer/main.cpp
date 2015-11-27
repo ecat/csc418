@@ -66,20 +66,22 @@ int main(int argc, char* argv[])
     tintedglass->transparency = 0.8;
 
     Material::Ptr blue = std::make_shared<Material> ( Colour(0.0, 0.0, 0.2), Colour(0.0, 0.0, 0.4),
-    		Colour(0.3, 0.3, 0.3), 68);
+    		Colour(0.25, 0.25, 0.25), 68);
     Material::Ptr red = std::make_shared<Material>  ( Colour(0.2, 0.0, 0.0), Colour(0.4, 0.0, 0.0),
-    		Colour(0.3, 0.3, 0.3), 68);
+    		Colour(0.25, 0.25, 0.25), 68);
     Material::Ptr green = std::make_shared<Material>  ( Colour(0.0, 0.2, 0.0), Colour(0.54, 0.89, 0.63),
     		Colour(0.0, 0.0, 0.0), 68);
+    Material::Ptr yellow = std::make_shared<Material>  ( Colour(0.8, 0.8, 0.5), Colour(0.0, 0.4, 0.4),
+    		Colour(0.25, 0.25, 0.25), 68);    
     Material::Ptr white = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
     		Colour(0,0,0), 68);
     
 	// Defines a point light source.
-	//raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
+	//raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 
 	//				Colour(0.9, 0.9, 0.9) ) );
 
-	raytracer.addLightSource( std::make_shared<SpotLight>(Point3D(0., 0., 5.), Vector3D(0., 0., -1),
-				Colour(0.9, 0.9, 0.9)));
+	//raytracer.addLightSource( std::make_shared<SpotLight>(Point3D(0., 0., 5.), Vector3D(0., 0., -1),
+	//			Colour(0.9, 0.9, 0.9)));
 
 /*
 	// White back wall with a textured cube
@@ -95,7 +97,7 @@ int main(int argc, char* argv[])
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	cube->obj->setTextureColour("earth2.bmp", 0);
 */
-
+/*
 	// Jade and glass and two spheres
 
 	// Add a unit square into the scene with material mat.
@@ -145,6 +147,99 @@ int main(int argc, char* argv[])
 	raytracer.translate(bottomPlane, Vector3D(0, -10, -6));	
 	raytracer.scale(bottomPlane, Point3D(0., 0., 0.), factor5);
 	raytracer.rotate(bottomPlane, 'x', -90); 	
+*/
+
+	fov = 105;
+
+    Material::Ptr wood = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
+		Colour(0.05 ,0.05 ,0.05), 68);
+    Material::Ptr tintedglass2 = std::make_shared<Material> ( Colour(0.5, 0.5, 0.2), Colour(0.0, 0.0, 0.0),
+    		Colour(0.0, 0.0, 0.0),
+    		100.8,
+    		1.5);
+    tintedglass2->transparency = 0.5;
+	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 25.0, 5.0), 
+					Colour(0.05, 0.05, 0.05) ) );
+	Point3D lightOrigin(-10.0, 25.0, 5.0);
+	Point3D lightOrigin2(-50.0, 35.0, -15);
+	Point3D focusPoint(-12, -7, -9);
+	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin,  focusPoint - lightOrigin,
+					Colour(0.6, 0.6, 0.6) ) );	
+	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin2,  focusPoint - lightOrigin2,
+					Colour(0.15, 0.15, 0.15) ) );		
+
+	// Add a unit square into the scene with material mat.
+    SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
+    SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
+    sphere2->obj->setTextureColour("earth2.bmp");    
+	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
+	SceneDagNode::Ptr sphere4 = raytracer.addObject( std::make_shared<UnitSphere>(), yellow );    	
+    SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
+    SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), white ); 
+    SceneDagNode::Ptr frontPlane = raytracer.addObject( std::make_shared<UnitSquare>(), white );     
+    SceneDagNode::Ptr rightPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
+    SceneDagNode::Ptr bottomPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
+    SceneDagNode::Ptr cube = raytracer.addObject( std::make_shared<UnitCube>(), tintedglass2 );    
+    cube->obj->setTextureColour("Starry_Night.bmp", 0);
+
+	// Apply some transformations to the unit square.
+	double factor1[3] = { 3.5, 3.5, 0.5 };
+	double factor2[3] = { 5.0, 5.0, 5.0 };
+	double factor3[3] = { 80.0, 20.0, 1.0};
+	double factor4[3] = { 1.0, 20., 80.};
+	double factor5[3] = { 80.0, 1.0, 80.0};
+
+
+	raytracer.translate(cube, Vector3D(-3., -8., -7.));
+	raytracer.rotate(cube, 'y', -25); 
+	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
+	//cube->obj->setTextureColour("earth2.bmp", 0);
+
+	raytracer.translate(sphere, Vector3D(-10., -7., -4.5));	
+	raytracer.scale(sphere, Point3D(0., 0., 0.), factor2);
+
+	raytracer.translate(sphere4, Vector3D(-11., -4., -8));	
+	raytracer.scale(sphere4, Point3D(0., 0., 0.), factor2);	
+
+	raytracer.translate(sphere2, Vector3D(-12., -7., -9));
+	raytracer.rotate(sphere2, 'x', 90);
+	raytracer.rotate(sphere2, 'y', 90);
+	raytracer.rotate(sphere2, 'z', 90);
+	raytracer.scale(sphere2, Point3D(0., 0., 0.), factor2);
+
+	raytracer.translate(sphere3, Vector3D(-8., -7., -9));
+	raytracer.scale(sphere3, Point3D(0., 0., 0.), factor2);	
+
+	raytracer.translate(backPlane, Vector3D(0, 0, -40));
+	raytracer.scale(backPlane, Point3D(0, 0,  0), factor3);
+
+	raytracer.translate(frontPlane, Vector3D(0, 0, 20));
+	raytracer.scale(frontPlane, Point3D(0, 0,  0), factor3);
+	raytracer.rotate(frontPlane, 'y', 180);
+
+	raytracer.translate(leftPlane, Vector3D(-40, 0., 0));	
+	raytracer.scale(leftPlane, Point3D(0., 0., 0.), factor4);
+	raytracer.rotate(leftPlane, 'y', 90); 
+	leftPlane->obj->setTextureColour("wood1.bmp");
+
+	raytracer.translate(rightPlane, Vector3D(40, 0., 0));	
+	raytracer.scale(rightPlane, Point3D(0., 0., 0.), factor4);
+	raytracer.rotate(rightPlane, 'y', -90); 	
+	rightPlane->obj->setTextureColour("wood1.bmp");
+
+	raytracer.translate(bottomPlane, Vector3D(0, -10, 0));	
+	raytracer.scale(bottomPlane, Point3D(0., 0., 0.), factor5);
+	raytracer.rotate(bottomPlane, 'x', -90); 	
+	bottomPlane->obj->setTextureColour("wood1.bmp");
+
+	// Render the scene, feel free to make the image smaller for
+	// testing purposes.	
+	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
+	
+	// Render it from a different point of view.
+	Point3D eye2(-3., -3., -2.);
+	Vector3D view2(-4., -4., -4.);
+	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
 
 /*	// Single earth sphere
 	SceneDagNode::Ptr earthSphere = raytracer.addObject( std::make_shared<UnitSphere>(), blue);    
@@ -159,7 +254,7 @@ int main(int argc, char* argv[])
 	raytracer.rotate(earthSphere, 'z', 90);
 	raytracer.scale(earthSphere, Point3D(0., 0., 0.), earthFactor);
 */
-
+/*
 	// Render the scene, feel free to make the image smaller for
 	// testing purposes.	
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
@@ -168,7 +263,7 @@ int main(int argc, char* argv[])
 	Point3D eye2(2., 0., 1.);
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
-	
+*/	
 	std::time_t end;
 	time(&end);
 	std::cout << "Elapsed time: " << difftime(end, start) << std::endl;

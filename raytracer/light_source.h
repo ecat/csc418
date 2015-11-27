@@ -45,10 +45,14 @@ private:
 class SpotLight : public LightSource {
 public:
 	SpotLight( Point3D pos, Vector3D dir, Colour col ) : _pos(pos), _dir(dir), _col_ambient(col), 
-	_col_diffuse(col), _col_specular(col) {}
+	_col_diffuse(col), _col_specular(col) {
+		_dir.normalize();
+	}
 	SpotLight( Point3D pos, Vector3D dir, Colour ambient, Colour diffuse, Colour specular ) 
 	: _pos(pos), _dir(dir), _col_ambient(ambient), _col_diffuse(diffuse), 
-	_col_specular(specular) {}
+	_col_specular(specular) {
+		_dir.normalize();
+	}
 	void shade( Ray3D& ray );
 	Point3D get_position() const { return _pos; }
 	Vector3D get_dir() const {return _dir;}

@@ -60,7 +60,7 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 			if(width > 0 && height > 0){
 				ray.intersection.texValue = getTextureValue(x_check, y_check);
 				ray.intersection.hasTexture = true;				
-				ray.intersection.hasColourTexture = false;				
+				ray.intersection.hasColourTexture = isColourTexture;				
 			}else{
 				ray.intersection.hasTexture = false;
 			}
