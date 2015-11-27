@@ -108,7 +108,7 @@ public:
 	const bool ENABLE_MULTI_THREAD = true;
 
 	// Enable or disable soft shadows
-	const bool ENABLE_SOFT_SHADOWS = false;
+	const bool ENABLE_SOFT_SHADOWS = true;
 
 	// Enable or disable antialiasing
 	const bool ENABLE_ANTI_ALIASING = false;

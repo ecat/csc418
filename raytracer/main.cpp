@@ -77,14 +77,16 @@ int main(int argc, char* argv[])
     		Colour(0,0,0), 68);
     
 	// Defines a point light source.
-	//raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 
-	//				Colour(0.9, 0.9, 0.9) ) );
+//	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 
+//					Colour(0.9, 0.9, 0.9) ) );
 
 	//raytracer.addLightSource( std::make_shared<SpotLight>(Point3D(0., 0., 5.), Vector3D(0., 0., -1),
 	//			Colour(0.9, 0.9, 0.9)));
 
-/*
-	// White back wall with a textured cube
+
+/*	// White back wall with a textured cube
+	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 
+					Colour(0.9, 0.9, 0.9) ) );	
 	double factor1[3] = { 2.0, 2.0, 0.3 };
 	double factor3[3] = { 20.0, 20.0, 1.0};
 	double factor5[3] = { 20.0, 1.0, 20.0};
@@ -183,14 +185,14 @@ int main(int argc, char* argv[])
     cube->obj->setTextureColour("Starry_Night.bmp", 0);
 
 	// Apply some transformations to the unit square.
-	double factor1[3] = { 1., 1, 0.03 };
+	double factor1[3] = { 5., 4.0, 0.03 };
 	double factor2[3] = { 5.0, 5.0, 5.0 };
 	double factor3[3] = { 80.0, 20.0, 1.0};
 	double factor4[3] = { 1.0, 20., 80.};
 	double factor5[3] = { 80.0, 1.0, 80.0};
 
 
-	raytracer.translate(cube, Vector3D(-2.2, -6.6, -3.6));
+	raytracer.translate(cube, Vector3D(-5.5, -8., -3.9));
 	raytracer.rotate(cube, 'y', 10); 
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	//cube->obj->setTextureColour("earth2.bmp", 0);
@@ -231,10 +233,6 @@ int main(int argc, char* argv[])
 	raytracer.scale(bottomPlane, Point3D(0., 0., 0.), factor5);
 	raytracer.rotate(bottomPlane, 'x', -90); 	
 	bottomPlane->obj->setTextureColour("wood1.bmp");
-
-	// Render the scene, feel free to make the image smaller for
-	// testing purposes.	
-	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
 	
 	// Render it from a different point of view.
 	Point3D eye2(-1.3, -6.3, -3.2);
