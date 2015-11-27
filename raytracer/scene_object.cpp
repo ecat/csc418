@@ -100,7 +100,7 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 	// ray doesn't intersect
 	if(!ray.intersection.none){
-		if(tmin > tmax || tmin > ray.intersection.t_value){
+		if(tmin > tmax || -tmin > ray.intersection.t_value){
 			return false;
 		}
 	}
@@ -115,7 +115,7 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 	Vector3D localNormal;
 
-	ray.intersection.t_value = tmin;
+	ray.intersection.t_value = -tmin;
 	// Bring the points and normals back to world space
 	ray.intersection.point = modelToWorld * localIntersection;
 
