@@ -156,11 +156,11 @@ int main(int argc, char* argv[])
     Material::Ptr tintedglass2 = std::make_shared<Material> ( Colour(0.5, 0.5, 0.2), Colour(0.0, 0.0, 0.0),
     		Colour(0.0, 0.0, 0.0),
     		100.8,
-    		1.5);
-    tintedglass2->transparency = 0.0;
+    		1.01);
+    tintedglass2->transparency = 0.3;
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 25.0, 5.0), 
 					Colour(0.05, 0.05, 0.05) ) );
-	Point3D lightOrigin(-10.0, 25.0, 5.0);
+	Point3D lightOrigin(-10.0, 10.0, 5.0);
 	Point3D lightOrigin2(-50.0, 35.0, -15);
 	Point3D focusPoint(-12, -7, -9);
 	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin,  focusPoint - lightOrigin,
@@ -183,15 +183,15 @@ int main(int argc, char* argv[])
     cube->obj->setTextureColour("Starry_Night.bmp", 0);
 
 	// Apply some transformations to the unit square.
-	double factor1[3] = { .3, 0.3, 0.03 };
+	double factor1[3] = { 1., 1, 0.03 };
 	double factor2[3] = { 5.0, 5.0, 5.0 };
 	double factor3[3] = { 80.0, 20.0, 1.0};
 	double factor4[3] = { 1.0, 20., 80.};
 	double factor5[3] = { 80.0, 1.0, 80.0};
 
 
-	raytracer.translate(cube, Vector3D(-1., -6., -3.4));
-	raytracer.rotate(cube, 'y', 40); 
+	raytracer.translate(cube, Vector3D(-2.2, -6.6, -3.6));
+	raytracer.rotate(cube, 'y', 10); 
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	//cube->obj->setTextureColour("earth2.bmp", 0);
 
@@ -237,7 +237,7 @@ int main(int argc, char* argv[])
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
 	
 	// Render it from a different point of view.
-	Point3D eye2(-1., -6., -3.2);
+	Point3D eye2(-1.3, -6.3, -3.2);
 	Vector3D view2(-4., -2., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
 
