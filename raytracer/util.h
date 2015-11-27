@@ -155,6 +155,7 @@ struct Material {
         specular_exp(exp) {
             n = _n;
             transparent = true;
+            transparency = 1.0;
         }
 
     // Ambient components for Phong shading.
@@ -168,6 +169,8 @@ struct Material {
     // Refractive index of material
     double n;    
     bool transparent;
+    // % of object that is transparent, 1.0 is perfectly transparent
+    double transparency;
 };
 
 struct Intersection {

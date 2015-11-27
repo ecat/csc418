@@ -104,11 +104,14 @@ public:
 	// Number of points for calculating soft shadows
 	const int NUM_SOFT_SHADOW_SOURCES = 20;
 
+	// Enable or disable parallelization
+	const bool ENABLE_MULTI_THREAD = true;
+
 	// Enable or disable soft shadows
 	const bool ENABLE_SOFT_SHADOWS = true;
 
 	// Enable or disable antialiasing
-	const bool ENABLE_ANTI_ALIASING = true;
+	const bool ENABLE_ANTI_ALIASING = false;
 
 	// Number of points to multisample
 	const int NUM_ANTIALIASING_SAMPLES = 8;

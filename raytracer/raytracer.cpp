@@ -358,6 +358,7 @@ Colour Raytracer::shadeRay(int thread_id,  Ray3D& ray ) {
 		    	refractedRay.dir.normalize();
 
 		    	Colour refractedCol = shadeRay(thread_id, refractedRay);
+		    	double transparency = ray.intersection.mat->transparency;
 
 		    	// Calculate Fresnel equations
 		    	double reflectance_perp = (n_1 * cos(theta_incident) - n_2 * cos(theta_transmitted))/
@@ -370,11 +371,11 @@ Colour Raytracer::shadeRay(int thread_id,  Ray3D& ray ) {
 
 				// Calculate total reflectance
 				total_reflectance = (reflectance_para + reflectance_perp) / 2;
-				total_transmittance = 1.0 - total_reflectance;
+				total_transmittance = 1.0 - total_reflectance;	
 				
-		    	col[0] = total_reflectance * col[0] + total_transmittance * refractedCol[0];
-		    	col[1] = total_reflectance * col[1] + total_transmittance * refractedCol[1];
-		    	col[2] = total_reflectance * col[2] + total_transmittance * refractedCol[2];	    	
+		    	col[0] = total_reflectance * col[0] + (1.0 - transparency) * col[0] + transparency * total_transmittance * refractedCol[0];
+		    	col[1] = total_reflectance * col[1] + (1.0 - transparency) * col[1] + transparency * total_transmittance * refractedCol[1];
+		    	col[2] = total_reflectance * col[2] + (1.0 - transparency) * col[2] + transparency * total_transmittance * refractedCol[2];	    	
 	    	}
 	    }else{
 
@@ -430,8 +431,6 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
     double factor = (double(height)/2)/tan(fov*M_PI/360.0);
 
     initPixelBuffer();
-
-    bool ENABLE_MULTI_THREAD = false;
 
 	// Unfortunately, multithreading doesn't provide many gains
 	// suspicion is due to rand which is blocking, had to switch to rand_r instead

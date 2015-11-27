@@ -98,7 +98,6 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		return false;
 	}
 
-	//std::cout << "tmax " << tmax << " tmin " << tmin << " int " << ray.intersection.t_value << std::endl;
 	// ray doesn't intersect
 	if(!ray.intersection.none){
 		if(tmin > tmax || tmin > ray.intersection.t_value){
