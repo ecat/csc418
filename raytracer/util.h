@@ -148,6 +148,7 @@ struct Material {
         specular_exp(exp) {
             n = 1.0;
             transparent = false;
+            transparency = 0.0;
         }
 
     Material( Colour ambient, Colour diffuse, Colour specular, double exp, double _n ) :

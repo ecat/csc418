@@ -71,16 +71,18 @@ int main(int argc, char* argv[])
     		Colour(0.3, 0.3, 0.3), 68);
     Material::Ptr green = std::make_shared<Material>  ( Colour(0.0, 0.2, 0.0), Colour(0.54, 0.89, 0.63),
     		Colour(0.0, 0.0, 0.0), 68);
+    Material::Ptr white = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
+    		Colour(0,0,0), 68);
     
 	// Defines a point light source.
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
 				Colour(0.9, 0.9, 0.9) ) );
 
-	double factor1[3] = { 2.0, 2.0, 2.0 };
+/*
+	double factor1[3] = { 2.0, 2.0, 0.3 };
 	double factor3[3] = { 20.0, 20.0, 1.0};
 	double factor5[3] = { 20.0, 1.0, 20.0};
-    SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );    
-	backPlane->obj->setTextureGrayScale("jade_tex.bmp");    
+    SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), white);    
 	raytracer.translate(backPlane, Vector3D(0, 0, -16));
 	raytracer.scale(backPlane, Point3D(0, 0,  0), factor3);
 
@@ -88,7 +90,7 @@ int main(int argc, char* argv[])
 	raytracer.translate(cube, Vector3D(0., 0., -3.));
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	cube->obj->setTextureColour("earth2.bmp", 0);
-
+*/
 /*
 	// Jade and glass and two spheres
 

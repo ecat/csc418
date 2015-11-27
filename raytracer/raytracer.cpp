@@ -215,7 +215,7 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
 			Vector3D v2 = cross(v1, pointLightingRayDirection);
 			v2.normalize();
  
-        	double areaLightRadius = 2;
+        	double areaLightRadius = 0.5;
         	double rayPower = 0;
         	for(int i = 0 ; i < NUM_SOFT_SHADOW_SOURCES; i++){
 				// Calculate a dr and dtheta uniformly distributed to simulate circle
@@ -238,17 +238,21 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
 		        	rayPower += 1.0/(double)(NUM_SOFT_SHADOW_SOURCES);
 
 		        }else if(!lightingRay.intersection.none && lightingRay.intersection.mat->transparent){
-		        	// Let glass have a little bit of shadow and approximate fresnel equations assuming ray passed through glass and air
-		        	// Reflectance is given for perpendicular ((n1 - n2)/(n1+n2))^2
-		        	// We want transmittance so take 1 - reflectance
-		        	rayPower += (1.0 - pow((lightingRay.intersection.mat->n - 1.0)/(lightingRay.intersection.mat->n + 1.0), 2))/(double)(NUM_SOFT_SHADOW_SOURCES);
+
+		        	if(lightingRay.intersection.mat->transparency == 1.0){
+		        		// Let glass have a little bit of shadow and approximate fresnel equations assuming ray passed through glass and air
+		        		// Reflectance is given for perpendicular ((n1 - n2)/(n1+n2))^2
+		        		// We want transmittance so take 1 - reflectance        	
+		        		rayPower += (1.0 - pow((lightingRay.intersection.mat->n - 1.0)/(lightingRay.intersection.mat->n + 1.0), 2))/(double)(NUM_SOFT_SHADOW_SOURCES);
+					}else{
+						rayPower += lightingRay.intersection.mat->transparency/(double)(NUM_SOFT_SHADOW_SOURCES);
+					}		        	
 		        }else{
 		        	// light ray intersected an object
 		        	// Don't add to raypower
 		        }     		
         	}
-        	// Make the raypower effect a bit stronger
-        	rayPower = pow(rayPower, 8.0);
+
 	        curLight->light->shade(ray);
 	        ray.col = rayPower * ray.col;
 
