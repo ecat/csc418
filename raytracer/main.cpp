@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
     		Colour(0.0, 0.0, 0.0),
     		100.8,
     		1.5);
-    tintedglass2->transparency = 0.5;
+    tintedglass2->transparency = 0.0;
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 25.0, 5.0), 
 					Colour(0.05, 0.05, 0.05) ) );
 	Point3D lightOrigin(-10.0, 25.0, 5.0);
@@ -183,31 +183,31 @@ int main(int argc, char* argv[])
     cube->obj->setTextureColour("Starry_Night.bmp", 0);
 
 	// Apply some transformations to the unit square.
-	double factor1[3] = { 3.5, 3.5, 0.5 };
+	double factor1[3] = { .3, 0.3, 0.03 };
 	double factor2[3] = { 5.0, 5.0, 5.0 };
 	double factor3[3] = { 80.0, 20.0, 1.0};
 	double factor4[3] = { 1.0, 20., 80.};
 	double factor5[3] = { 80.0, 1.0, 80.0};
 
 
-	raytracer.translate(cube, Vector3D(-3., -8., -7.));
-	raytracer.rotate(cube, 'y', -25); 
+	raytracer.translate(cube, Vector3D(-1., -6., -3.4));
+	raytracer.rotate(cube, 'y', 40); 
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	//cube->obj->setTextureColour("earth2.bmp", 0);
 
-	raytracer.translate(sphere, Vector3D(-10., -7., -4.5));	
+	raytracer.translate(sphere, Vector3D(-11., -8., -5.0));	
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor2);
 
-	raytracer.translate(sphere4, Vector3D(-11., -4., -8));	
+	raytracer.translate(sphere4, Vector3D(-12., -5., -8.5));	
 	raytracer.scale(sphere4, Point3D(0., 0., 0.), factor2);	
 
-	raytracer.translate(sphere2, Vector3D(-12., -7., -9));
+	raytracer.translate(sphere2, Vector3D(-13., -8., -9.5));
 	raytracer.rotate(sphere2, 'x', 90);
 	raytracer.rotate(sphere2, 'y', 90);
 	raytracer.rotate(sphere2, 'z', 90);
 	raytracer.scale(sphere2, Point3D(0., 0., 0.), factor2);
 
-	raytracer.translate(sphere3, Vector3D(-8., -7., -9));
+	raytracer.translate(sphere3, Vector3D(-9., -8., -9.5));
 	raytracer.scale(sphere3, Point3D(0., 0., 0.), factor2);	
 
 	raytracer.translate(backPlane, Vector3D(0, 0, -40));
@@ -237,8 +237,8 @@ int main(int argc, char* argv[])
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
 	
 	// Render it from a different point of view.
-	Point3D eye2(-3., -3., -2.);
-	Vector3D view2(-4., -4., -4.);
+	Point3D eye2(-1., -6., -3.2);
+	Vector3D view2(-4., -2., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
 
 /*	// Single earth sphere
