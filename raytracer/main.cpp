@@ -79,17 +79,22 @@ int main(int argc, char* argv[])
 
 	// All planets scene
 
-	eye = Point3D(0, 0, 4);
-	view = Vector3D(0, 0, -1);
-    fov = 90;
+	eye = Point3D(-3, 0, -3);
+	Point3D viewPoint(5, 0, -8);
+	up = Vector3D(0, 0, 1);
+	view = viewPoint - eye;
+	//eye = Point3D(0, 0, 5);
+    //fov = 110;
 
-    Material::Ptr pool_green = std::make_shared<Material>  ( Colour(0.0, 0.2, 0.0), Colour(0., 0., 0.),
+    Material::Ptr wood = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
+		Colour(0.05 ,0.05 ,0.05), 68);
+    Material::Ptr pool_green = std::make_shared<Material>  ( Colour(0.2, 0.5, 0.0), Colour(0., 0., 0.),
     		Colour(0.0, 0.0, 0.0), 68);
-   	Material::Ptr planet = std::make_shared<Material> ( Colour(0.0, 0.0, 0.2), Colour(0.0, 0.0, 0.4),
+   	Material::Ptr planet = std::make_shared<Material> ( Colour(0.15, 0.15, 0.2), Colour(0.0, 0.0, 0.4),
     		Colour(0.25, 0.25, 0.25), 68);
 
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 8.0, 5.0), 
-					Colour(0.15, 0.15, 0.15) ) );	
+					Colour(0.1, 0.1, 0.1) ) );	
 	SceneDagNode::Ptr earthSphere = raytracer.addObject( std::make_shared<UnitSphere>(), planet);    
     earthSphere->obj->setTextureColour("earth2.bmp");
 	SceneDagNode::Ptr venusSphere = raytracer.addObject( std::make_shared<UnitSphere>(), planet);    
@@ -111,29 +116,49 @@ int main(int argc, char* argv[])
 	SceneDagNode::Ptr sunSphere = raytracer.addObject( std::make_shared<UnitSphere>(), planet);    
     sunSphere->obj->setTextureColour("sun.bmp"); 
 
+	SceneDagNode::Ptr bottomBorder = raytracer.addObject( std::make_shared<UnitCube>(), wood);    
+	SceneDagNode::Ptr topBorder = raytracer.addObject( std::make_shared<UnitCube>(), wood);    
+	SceneDagNode::Ptr rightBorder = raytracer.addObject( std::make_shared<UnitCube>(), wood);    
+	SceneDagNode::Ptr leftBorder = raytracer.addObject( std::make_shared<UnitCube>(), wood);    
+
+	for(int i = 0 ; i < 6; i++){
+		bottomBorder->obj->setTextureColour("wood1.bmp", i);
+		topBorder->obj->setTextureColour("wood1.bmp", i);		
+		rightBorder->obj->setTextureColour("wood1.bmp", i);
+		leftBorder->obj->setTextureColour("wood1.bmp", i);
+	}
+
+	double horizontalBorderFactor[3] = {40.0, 2.0, 1.0};
+	double verticalBorderFactor[3] = {2.0, 40.0, 1.0};
 	double factor1[3] = { 2.0, 2.0, 0.3 };
-	double factor3[3] = { 80.0, 80.0, 1.0};
+	double factor3[3] = { 40.0, 40.0, 1.0};
 	double factor5[3] = { 20.0, 1.0, 20.0};    
 	double earthFactor[3] = {2.5, 2.5, 2.5};
 
-	Point3D focusPoint(1.2, 1.25, -8);
-	Point3D focusPoint2(1.2, 1.25, -8);	
+	Point3D focusPoint(0.5, 0.5, -9);
+	Point3D focusPoint2(0.5, 0.5, -9);	
 	Point3D lightOrigin(-20.0, 5.0, 5.0);
-	Point3D lightOrigin2(20, 5, 5);
 	Point3D lightOrigin3(-20.0, -5.0, 5.0);
-	Point3D lightOrigin4(20, -5, 5);
-	double rotationAngle = 30; // Have triangle poitn in another direction
+	double rotationAngle = -10; // Have triangle poitn in another direction
 	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin,  focusPoint - lightOrigin,
-					Colour(0.35, 0.35, 0.35), 13 ) );	
-	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin2,  focusPoint2 - lightOrigin2,
-					Colour(0.35, 0.35, 0.35), 13 ) );		
+					Colour(0.55, 0.55, 0.55), 13 ) );	
 	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin3,  focusPoint2 - lightOrigin3,
-					Colour(0.35, 0.35, 0.35), 13 ) );			
-	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin4,  focusPoint - lightOrigin4,
-					Colour(0.35, 0.35, 0.35), 13 ) );			
+					Colour(0.55, 0.55, 0.55), 13 ) );			
 
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), pool_green );    
 	backPlane->obj->setTextureGrayScale("felt.bmp"); 
+
+	raytracer.translate(bottomBorder, Vector3D(0, -20, -9));
+	raytracer.scale(bottomBorder, Point3D(0, 0,  0), horizontalBorderFactor);
+
+	raytracer.translate(topBorder, Vector3D(0, 20, -9));
+	raytracer.scale(topBorder, Point3D(0, 0,  0), horizontalBorderFactor);
+	
+	raytracer.translate(rightBorder, Vector3D(20, 0, -9));
+	raytracer.scale(rightBorder, Point3D(0, 0,  0), verticalBorderFactor);
+
+	raytracer.translate(leftBorder, Vector3D(-20, 0, -9));
+	raytracer.scale(leftBorder, Point3D(0, 0,  0), verticalBorderFactor);
 
 	raytracer.translate(backPlane, Vector3D(0, 0, -10));
 	raytracer.scale(backPlane, Point3D(0, 0,  0), factor3);
