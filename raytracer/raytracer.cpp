@@ -230,29 +230,36 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
 	    		dtheta = (dtheta * 2 * M_PI) - M_PI;
 
         		Point3D lightOrigin = curLight->light->get_position() + dr * (cos(dtheta) * v1 + sin(dtheta) * v2);
-        		Vector3D areaLightingRayDirection = lightOrigin - ray.intersection.point;
-		        Ray3D lightingRay(ray.intersection.point + EPSILON * ray.intersection.normal, areaLightingRayDirection);
+        		Vector3D areaLightingRayDirection = ray.intersection.point - lightOrigin;
+		        Ray3D lightingRay(lightOrigin, areaLightingRayDirection);
 		        lightingRay.dir.normalize();
 		        traverseScene(_root, lightingRay);
 
 		        if(lightingRay.intersection.none){
 		        	// light ray didn't intersect anything
-		        	rayPower += 1.0/(double)(NUM_SOFT_SHADOW_SOURCES);
-
-		        }else if(!lightingRay.intersection.none && lightingRay.intersection.mat->transparent){
-
-		        	if(lightingRay.intersection.mat->transparency == 1.0){
-		        		// Let glass have a little bit of shadow and approximate fresnel equations assuming ray passed through glass and air
-		        		// Reflectance is given for perpendicular ((n1 - n2)/(n1+n2))^2
-		        		// We want transmittance so take 1 - reflectance        	
-		        		rayPower += (1.0 - pow((lightingRay.intersection.mat->n - 1.0)/(lightingRay.intersection.mat->n + 1.0), 2))/(double)(NUM_SOFT_SHADOW_SOURCES);
-					}else{
-						rayPower += lightingRay.intersection.mat->transparency/(double)(NUM_SOFT_SHADOW_SOURCES);
-					}		        	
+		        	rayPower += 1.0/(double)(NUM_SOFT_SHADOW_SOURCES);		        	
 		        }else{
-		        	// light ray intersected an object
-		        	// Don't add to raypower
-		        }     		
+			        Vector3D delta = lightingRay.intersection.point - ray.intersection.point;
+
+		        	if(delta.length() < EPSILON){
+		        		// Since lighting ray starts at the light and points towards surface point, we check that we didn't
+		        		// intersect with the surface
+
+			        	// light ray didn't intersect anything
+			        	rayPower += 1.0/(double)(NUM_SOFT_SHADOW_SOURCES);
+		        	}else if(lightingRay.intersection.mat->transparent){
+			        	if(lightingRay.intersection.mat->transparency == 1.0){
+			        		// Let glass have a little bit of shadow and approximate fresnel equations assuming ray passed through glass and air
+			        		// Reflectance is given for perpendicular ((n1 - n2)/(n1+n2))^2
+			        		// We want transmittance so take 1 - reflectance        	
+			        		rayPower += (1.0 - pow((lightingRay.intersection.mat->n - 1.0)/(lightingRay.intersection.mat->n + 1.0), 2))/(double)(NUM_SOFT_SHADOW_SOURCES);
+						}else{
+							rayPower += lightingRay.intersection.mat->transparency/(double)(NUM_SOFT_SHADOW_SOURCES);
+						}
+		        	}else{
+		        		// light ray intersected some other object, don't add to raypower
+		        	}
+	        	}
         	}
 
 	        curLight->light->shade(ray);

@@ -175,16 +175,15 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
     sphere2->obj->setTextureColour("earth2.bmp");    
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
-	SceneDagNode::Ptr sphere4 = raytracer.addObject( std::make_shared<UnitSphere>(), yellow );    	
+	SceneDagNode::Ptr sphere4 = raytracer.addObject( std::make_shared<UnitSphere>(), yellow );  
+	SceneDagNode::Ptr cube = raytracer.addObject( std::make_shared<UnitCube>(), tintedglass2 ); 
+    cube->obj->setTextureColour("Starry_Night.bmp", 0);
+     	
     SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), white ); 
     SceneDagNode::Ptr frontPlane = raytracer.addObject( std::make_shared<UnitSquare>(), white );     
     SceneDagNode::Ptr rightPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
     SceneDagNode::Ptr bottomPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
-    SceneDagNode::Ptr cube = raytracer.addObject( std::make_shared<UnitCube>(), tintedglass2 );    
-    cube->obj->setTextureColour("Starry_Night.bmp", 0);
-
-	// Apply some transformations to the unit square.
 	double factor1[3] = { 5., 4.0, 0.03 };
 	double factor2[3] = { 5.0, 5.0, 5.0 };
 	double factor3[3] = { 80.0, 20.0, 1.0};

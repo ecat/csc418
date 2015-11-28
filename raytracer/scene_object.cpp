@@ -28,6 +28,7 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 	// Convert ray to object space
 	Ray3D r_objectSpace(worldToModel * ray.origin, worldToModel * ray.dir);
+	r_objectSpace.dir.normalize();
 
 	// Determine intersection of unit square with ray 
 	double t = - (r_objectSpace.origin[2])/(r_objectSpace.dir[2]);
@@ -44,30 +45,38 @@ bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		// Intersection lies within unit square
 		// Check that there was no previous intersection and that the intersection is nearest
 		// the eye
-		if(ray.intersection.none || t < ray.intersection.t_value){
-			// New intersection is good so update the intersection values
-			ray.intersection.t_value = t;
 
-			// Bring the points and normals back to world space
-			ray.intersection.point = modelToWorld * Point3D(x_check, y_check, 0);
+		Point3D potentialIntersection = modelToWorld * Point3D(x_check, y_check, 0);
+		
+		double t_worldSpace = (potentialIntersection - ray.origin).length();
 
-			// Bringing normals back to world space requires special math
-			ray.intersection.normal = worldToModel.transpose() * Vector3D(0, 0, 1);
-			ray.intersection.normal.normalize();
-
-			ray.intersection.none = false;
-
-			if(width > 0 && height > 0){
-				ray.intersection.texValue = getTextureValue(x_check, y_check);
-				ray.intersection.hasTexture = true;				
-				ray.intersection.hasColourTexture = isColourTexture;				
-			}else{
-				ray.intersection.hasTexture = false;
-			}
-
-				
-			return true;
+		if(t_worldSpace > ray.intersection.t_value && !ray.intersection.none){
+			return false;
 		}
+
+		// Bring the points and normals back to world space
+		ray.intersection.point = potentialIntersection;
+
+		// Bringing normals back to world space requires special math
+		ray.intersection.normal = worldToModel.transpose() * Vector3D(0, 0, 1);
+		ray.intersection.normal.normalize();
+
+		// New intersection is good so update the intersection values
+		ray.intersection.t_value = t_worldSpace;
+
+		ray.intersection.none = false;
+
+		if(width > 0 && height > 0){
+			ray.intersection.texValue = getTextureValue(x_check, y_check);
+			ray.intersection.hasTexture = true;				
+			ray.intersection.hasColourTexture = isColourTexture;				
+		}else{
+			ray.intersection.hasTexture = false;
+		}
+
+			
+		return true;
+		
 	}
 
 	return false;
@@ -97,16 +106,10 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	if(tmin < 0){
 		return false;
 	}
-
-	// ray doesn't intersect
-	if(!ray.intersection.none){
-		if(tmin > tmax || -tmin > ray.intersection.t_value){
-			return false;
-		}
-	}
 	
 	Point3D localIntersection = r_objectSpace.origin + tmin * r_objectSpace.dir;
 
+	// Check that local intersection lies within bounds
 	for(int i = 0 ; i < 3; i++){
 		if(localIntersection[i] < -0.5 || localIntersection[i] > 0.5){
 			return false;
@@ -115,13 +118,10 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 	Vector3D localNormal;
 
-	ray.intersection.t_value = -tmin;
-	// Bring the points and normals back to world space
-	ray.intersection.point = modelToWorld * localIntersection;
 
 	int intersectionFace = -1;
 	double EPS = 0.001;
-	double x, y;
+	double x, y; // texture coordinates
 	if(localIntersection[0] < -0.5 + EPS){
 		localNormal = Vector3D(-1, 0,  0);
 		intersectionFace = 1;
@@ -154,9 +154,18 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 		y = localIntersection[0];						
 	}
 
+	Point3D potentialIntersection = modelToWorld * localIntersection;
+	double t_worldSpace = (potentialIntersection - ray.origin).length();
+
+	if(t_worldSpace > ray.intersection.t_value && !ray.intersection.none){
+		return false;
+	}
+
 	// Bringing normals back to world space requires special math
+	ray.intersection.point = potentialIntersection;
 	ray.intersection.normal = worldToModel.transpose() * localNormal;
 	ray.intersection.normal.normalize();
+	ray.intersection.t_value = t_worldSpace;
 
 	ray.intersection.none = false;
 	if(width > 0 && height > 0 && intersectionFace == textureFace){
@@ -215,45 +224,47 @@ bool UnitSphere::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 			return false;
 		}
 
-		// There is an intersection with circle
-		if(ray.intersection.none || t_1 < ray.intersection.t_value || t_2 < ray.intersection.t_value){
+		Point3D potentialIntersection;
+		Vector3D potentialNormal;
+		// Determine mapping for texture coordinates for sphere
+		double u, v;
 
-			// Determine mapping for texture coordinates for sphere
-			double u, v;
-
-			// Bring the points and normals back to world space
-			// Intersection 2 will always be closer to origin so it sufficies to check
-			// that it is not behind the ray origin (t_1 > t_2) is always true
-			if(t_2 < 0 || t_1 < t_2){
-				ray.intersection.t_value = t_1;
-				ray.intersection.point = modelToWorld * intersection_1;
-				ray.intersection.normal = worldToModel.transpose() * (intersection_1 - c);
-
-				u = 0.5 + atan2(intersection_1[2], intersection_1[0])/ (2 * M_PI);
-				v = 0.5 - asin(intersection_1[1]/d)/ M_PI;
-			}else {
-				ray.intersection.t_value = t_2;
-				ray.intersection.point = modelToWorld * intersection_2;
-				ray.intersection.normal = worldToModel.transpose() * (intersection_2 - c);
-
-				u = 0.5 + atan2(intersection_2[2], intersection_2[0])/ (2 * M_PI);
-				v = 0.5 - asin(intersection_2[1]/d)/ M_PI;
-			}
-
-			ray.intersection.normal.normalize();
-
-			ray.intersection.none = false;
-
-			if(width > 0 && height > 0){
-				ray.intersection.hasTexture = true;
-				ray.intersection.texValue = getTextureValue(u, v);
-				ray.intersection.hasColourTexture = isColourTexture;
-			}else{
-				ray.intersection.hasTexture = false;	
-			}
-
-			return true;
+		if(t_2 < 0 || t_1 < t_2){
+			potentialIntersection = modelToWorld * intersection_1;
+			potentialNormal = worldToModel.transpose() * (intersection_1 - c);
+			u = 0.5 + atan2(intersection_1[2], intersection_1[0])/ (2 * M_PI);
+			v = 0.5 - asin(intersection_1[1]/d)/ M_PI;
+		}else{
+			potentialIntersection = modelToWorld * intersection_2;
+			potentialNormal = worldToModel.transpose() * (intersection_2 - c);		
+			u = 0.5 + atan2(intersection_2[2], intersection_2[0])/ (2 * M_PI);
+			v = 0.5 - asin(intersection_2[1]/d)/ M_PI;	
 		}
+		
+		double t_worldSpace = (potentialIntersection - ray.origin).length();
+
+		if(t_worldSpace > ray.intersection.t_value && !ray.intersection.none){
+			return false;
+		}
+
+		ray.intersection.t_value = t_worldSpace;
+		ray.intersection.point = potentialIntersection;
+		ray.intersection.normal = potentialNormal;
+
+		ray.intersection.normal.normalize();
+
+		ray.intersection.none = false;
+
+		if(width > 0 && height > 0){
+			ray.intersection.hasTexture = true;
+			ray.intersection.texValue = getTextureValue(u, v);
+			ray.intersection.hasColourTexture = isColourTexture;
+		}else{
+			ray.intersection.hasTexture = false;	
+		}
+
+		return true;
+		
 
 
 	}
