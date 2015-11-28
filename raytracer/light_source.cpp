@@ -110,7 +110,7 @@ void SpotLight::shade( Ray3D& ray ) {
 	}
 
 	// Find angle between the point on surface to the light source, don't light up things behind
-	double gain = pow(std::max(-L.dot(_dir), 0.), 8.);
+	double gain = pow(std::max(-L.dot(_dir), 0.), _dropoff);
 
 	ray.col = gain * ray.col;
 

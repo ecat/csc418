@@ -101,6 +101,8 @@ public:
         _cgbuffer = new unsigned char *[6];  
         for(int i = 0 ; i < 6; i++){
             faceSet[i] = false;
+            flipHorizontal[i] = 1;
+            flipVertical[i] = 1;
         }          
     }
 
@@ -109,6 +111,14 @@ public:
         bmp_read(ctexturePath[_face].c_str(), &cwidth[_face], &cheight[_face], &_crbuffer[_face], &_cgbuffer[_face], &_cbbuffer[_face]);
         faceSet[_face] = true;    
         isColourTexture = true;
+    }
+
+    void flipTexHorizontal(int face){
+        flipHorizontal[face] *= -1;
+    }
+
+    void flipTexVertical(int face){
+        flipVertical[face] *= -1;
     }
 
     Colour getTextureValue(double dx, double dy){
@@ -121,8 +131,8 @@ public:
         int h = cheight[face];
         int w = cwidth[face];
 
-        int i = (dx + 0.5) * h;
-        int j = (dy + 0.5) * w;
+        int i = (flipHorizontal[face] * dx + 0.5) * h;
+        int j = (flipVertical[face] * dy + 0.5) * w;
 
         // There is a strange bug with reading in a bmp. It seems like the width wraps
         // around (this is evident if you read a texture and immediately write to it)
@@ -144,6 +154,8 @@ public:
     bool faceSet[6];
     long unsigned int cwidth[6];
     long int cheight[6];
+    int flipHorizontal[6];
+    int flipVertical[6];
     std::string ctexturePath[6];
     unsigned char** _crbuffer = nullptr;
     unsigned char** _cgbuffer = nullptr;

@@ -162,13 +162,13 @@ int main(int argc, char* argv[])
     tintedglass2->transparency = 0.3;
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 25.0, 5.0), 
 					Colour(0.05, 0.05, 0.05) ) );
-	Point3D lightOrigin(-10.0, 10.0, 5.0);
+	Point3D lightOrigin(-10.0, 5.0, 5.0);
 	Point3D lightOrigin2(-50.0, 35.0, -15);
 	Point3D focusPoint(-12, -7, -9);
 	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin,  focusPoint - lightOrigin,
-					Colour(0.6, 0.6, 0.6) ) );	
+					Colour(0.6, 0.6, 0.6), 10 ) );	
 	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin2,  focusPoint - lightOrigin2,
-					Colour(0.15, 0.15, 0.15) ) );		
+					Colour(0.45, 0.45, 0.45), 10 ) );		
 
 	// Add a unit square into the scene with material mat.
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), yellow );
@@ -177,9 +177,10 @@ int main(int argc, char* argv[])
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
 	SceneDagNode::Ptr sphere4 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );  
 	SceneDagNode::Ptr cube = raytracer.addObject( std::make_shared<UnitCube>(), tintedglass2 ); 
-    cube->obj->setTextureColour("Starry_Night.bmp", 0);
+    cube->obj->setTextureColour("Starry_Night.bmp", 0);	// front face
+    cube->obj->setTextureColour("Starry_Night.bmp", 5);    // back face
+    (std::static_pointer_cast<UnitCube>(cube->obj))->flipTexHorizontal(5);
     SceneDagNode::Ptr cube2 = raytracer.addObject( std::make_shared<UnitCube>(), white); 
-    cube2->obj->setTextureColour("Starry_Night.bmp", 0); // Front face
     cube2->obj->setTextureColour("Starry_Night.bmp", 1); // Left face
 	cube2->obj->setTextureColour("Starry_Night.bmp", 4); // Top face
      	
@@ -188,15 +189,16 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr frontPlane = raytracer.addObject( std::make_shared<UnitSquare>(), white );     
     SceneDagNode::Ptr rightPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
     SceneDagNode::Ptr bottomPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
+    //SceneDagNode::Ptr topPlane  = raytracer.addObject( std::make_shared<UnitSquare>(), wood );    
 	double factor1[3] = { 5., 4.0, 0.03 };
 	double factor2[3] = { 5.0, 5.0, 5.0 };
 	double factor3[3] = { 80.0, 20.0, 1.0};
 	double factor4[3] = { 1.0, 20., 80.};
 	double factor5[3] = { 80.0, 1.0, 80.0};
-	double factor6[3] = { 3.0, 3.0, 3.0 };
+	double factor6[3] = { 4.0, 4.0, 4.0 };
 
 	raytracer.translate(cube2, Vector3D(-1.5, -8., -11.9));
-	raytracer.rotate(cube2, 'y', 25);
+	raytracer.rotate(cube2, 'y', -25);
 	raytracer.scale(cube2, Point3D(0., 0., 0.), factor6);
 
 	raytracer.translate(cube, Vector3D(-5.5, -8., -3.9));

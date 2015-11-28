@@ -219,6 +219,7 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
  
         	double areaLightRadius = 0.5;
         	double rayPower = 0;
+        	Colour transparencyColour;	// Colour added from light passing through semitransparent objects
         	for(int i = 0 ; i < NUM_SOFT_SHADOW_SOURCES; i++){
 				// Calculate a dr and dtheta uniformly distributed to simulate circle
 	    		double dr = static_cast <double> (raytracerRand(thread_id)) / static_cast<double>(RAND_MAX);
@@ -255,6 +256,12 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
 			        		rayPower += (1.0 - pow((lightingRay.intersection.mat->n - 1.0)/(lightingRay.intersection.mat->n + 1.0), 2))/(double)(NUM_SOFT_SHADOW_SOURCES);
 						}else{
 							rayPower += lightingRay.intersection.mat->transparency/(double)(NUM_SOFT_SHADOW_SOURCES);
+							
+							if(lightingRay.intersection.hasColourTexture){
+								transparencyColour = transparencyColour + 
+								(1.0 - lightingRay.intersection.mat->transparency)/(double)(NUM_SOFT_SHADOW_SOURCES) 
+								* lightingRay.intersection.texValue;
+							}
 						}
 		        	}else{
 		        		// light ray intersected some other object, don't add to raypower
@@ -263,7 +270,7 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
         	}
 
 	        curLight->light->shade(ray);
-	        ray.col = rayPower * ray.col;
+	        ray.col = rayPower * ray.col + 0.5 * rayPower * transparencyColour;
 	        ray.col.clamp();
 
 

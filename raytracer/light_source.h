@@ -44,13 +44,13 @@ private:
 // Directional light source
 class SpotLight : public LightSource {
 public:
-	SpotLight( Point3D pos, Vector3D dir, Colour col ) : _pos(pos), _dir(dir), _col_ambient(col), 
-	_col_diffuse(col), _col_specular(col) {
+	SpotLight( Point3D pos, Vector3D dir, Colour col, double dropoff) : _pos(pos), _dir(dir), _col_ambient(col), 
+	_col_diffuse(col), _col_specular(col), _dropoff(dropoff) {
 		_dir.normalize();
 	}
-	SpotLight( Point3D pos, Vector3D dir, Colour ambient, Colour diffuse, Colour specular ) 
+	SpotLight( Point3D pos, Vector3D dir, Colour ambient, Colour diffuse, Colour specular , double dropoff) 
 	: _pos(pos), _dir(dir), _col_ambient(ambient), _col_diffuse(diffuse), 
-	_col_specular(specular) {
+	_col_specular(specular), _dropoff(dropoff) {
 		_dir.normalize();
 	}
 	void shade( Ray3D& ray );
@@ -63,4 +63,5 @@ private:
 	Colour _col_ambient;
 	Colour _col_diffuse; 
 	Colour _col_specular; 
+	double _dropoff;
 };
