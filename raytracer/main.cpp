@@ -151,6 +151,7 @@ int main(int argc, char* argv[])
 	raytracer.rotate(bottomPlane, 'x', -90); 	
 */
 
+	// Trio of spheres with semi transparent glass and textured cube
 	fov = 105;
 
     Material::Ptr wood = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
@@ -174,7 +175,6 @@ int main(int argc, char* argv[])
 	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin3,  focusPoint2 - lightOrigin3,
 					Colour(0.25, 0.25, 0.25), 18 ) );		
 
-	// Add a unit square into the scene with material mat.
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), yellow );
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
     sphere2->obj->setTextureColour("earth2.bmp");    
@@ -188,6 +188,7 @@ int main(int argc, char* argv[])
     //cube2->obj->setTextureColour("Starry_Night.bmp", 1); // Left face
 	cube2->obj->setTextureColour("bob_ross.bmp", 4); // Top face
 	cube2->obj->setTextureColour("three_musicians.bmp", 2); //Right face
+	cube2->obj->setTextureColour("rocky.bmp", 0);
      	
     SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), white ); 
@@ -227,7 +228,7 @@ int main(int argc, char* argv[])
 
 	raytracer.translate(backPlane, Vector3D(0, 0, -20));
 	raytracer.scale(backPlane, Point3D(0, 0,  0), factor3);
-	backPlane->obj->setTextureColour("bricks.bmp");
+	backPlane->obj->setTextureColour("bricks3.bmp");
 
 	raytracer.translate(frontPlane, Vector3D(0, 0, 5.2));
 	raytracer.scale(frontPlane, Point3D(0, 0,  0), factor3);
@@ -257,7 +258,7 @@ int main(int argc, char* argv[])
 	// Render it from a different point of view.
 	Point3D eye2(-1.3, -5.3, -3.2);
 	Vector3D view2(-4, -3, -4.);
-	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
+	raytracer.render(width, height, eye2, view2, up, fov, "semiglass.bmp");
 
 /*	// Single earth sphere
 	SceneDagNode::Ptr earthSphere = raytracer.addObject( std::make_shared<UnitSphere>(), blue);    
