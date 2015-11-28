@@ -107,10 +107,11 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	}
 	
 	Point3D localIntersection = r_objectSpace.origin + tmin * r_objectSpace.dir;
-
+	double EPS = 0.01;
+	
 	// Check that local intersection lies within bounds
 	for(int i = 0 ; i < 3; i++){
-		if(localIntersection[i] < -0.5 || localIntersection[i] > 0.5){
+		if(localIntersection[i] < -0.5 - EPS || localIntersection[i] > 0.5 + EPS){
 			return false;
 		}
 	}
@@ -119,7 +120,6 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 
 
 	int intersectionFace = -1;
-	double EPS = 0.001;
 	double x, y; // texture coordinates
 	if(localIntersection[0] < -0.5 + EPS){
 		localNormal = Vector3D(-1, 0,  0);
