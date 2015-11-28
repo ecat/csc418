@@ -50,7 +50,7 @@ public:
 protected:
     void setTexture(std::string _texturePath){
         texturePath = _texturePath;   
-        bmp_read_test(texturePath.c_str());
+        //bmp_read_test(texturePath.c_str());
         bmp_read(texturePath.c_str(), &width, &height, &_rbuffer, &_gbuffer, &_bbuffer);
     };
 
@@ -95,33 +95,44 @@ public:
     bool intersect( Ray3D& ray, const Matrix4x4& worldToModel,
             const Matrix4x4& modelToWorld );
 
-    using SceneObject::setTextureColour;
+    UnitCube(){
+        _crbuffer = new unsigned char *[6];
+        _cbbuffer = new unsigned char *[6];            
+        _cgbuffer = new unsigned char *[6];  
+        for(int i = 0 ; i < 6; i++){
+            faceSet[i] = false;
+        }          
+    }
 
-    // Only one face is supported at the moment
     void setTextureColour(std::string _texturePath, int _face){
-        if(textureFace != -1){
-            std::cerr << "Only one cube texture is supported. " << std::endl;
-        }
-
-        setTexture(_texturePath);
-        textureFace = _face;
+        ctexturePath[_face] = _texturePath;   
+        bmp_read(ctexturePath[_face].c_str(), &cwidth[_face], &cheight[_face], &_crbuffer[_face], &_cgbuffer[_face], &_cbbuffer[_face]);
+        faceSet[_face] = true;    
         isColourTexture = true;
     }
 
-    // Accesses the texture memory and returns the colour associated with that location
     Colour getTextureValue(double dx, double dy){
-        int i = (dx + 0.5) * height;
-        int j = (dy + 0.5) * width;
+        std::cerr << "Use getTextureValue and specify a face" << std::endl;
+        return Colour(0., 0., 0.);
+    };
+
+    // Accesses the texture memory and returns the colour associated with that location
+    Colour getTextureValue(double dx, double dy, int face){
+        int h = cheight[face];
+        int w = cwidth[face];
+
+        int i = (dx + 0.5) * h;
+        int j = (dy + 0.5) * w;
 
         // There is a strange bug with reading in a bmp. It seems like the width wraps
         // around (this is evident if you read a texture and immediately write to it)
         // widths and heights with multiples of four does not fix it
         // As such, crop roughly 5% of the width
-        j = (j + 0.05 * width) * (width-1)/(1.05 * width);
+        j = (j + 0.1 * w) * (w-1)/(1.1 * w);
 
-        double r = _rbuffer[i * width + j]/255.;
-        double g = _gbuffer[i * width + j]/255.;
-        double b = _bbuffer[i * width + j]/255.;
+        double r = _crbuffer[face][i * w + j]/255.;
+        double g = _cgbuffer[face][i * w + j]/255.;
+        double b = _cbbuffer[face][i * w + j]/255.;
 
         if(isColourTexture){
             return Colour(g, b, r);
@@ -130,8 +141,13 @@ public:
         }
     };
 
-    // Determines what face the texture is on
-    int textureFace = -1;
+    bool faceSet[6];
+    long unsigned int cwidth[6];
+    long int cheight[6];
+    std::string ctexturePath[6];
+    unsigned char** _crbuffer = nullptr;
+    unsigned char** _cgbuffer = nullptr;
+    unsigned char** _cbbuffer = nullptr;
 };
 
 

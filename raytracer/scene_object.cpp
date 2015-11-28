@@ -100,7 +100,6 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	double t6 = (-0.5 - r_objectSpace.origin[2])/r_objectSpace.dir[2];	
 
 	double tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
-	double tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
 
 
 	if(tmin < 0){
@@ -168,8 +167,8 @@ bool UnitCube::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
 	ray.intersection.t_value = t_worldSpace;
 
 	ray.intersection.none = false;
-	if(width > 0 && height > 0 && intersectionFace == textureFace){
-		ray.intersection.texValue = getTextureValue(x, y);
+	if(cwidth[intersectionFace] > 0 && cheight[intersectionFace] > 0 && faceSet[intersectionFace] == true){
+		ray.intersection.texValue = getTextureValue(x, y, intersectionFace);
 		ray.intersection.hasTexture = true;				
 		ray.intersection.hasColourTexture = true;				
 	}else{

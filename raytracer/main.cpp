@@ -171,13 +171,17 @@ int main(int argc, char* argv[])
 					Colour(0.15, 0.15, 0.15) ) );		
 
 	// Add a unit square into the scene with material mat.
-    SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
+    SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), yellow );
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
     sphere2->obj->setTextureColour("earth2.bmp");    
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
-	SceneDagNode::Ptr sphere4 = raytracer.addObject( std::make_shared<UnitSphere>(), yellow );  
+	SceneDagNode::Ptr sphere4 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );  
 	SceneDagNode::Ptr cube = raytracer.addObject( std::make_shared<UnitCube>(), tintedglass2 ); 
     cube->obj->setTextureColour("Starry_Night.bmp", 0);
+    SceneDagNode::Ptr cube2 = raytracer.addObject( std::make_shared<UnitCube>(), white); 
+    cube2->obj->setTextureColour("Starry_Night.bmp", 0); // Front face
+    cube2->obj->setTextureColour("Starry_Night.bmp", 1); // Left face
+	cube2->obj->setTextureColour("Starry_Night.bmp", 4); // Top face
      	
     SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), wood );
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), white ); 
@@ -189,26 +193,29 @@ int main(int argc, char* argv[])
 	double factor3[3] = { 80.0, 20.0, 1.0};
 	double factor4[3] = { 1.0, 20., 80.};
 	double factor5[3] = { 80.0, 1.0, 80.0};
+	double factor6[3] = { 3.0, 3.0, 3.0 };
 
+	raytracer.translate(cube2, Vector3D(-1.5, -8., -11.9));
+	raytracer.rotate(cube2, 'y', 25);
+	raytracer.scale(cube2, Point3D(0., 0., 0.), factor6);
 
 	raytracer.translate(cube, Vector3D(-5.5, -8., -3.9));
 	raytracer.rotate(cube, 'y', 10); 
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
-	//cube->obj->setTextureColour("earth2.bmp", 0);
 
-	raytracer.translate(sphere, Vector3D(-11., -8., -5.0));	
+	raytracer.translate(sphere, Vector3D(-11., -8., -4.5));	
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor2);
 
-	raytracer.translate(sphere4, Vector3D(-12., -5., -8.5));	
+	raytracer.translate(sphere4, Vector3D(-12., -5., -8.));	
 	raytracer.scale(sphere4, Point3D(0., 0., 0.), factor2);	
 
-	raytracer.translate(sphere2, Vector3D(-13., -8., -9.5));
+	raytracer.translate(sphere2, Vector3D(-13., -8., -9.));
 	raytracer.rotate(sphere2, 'x', 90);
 	raytracer.rotate(sphere2, 'y', 90);
 	raytracer.rotate(sphere2, 'z', 90);
 	raytracer.scale(sphere2, Point3D(0., 0., 0.), factor2);
 
-	raytracer.translate(sphere3, Vector3D(-9., -8., -9.5));
+	raytracer.translate(sphere3, Vector3D(-9., -8., -9.));
 	raytracer.scale(sphere3, Point3D(0., 0., 0.), factor2);	
 
 	raytracer.translate(backPlane, Vector3D(0, 0, -40));
@@ -234,8 +241,8 @@ int main(int argc, char* argv[])
 	bottomPlane->obj->setTextureColour("wood1.bmp");
 	
 	// Render it from a different point of view.
-	Point3D eye2(-1.3, -6.3, -3.2);
-	Vector3D view2(-4., -2., -4.);
+	Point3D eye2(-1.3, -5.3, -3.2);
+	Vector3D view2(-4., -3., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
 
 /*	// Single earth sphere
