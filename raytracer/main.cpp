@@ -251,7 +251,7 @@ int main(int argc, char* argv[])
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	cube->obj->setTextureColour("textures/earth2.bmp", 0);
 */
-
+/*
 	// Jade and glass and two spheres
 
 	// Add a unit square into the scene with material mat.
@@ -315,7 +315,7 @@ int main(int argc, char* argv[])
 	Point3D eye2(2., 0., 1.);
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp", Point3D(0,0,-3));
-
+*/
 /*
 	// Trio of spheres with semi transparent glass and textured cube
 	fov = 105;
@@ -452,6 +452,53 @@ int main(int argc, char* argv[])
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp", Point3D(0,0,0));
 */
+	// default scene
+
+	// Camera parameters.
+	Point3D eye_def(0., 0., 1.);
+	Vector3D view_def(0., 0., -1.);
+	Vector3D up_def(0., 1., 0.);
+	double fov_def = 60;
+
+	// Defines a material for shading.
+    Material::Ptr gold_def = std::make_shared<Material>( Colour(0.3, 0.3, 0.3), Colour(0.75164, 0.60648, 0.22648), 
+			Colour(0.628281, 0.555802, 0.366065), 
+			51.2 );
+    Material::Ptr jade_def = std::make_shared<Material>( Colour(0, 0, 0), Colour(0.54, 0.89, 0.63), 
+			Colour(0.316228, 0.316228, 0.316228), 
+			12.8 );
+
+	// Defines a point light source.
+	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0., 0., 5.), 
+				Colour(0.9, 0.9, 0.9) ) );
+
+	// Add a unit square into the scene with material mat.
+    SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), gold_def );
+    SceneDagNode::Ptr plane = raytracer.addObject( std::make_shared<UnitSquare>(), jade_def );
+	
+	// Apply some transformations to the unit square.
+	double factor1[3] = { 1.0, 2.0, 1.0 };
+	double factor2[3] = { 6.0, 6.0, 6.0 };
+	raytracer.translate(sphere, Vector3D(0., 0., -5.));	
+	raytracer.rotate(sphere, 'x', -45); 
+	raytracer.rotate(sphere, 'z', 45); 
+	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
+
+	raytracer.translate(plane, Vector3D(0., 0., -7.));	
+	raytracer.rotate(plane, 'z', 45); 
+	raytracer.scale(plane, Point3D(0., 0., 0.), factor2);
+
+	// Render the scene, feel free to make the image smaller for
+	// testing purposes.	
+	raytracer.render(width, height, eye_def, view_def, up_def, fov_def, "view1.bmp", Point3D(0,0,0));
+	
+	// Render it from a different point of view.
+	Point3D eye2_def(4., 2., 1.);
+	Vector3D view2_def(-4., -2., -6.);
+	raytracer.render(width, height, eye2_def, view2_def, up_def, fov_def, "view2.bmp", Point3D(0,0,0));
+	
+
+
 	
 	std::time_t end;
 	time(&end);
