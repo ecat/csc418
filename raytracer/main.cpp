@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 	// All planets scene
 
 	eye = Point3D(-2, 0, -3);
-	Point3D viewPoint(2.5, 1.25, -10);
+	Point3D viewPoint(2.5, 1., -9);
 	up = Vector3D(0, 0, 1);
 	view = viewPoint - eye;
 	fov = 100;
@@ -119,7 +119,8 @@ int main(int argc, char* argv[])
 
     SceneDagNode::Ptr rightPlane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror);
     rightPlane->obj->setTextureColour("galaxy.bmp");
-
+    SceneDagNode::Ptr topPlane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror);
+    topPlane->obj->setTextureColour("galaxy.bmp");
     //SceneDagNode::Ptr glassSphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass);
 
 	SceneDagNode::Ptr bottomBorder = raytracer.addObject( std::make_shared<UnitCube>(), wood);    
@@ -139,7 +140,7 @@ int main(int argc, char* argv[])
 	double factor1[3] = { 2.0, 2.0, 0.3 };
 	double factor3[3] = { 40.0, 40.0, 1.0};
 	double factor4[3] = { 1.0, 80., 120.};	
-	double factor5[3] = { 20.0, 1.0, 20.0};    
+	double factor5[3] = { 80, 1.0, 120.0};    
 	double earthFactor[3] = {2.5, 2.5, 2.5};
 
 	Point3D lightFocus1(3, 3, -10);
@@ -156,9 +157,13 @@ int main(int argc, char* argv[])
 	l2->light->area = 5.0;
 
 	raytracer.rotate(rightPlane, 'x', -90); 	
-	raytracer.translate(rightPlane, Vector3D(25, 0., 0));	
+	raytracer.translate(rightPlane, Vector3D(25, 0., -10));	
 	raytracer.scale(rightPlane, Point3D(0., 0., 0.), factor4);
 	raytracer.rotate(rightPlane, 'y', -90); 	
+
+	raytracer.translate(topPlane, Vector3D(10, 25, 0));	
+	raytracer.scale(topPlane, Point3D(0., 0., 0.), factor5);
+	raytracer.rotate(topPlane, 'x', 90); 	
 
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), pool_green );    
 	backPlane->obj->setTextureGrayScale("felt.bmp"); 
