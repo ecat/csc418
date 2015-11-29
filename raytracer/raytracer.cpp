@@ -231,8 +231,10 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
 	    		dtheta = (dtheta * 2 * M_PI) - M_PI;
 
         		Point3D lightOrigin = curLight->light->get_position() + dr * (cos(dtheta) * v1 + sin(dtheta) * v2);
-        		Vector3D areaLightingRayDirection = ray.intersection.point - lightOrigin;
-		        Ray3D lightingRay(lightOrigin, areaLightingRayDirection);
+        		//Vector3D areaLightingRayDirection = ray.intersection.point - lightOrigin;
+		        //Ray3D lightingRay(lightOrigin, areaLightingRayDirection);
+        		Vector3D areaLightingRayDirection = lightOrigin - ray.intersection.point;
+		        Ray3D lightingRay(ray.intersection.point, areaLightingRayDirection);		        
 		        lightingRay.dir.normalize();
 		        traverseScene(_root, lightingRay);
 
@@ -486,7 +488,7 @@ void Raytracer::segment(int thread_id, int row_start, int row_end, double factor
 	Point3D focusPoint){
 
     Matrix4x4 viewToWorld;
-    double apertureRadius = 0.3; // Higher aperture radius gives more blur
+    double apertureRadius = 0.15; // Higher aperture radius gives more blur
 	for(int k = 0 ; k < NUM_DEPTH_OF_FIELD_SAMPLES; k++){
 
 		if(ENABLE_DEPTH_OF_FIELD || NUM_DEPTH_OF_FIELD_SAMPLES > 1){

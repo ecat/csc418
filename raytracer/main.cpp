@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 	Raytracer raytracer;
 	//int width = 1920; 
 	//int height = 1080; 
-	int width = 480; 
-	int height = 360; 
+	int width = 960; 
+	int height = 720; 
 	//int width = 1440; 
 	//int height = 1080; 	
 
@@ -251,13 +251,13 @@ int main(int argc, char* argv[])
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	cube->obj->setTextureColour("textures/earth2.bmp", 0);
 */
-/*
+
 	// Jade and glass and two spheres
 
 	// Add a unit square into the scene with material mat.
     SceneDagNode::Ptr sphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass );
     SceneDagNode::Ptr sphere2 = raytracer.addObject( std::make_shared<UnitSphere>(), blue );
-    sphere2->obj->setTextureColour("textures/earth2.bmp");    
+    //sphere2->obj->setTextureColour("textures/earth2.bmp");    
 	SceneDagNode::Ptr sphere3 = raytracer.addObject( std::make_shared<UnitSphere>(), red );    
     SceneDagNode::Ptr leftPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
     leftPlane->obj->setTextureGrayScale("textures/jade_tex.bmp");    
@@ -270,25 +270,27 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr topPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
     topPlane->obj->setTextureGrayScale("textures/jade_tex.bmp");     
 
-	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, .0, 5.0), 
-					Colour(0.7, 0.7, 0.7) ) );	
+	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 4., 5.0), 
+					Colour(0.3, 0.3, 0.3) ) );	
+	raytracer.addLightSource( std::make_shared<SpotLight>(Point3D(0.0, .0, 5.0), Vector3D(0.0, 0.0, -1.0), 
+					Colour(0.9, 0.9, 0.9), 10 ) );	
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 2.0, 2.0, 2.0 };
-	double factor2[3] = { 4.0, 4.0, 4.0 };
+	double factor2[3] = { 5.0, 5.0, 5.0 };
 	double factor3[3] = { 20.0, 20.0, 1.0};
 	double factor4[3] = { 10.0, 20., 20.};
 	double factor5[3] = { 20.0, 1.0, 20.0};
 
-	raytracer.translate(sphere, Vector3D(0., 0., -3.));	
+	raytracer.translate(sphere, Vector3D(0., 0., -2.));	
 	raytracer.scale(sphere, Point3D(0., 0., 0.), factor1);
 
-	raytracer.translate(sphere2, Vector3D(0., -2., -10));
+	raytracer.translate(sphere2, Vector3D(0., -2.9, -10));
 	raytracer.rotate(sphere2, 'x', 90);
 	raytracer.rotate(sphere2, 'y', 90);
 	raytracer.rotate(sphere2, 'z', 90);
 	raytracer.scale(sphere2, Point3D(0., 0., 0.), factor2);
 
-	raytracer.translate(sphere3, Vector3D(0., 2., -10));
+	raytracer.translate(sphere3, Vector3D(0., 2.9, -10));
 	raytracer.scale(sphere3, Point3D(0., 0., 0.), factor2);	
 
 	raytracer.translate(backPlane, Vector3D(0, 0, -16));
@@ -310,8 +312,8 @@ int main(int argc, char* argv[])
 	raytracer.scale(topPlane, Point3D(0., 0., 0.), factor5);
 	raytracer.rotate(topPlane, 'x', 90); 	
 
-	raytracer.render(width, height, eye, view, up, fov, "view1.bmp", Point3D(0,0,-3));
-	
+	raytracer.render(width, height, eye, view, up, fov, "view1.bmp", Point3D(0,0,-2));
+/*	
 	Point3D eye2(2., 0., 1.);
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp", Point3D(0,0,-3));
@@ -452,7 +454,7 @@ int main(int argc, char* argv[])
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp", Point3D(0,0,0));
 */
-	// default scene
+/*	// default scene
 
 	// Camera parameters.
 	Point3D eye_def(0., 0., 1.);
@@ -496,7 +498,7 @@ int main(int argc, char* argv[])
 	Point3D eye2_def(4., 2., 1.);
 	Vector3D view2_def(-4., -2., -6.);
 	raytracer.render(width, height, eye2_def, view2_def, up_def, fov_def, "view2.bmp", Point3D(0,0,0));
-	
+*/
 
 
 	
