@@ -65,9 +65,9 @@ public:
 
 	// Renders an image fileName with width and height and a camera
 	// positioned at eye, with view vector view, up vector up, and 
-	// field of view fov.
+	// field of view fov. Can pass focusPoint (0,0,0) if depth of field is disabled
 	void render( int width, int height, Point3D eye, Vector3D view, 
-			Vector3D up, double fov, std::string fileName );
+			Vector3D up, double fov, std::string fileName , Point3D focusPoint);
 
 	// Add an object into the scene, with material mat.  The function
 	// returns a handle to the object node you just added, use the 
@@ -116,8 +116,8 @@ public:
 	// Number of points to multisample
 	const int NUM_ANTIALIASING_SAMPLES = 8;
 
-	// Enable or disable depth of field
-	const bool ENABLE_DEPTH_OF_FIELD = false;
+	// Enable or disable depth of field, also requiers antialiasing is enabled
+	const bool ENABLE_DEPTH_OF_FIELD = false && ENABLE_ANTI_ALIASING;
 
 	// Number of view points to generate depth of field
 	const int NUM_DEPTH_OF_FIELD_SAMPLES = 1;
@@ -156,7 +156,7 @@ private:
     void computeTransforms( SceneDagNode::Ptr node );
 
     // Divides the raytracing into image segments for threading
-	void segment(int thread_id, int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up);
+	void segment(int thread_id, int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up, Point3D focusPoint);
 
     // Function that computes coloring of one pixel
 	void renderHelper(int thread_id, double factor, Matrix4x4 viewToWorld, int width, int height, int i, int j);

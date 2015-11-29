@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 	// All planets scene
 
 	eye = Point3D(-2, 0, -3);
-	Point3D viewPoint(5, 0, -9);
+	Point3D viewPoint(2.5, 1.25, -10);
 	up = Vector3D(0, 0, 1);
 	view = viewPoint - eye;
 	fov = 100;
@@ -142,15 +142,18 @@ int main(int argc, char* argv[])
 	double factor5[3] = { 20.0, 1.0, 20.0};    
 	double earthFactor[3] = {2.5, 2.5, 2.5};
 
-	Point3D focusPoint(3, 3, -10);
-	Point3D focusPoint2(1.5, 2.5, -10);	
+	Point3D lightFocus1(3, 3, -10);
+	Point3D lightFocus2(1.5, 2.5, -10);	
 	Point3D lightOrigin(-20.0, 10.0, 5.0);
 	Point3D lightOrigin3(-20.0, 10.0, 5.0);
 	double rotationAngle = -10; // Have triangle poitn in another direction
-	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin,  focusPoint - lightOrigin,
+	LightListNode::Ptr l1 = raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin,  lightFocus1 - lightOrigin,
 					Colour(0.65, 0.65, 0.65), 26 ) );	
-	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin3,  focusPoint2 - lightOrigin3,
+
+	l1->light->area = 5.0;
+	LightListNode::Ptr l2 = raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin3,  lightFocus2 - lightOrigin3,
 					Colour(0.65, 0.65, 0.65), 26 ) );			
+	l2->light->area = 5.0;
 
 	raytracer.rotate(rightPlane, 'x', -90); 	
 	raytracer.translate(rightPlane, Vector3D(25, 0., 0));	
@@ -223,7 +226,7 @@ int main(int argc, char* argv[])
 	raytracer.translate(sunSphere, Vector3D(3.75, 7.5, -8.75));
 	raytracer.scale(sunSphere, Point3D(0., 0., 0.), earthFactor);	
 
-	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
+	raytracer.render(width, height, eye, view, up, fov, "view1.bmp", Point3D(2.55, 2.55, -10));
 	
 /*	// White back wall with a textured cube
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 

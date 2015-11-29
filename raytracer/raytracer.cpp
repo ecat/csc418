@@ -217,7 +217,7 @@ void Raytracer::computeShading( int thread_id, Ray3D& ray ) {
 			Vector3D v2 = cross(v1, pointLightingRayDirection);
 			v2.normalize();
  
-        	double areaLightRadius = 0.5;
+        	double areaLightRadius = curLight->light->area;
         	double rayPower = 0;
         	Colour transparencyColour;	// Colour added from light passing through semitransparent objects
         	for(int i = 0 ; i < NUM_SOFT_SHADOW_SOURCES; i++){
@@ -451,7 +451,7 @@ Colour Raytracer::shadeRay(int thread_id,  Ray3D& ray ) {
 }	
 
 void Raytracer::render( int width, int height, Point3D eye, Vector3D view, 
-        Vector3D up, double fov, std::string fileName ) {
+        Vector3D up, double fov, std::string fileName, Point3D focusPoint ) {
     computeTransforms(_root);
     _scrWidth = width;
     _scrHeight = height;
@@ -470,23 +470,23 @@ void Raytracer::render( int width, int height, Point3D eye, Vector3D view,
 	    for(int i = 0 ; i < numThreads; i++){
 	    	_seeds[i] = clock();
 	    	group.add_thread(new boost::thread(&Raytracer::segment, this, i,
-	    	i * height/numThreads, (i+1) * height/numThreads, factor, eye, view, up));
+	    	i * height/numThreads, (i+1) * height/numThreads, factor, eye, view, up, focusPoint));
 	    }
 	    group.join_all();
 	}else{
 		_seeds = new unsigned int[1];
 		_seeds[0] = clock();
-	    segment(0, 0, _scrHeight, factor, eye, view, up);
+	    segment(0, 0, _scrHeight, factor, eye, view, up, focusPoint);
     }
 
 	flushPixelBuffer(fileName);
 }
 
-void Raytracer::segment(int thread_id, int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up){
+void Raytracer::segment(int thread_id, int row_start, int row_end, double factor, Point3D eye, Vector3D view, Vector3D up,
+	Point3D focusPoint){
 
-    Point3D focusPoint(0., 0., -3);
     Matrix4x4 viewToWorld;
-    double apertureRadius = 0.25; // Higher aperture radius gives more blur
+    double apertureRadius = 0.1; // Higher aperture radius gives more blur
 	for(int k = 0 ; k < NUM_DEPTH_OF_FIELD_SAMPLES; k++){
 
 		if(ENABLE_DEPTH_OF_FIELD || NUM_DEPTH_OF_FIELD_SAMPLES > 1){
