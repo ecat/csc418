@@ -79,19 +79,20 @@ int main(int argc, char* argv[])
 
 	// All planets scene
 
-	eye = Point3D(-3, 0, -3);
-	Point3D viewPoint(5, 0, -8);
+	eye = Point3D(-2, 0, -3);
+	Point3D viewPoint(5, 0, -9);
 	up = Vector3D(0, 0, 1);
 	view = viewPoint - eye;
+	fov = 100;
 	//eye = Point3D(0, 0, 5);
-    //fov = 110;
+    
 
     Material::Ptr wood = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
 		Colour(0.05 ,0.05 ,0.05), 68);
-    Material::Ptr pool_green = std::make_shared<Material>  ( Colour(0.2, 0.5, 0.0), Colour(0., 0., 0.),
+    Material::Ptr pool_green = std::make_shared<Material>  ( Colour(0.3, 0.7, 0.1), Colour(0.2, 0.2, 0.2),
     		Colour(0.0, 0.0, 0.0), 68);
    	Material::Ptr planet = std::make_shared<Material> ( Colour(0.15, 0.15, 0.2), Colour(0.0, 0.0, 0.4),
-    		Colour(0.25, 0.25, 0.25), 68);
+    		Colour(0.35, 0.35, 0.35), 68);
 
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 8.0, 5.0), 
 					Colour(0.1, 0.1, 0.1) ) );	
@@ -116,6 +117,11 @@ int main(int argc, char* argv[])
 	SceneDagNode::Ptr sunSphere = raytracer.addObject( std::make_shared<UnitSphere>(), planet);    
     sunSphere->obj->setTextureColour("sun.bmp"); 
 
+    SceneDagNode::Ptr rightPlane = raytracer.addObject( std::make_shared<UnitSquare>(), mirror);
+    rightPlane->obj->setTextureColour("galaxy.bmp");
+
+    //SceneDagNode::Ptr glassSphere = raytracer.addObject( std::make_shared<UnitSphere>(), glass);
+
 	SceneDagNode::Ptr bottomBorder = raytracer.addObject( std::make_shared<UnitCube>(), wood);    
 	SceneDagNode::Ptr topBorder = raytracer.addObject( std::make_shared<UnitCube>(), wood);    
 	SceneDagNode::Ptr rightBorder = raytracer.addObject( std::make_shared<UnitCube>(), wood);    
@@ -132,21 +138,30 @@ int main(int argc, char* argv[])
 	double verticalBorderFactor[3] = {2.0, 40.0, 1.0};
 	double factor1[3] = { 2.0, 2.0, 0.3 };
 	double factor3[3] = { 40.0, 40.0, 1.0};
+	double factor4[3] = { 1.0, 80., 120.};	
 	double factor5[3] = { 20.0, 1.0, 20.0};    
 	double earthFactor[3] = {2.5, 2.5, 2.5};
 
-	Point3D focusPoint(0.5, 0.5, -9);
-	Point3D focusPoint2(0.5, 0.5, -9);	
-	Point3D lightOrigin(-20.0, 5.0, 5.0);
-	Point3D lightOrigin3(-20.0, -5.0, 5.0);
+	Point3D focusPoint(3, 3, -10);
+	Point3D focusPoint2(1.5, 2.5, -10);	
+	Point3D lightOrigin(-20.0, 10.0, 5.0);
+	Point3D lightOrigin3(-20.0, 10.0, 5.0);
 	double rotationAngle = -10; // Have triangle poitn in another direction
 	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin,  focusPoint - lightOrigin,
-					Colour(0.55, 0.55, 0.55), 13 ) );	
+					Colour(0.65, 0.65, 0.65), 26 ) );	
 	raytracer.addLightSource( std::make_shared<SpotLight>(lightOrigin3,  focusPoint2 - lightOrigin3,
-					Colour(0.55, 0.55, 0.55), 13 ) );			
+					Colour(0.65, 0.65, 0.65), 26 ) );			
+
+	raytracer.rotate(rightPlane, 'x', -90); 	
+	raytracer.translate(rightPlane, Vector3D(25, 0., 0));	
+	raytracer.scale(rightPlane, Point3D(0., 0., 0.), factor4);
+	raytracer.rotate(rightPlane, 'y', -90); 	
 
     SceneDagNode::Ptr backPlane = raytracer.addObject( std::make_shared<UnitSquare>(), pool_green );    
 	backPlane->obj->setTextureGrayScale("felt.bmp"); 
+
+	//raytracer.translate(glassSphere, Vector3D(-1.25, 1.25, -6.5));
+	//raytracer.scale(glassSphere, Point3D(0, 0, 0), earthFactor);	
 
 	raytracer.translate(bottomBorder, Vector3D(0, -20, -9));
 	raytracer.scale(bottomBorder, Point3D(0, 0,  0), horizontalBorderFactor);
@@ -164,15 +179,15 @@ int main(int argc, char* argv[])
 	raytracer.scale(backPlane, Point3D(0, 0,  0), factor3);
 
 	raytracer.rotate(mercurySphere, 'z', -rotationAngle);
-	raytracer.translate(mercurySphere, Vector3D(0., 0., -8));
+	raytracer.translate(mercurySphere, Vector3D(0., 0., -8.75));
 	raytracer.scale(mercurySphere, Point3D(0., 0., 0.), earthFactor);
 
 	raytracer.rotate(venusSphere, 'z', -rotationAngle);
-	raytracer.translate(venusSphere, Vector3D(2.5, 0., -8));
+	raytracer.translate(venusSphere, Vector3D(2.5, 0., -8.75));
 	raytracer.scale(venusSphere, Point3D(0., 0., 0.), earthFactor);
 
 	raytracer.rotate(earthSphere, 'z', -rotationAngle);
-	raytracer.translate(earthSphere, Vector3D(5., 0., -8));
+	raytracer.translate(earthSphere, Vector3D(5., 0., -8.75));
 	raytracer.rotate(earthSphere, 'y',60); // Change this angle to rotate globe
 	// the following rotations make the earth sphere appear right side up
 	raytracer.rotate(earthSphere, 'x', 90);
@@ -181,36 +196,35 @@ int main(int argc, char* argv[])
 	raytracer.scale(earthSphere, Point3D(0., 0., 0.), earthFactor);
 	
 	raytracer.rotate(marsSphere, 'z', -rotationAngle);
-	raytracer.translate(marsSphere, Vector3D(7.5, 0, -8));
+	raytracer.translate(marsSphere, Vector3D(7.5, 0, -8.75));
 	raytracer.scale(marsSphere, Point3D(0., 0., 0.), earthFactor);		
 	
 	raytracer.rotate(jupiterSphere, 'z', -rotationAngle);
-	raytracer.translate(jupiterSphere, Vector3D(1.25, 2.5, -8));
+	raytracer.translate(jupiterSphere, Vector3D(1.25, 2.5, -8.75));
 	raytracer.scale(jupiterSphere, Point3D(0., 0., 0.), earthFactor);	
 	
 	raytracer.rotate(saturnSphere, 'z', -rotationAngle);
-	raytracer.translate(saturnSphere, Vector3D(3.75, 2.5, -8));
+	raytracer.translate(saturnSphere, Vector3D(3.75, 2.5, -8.75));
 	raytracer.scale(saturnSphere, Point3D(0., 0., 0.), earthFactor);	
 
 	raytracer.rotate(uranusSphere, 'z', -rotationAngle);
-	raytracer.translate(uranusSphere, Vector3D(6.25, 2.5, -8));
+	raytracer.translate(uranusSphere, Vector3D(6.25, 2.5, -8.75));
 	raytracer.scale(uranusSphere, Point3D(0., 0., 0.), earthFactor);	
 
 	raytracer.rotate(neptuneSphere, 'z', -rotationAngle);
-	raytracer.translate(neptuneSphere, Vector3D(2.5, 5., -8));
+	raytracer.translate(neptuneSphere, Vector3D(2.5, 5., -8.75));
 	raytracer.scale(neptuneSphere, Point3D(0., 0., 0.), earthFactor);	
 
 	raytracer.rotate(plutoSphere, 'z', -rotationAngle);
-	raytracer.translate(plutoSphere, Vector3D(5., 5., -8));
+	raytracer.translate(plutoSphere, Vector3D(5., 5., -8.75));
 	raytracer.scale(plutoSphere, Point3D(0., 0., 0.), earthFactor);	
 
 	raytracer.rotate(sunSphere, 'z', -rotationAngle);
-	raytracer.translate(sunSphere, Vector3D(3.75, 7.5, -8));
+	raytracer.translate(sunSphere, Vector3D(3.75, 7.5, -8.75));
 	raytracer.scale(sunSphere, Point3D(0., 0., 0.), earthFactor);	
 
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
 	
-
 /*	// White back wall with a textured cube
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 
 					Colour(0.9, 0.9, 0.9) ) );	
@@ -243,6 +257,9 @@ int main(int argc, char* argv[])
     SceneDagNode::Ptr bottomPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
     bottomPlane->obj->setTextureGrayScale("jade_tex.bmp");      
 	
+
+	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, .0, 5.0), 
+					Colour(0.7, 0.7, 0.7) ) );	
 	// Apply some transformations to the unit square.
 	double factor1[3] = { 2.0, 2.0, 2.0 };
 	double factor2[3] = { 4.0, 4.0, 4.0 };
@@ -276,6 +293,12 @@ int main(int argc, char* argv[])
 	raytracer.translate(bottomPlane, Vector3D(0, -10, -6));	
 	raytracer.scale(bottomPlane, Point3D(0., 0., 0.), factor5);
 	raytracer.rotate(bottomPlane, 'x', -90); 	
+
+	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
+	
+	Point3D eye2(2., 0., 1.);
+	Vector3D view2(-6., -0., -4.);
+	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
 */
 /*
 	// Trio of spheres with semi transparent glass and textured cube
