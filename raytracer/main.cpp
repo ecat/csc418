@@ -21,10 +21,10 @@ int main(int argc, char* argv[])
 	Raytracer raytracer;
 	//int width = 1920; 
 	//int height = 1080; 
-	int width = 480; 
-	int height = 360; 
-	//int width = 1440; 
-	//int height = 1080; 	
+	//int width = 480; 
+	//int height = 360; 
+	int width = 1440; 
+	int height = 1080; 	
 
 	if (argc == 3) {
 		width = atoi(argv[1]);
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     Material::Ptr white = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
     		Colour(0,0,0), 68);
     
-/*
+
 	// All planets scene
 
 	eye = Point3D(-2, 0, -3);
@@ -173,16 +173,16 @@ int main(int argc, char* argv[])
 	//raytracer.translate(glassSphere, Vector3D(-1.25, 1.25, -6.5));
 	//raytracer.scale(glassSphere, Point3D(0, 0, 0), earthFactor);	
 
-	raytracer.translate(bottomBorder, Vector3D(0, -20, -9));
+	raytracer.translate(bottomBorder, Vector3D(0, -20, -9.5));
 	raytracer.scale(bottomBorder, Point3D(0, 0,  0), horizontalBorderFactor);
 
-	raytracer.translate(topBorder, Vector3D(0, 20, -9));
+	raytracer.translate(topBorder, Vector3D(0, 20, -9.5));
 	raytracer.scale(topBorder, Point3D(0, 0,  0), horizontalBorderFactor);
 	
-	raytracer.translate(rightBorder, Vector3D(20, 0, -9));
+	raytracer.translate(rightBorder, Vector3D(20, 0, -9.5));
 	raytracer.scale(rightBorder, Point3D(0, 0,  0), verticalBorderFactor);
 
-	raytracer.translate(leftBorder, Vector3D(-20, 0, -9));
+	raytracer.translate(leftBorder, Vector3D(-20, 0, -9.5));
 	raytracer.scale(leftBorder, Point3D(0, 0,  0), verticalBorderFactor);
 
 	raytracer.translate(backPlane, Vector3D(0, 0, -10));
@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
 	raytracer.scale(sunSphere, Point3D(0., 0., 0.), earthFactor);	
 
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp", Point3D(2.55, 2.55, -10));
-*/	
+
 /*	// White back wall with a textured cube
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 
 					Colour(0.9, 0.9, 0.9) ) );	
@@ -250,7 +250,7 @@ int main(int argc, char* argv[])
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	cube->obj->setTextureColour("earth2.bmp", 0);
 */
-
+/*
 	// Jade and glass and two spheres
 
 	// Add a unit square into the scene with material mat.
@@ -314,7 +314,7 @@ int main(int argc, char* argv[])
 	Point3D eye2(2., 0., 1.);
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp", Point3D(0,0,-3));
-
+*/
 /*
 	// Trio of spheres with semi transparent glass and textured cube
 	fov = 105;
