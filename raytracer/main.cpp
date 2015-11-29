@@ -173,16 +173,16 @@ int main(int argc, char* argv[])
 	//raytracer.translate(glassSphere, Vector3D(-1.25, 1.25, -6.5));
 	//raytracer.scale(glassSphere, Point3D(0, 0, 0), earthFactor);	
 
-	raytracer.translate(bottomBorder, Vector3D(0, -20, -9.5));
+	raytracer.translate(bottomBorder, Vector3D(0, -20, -9.3));
 	raytracer.scale(bottomBorder, Point3D(0, 0,  0), horizontalBorderFactor);
 
-	raytracer.translate(topBorder, Vector3D(0, 20, -9.5));
+	raytracer.translate(topBorder, Vector3D(0, 20, -9.3));
 	raytracer.scale(topBorder, Point3D(0, 0,  0), horizontalBorderFactor);
 	
-	raytracer.translate(rightBorder, Vector3D(20, 0, -9.5));
+	raytracer.translate(rightBorder, Vector3D(20, 0, -9.3));
 	raytracer.scale(rightBorder, Point3D(0, 0,  0), verticalBorderFactor);
 
-	raytracer.translate(leftBorder, Vector3D(-20, 0, -9.5));
+	raytracer.translate(leftBorder, Vector3D(-20, 0, -9.3));
 	raytracer.scale(leftBorder, Point3D(0, 0,  0), verticalBorderFactor);
 
 	raytracer.translate(backPlane, Vector3D(0, 0, -10));
