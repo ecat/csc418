@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     Material::Ptr white = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
     		Colour(0,0,0), 68);
     
-
+/*
 	// All planets scene
 
 	eye = Point3D(-2, 0, -3);
@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
 	raytracer.scale(sunSphere, Point3D(0., 0., 0.), earthFactor);	
 
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp", Point3D(2.55, 2.55, -10));
-
+*/
 /*	// White back wall with a textured cube
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 
 					Colour(0.9, 0.9, 0.9) ) );	
@@ -315,7 +315,7 @@ int main(int argc, char* argv[])
 	Vector3D view2(-6., -0., -4.);
 	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp", Point3D(0,0,-3));
 */
-/*
+
 	// Trio of spheres with semi transparent glass and textured cube
 	fov = 105;
 
@@ -423,8 +423,8 @@ int main(int argc, char* argv[])
 	// Render it from a different point of view.
 	Point3D eye2(-1.3, -5.3, -3.2);
 	Vector3D view2(-4, -3, -4.);
-	raytracer.render(width, height, eye2, view2, up, fov, "semiglass.bmp");
-*/
+	raytracer.render(width, height, eye2, view2, up, fov, "semiglass.bmp", Point3D(0,0,0));
+
 /*
 	// Single earth sphere
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 8.0, 5.0), 

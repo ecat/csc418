@@ -102,7 +102,7 @@ public:
 	const int MAX_NUM_REFLECTIONS = 5;
 
 	// Number of points for calculating soft shadows
-	const int NUM_SOFT_SHADOW_SOURCES = 30;
+	const int NUM_SOFT_SHADOW_SOURCES = 20;
 
 	// Enable or disable parallelization
 	const bool ENABLE_MULTI_THREAD = true;
