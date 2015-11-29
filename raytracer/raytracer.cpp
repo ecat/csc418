@@ -486,7 +486,7 @@ void Raytracer::segment(int thread_id, int row_start, int row_end, double factor
 	Point3D focusPoint){
 
     Matrix4x4 viewToWorld;
-    double apertureRadius = 0.1; // Higher aperture radius gives more blur
+    double apertureRadius = 0.3; // Higher aperture radius gives more blur
 	for(int k = 0 ; k < NUM_DEPTH_OF_FIELD_SAMPLES; k++){
 
 		if(ENABLE_DEPTH_OF_FIELD || NUM_DEPTH_OF_FIELD_SAMPLES > 1){

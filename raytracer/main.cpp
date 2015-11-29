@@ -21,9 +21,9 @@ int main(int argc, char* argv[])
 	Raytracer raytracer;
 	//int width = 1920; 
 	//int height = 1080; 
-	int width = 960; 
-	int height = 720; 
-	//int width = 1600; 
+	int width = 480; 
+	int height = 360; 
+	//int width = 1440; 
 	//int height = 1080; 	
 
 	if (argc == 3) {
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     Material::Ptr white = std::make_shared<Material> (Colour (0.9, 0.9, 0.9), Colour(0,0,0),
     		Colour(0,0,0), 68);
     
-
+/*
 	// All planets scene
 
 	eye = Point3D(-2, 0, -3);
@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
 	raytracer.scale(sunSphere, Point3D(0., 0., 0.), earthFactor);	
 
 	raytracer.render(width, height, eye, view, up, fov, "view1.bmp", Point3D(2.55, 2.55, -10));
-	
+*/	
 /*	// White back wall with a textured cube
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, 0.0, 5.0), 
 					Colour(0.9, 0.9, 0.9) ) );	
@@ -250,7 +250,7 @@ int main(int argc, char* argv[])
 	raytracer.scale(cube, Point3D(0., 0., 0.), factor1);
 	cube->obj->setTextureColour("earth2.bmp", 0);
 */
-/*
+
 	// Jade and glass and two spheres
 
 	// Add a unit square into the scene with material mat.
@@ -266,7 +266,8 @@ int main(int argc, char* argv[])
     rightPlane->obj->setTextureGrayScale("jade_tex.bmp");    	
     SceneDagNode::Ptr bottomPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
     bottomPlane->obj->setTextureGrayScale("jade_tex.bmp");      
-	
+    SceneDagNode::Ptr topPlane = raytracer.addObject( std::make_shared<UnitSquare>(), jade );
+    topPlane->obj->setTextureGrayScale("jade_tex.bmp");     
 
 	raytracer.addLightSource( std::make_shared<PointLight>(Point3D(0.0, .0, 5.0), 
 					Colour(0.7, 0.7, 0.7) ) );	
@@ -304,12 +305,16 @@ int main(int argc, char* argv[])
 	raytracer.scale(bottomPlane, Point3D(0., 0., 0.), factor5);
 	raytracer.rotate(bottomPlane, 'x', -90); 	
 
-	raytracer.render(width, height, eye, view, up, fov, "view1.bmp");
+	raytracer.translate(topPlane, Vector3D(0, 10, -6));	
+	raytracer.scale(topPlane, Point3D(0., 0., 0.), factor5);
+	raytracer.rotate(topPlane, 'x', 90); 	
+
+	raytracer.render(width, height, eye, view, up, fov, "view1.bmp", Point3D(0,0,-3));
 	
 	Point3D eye2(2., 0., 1.);
 	Vector3D view2(-6., -0., -4.);
-	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp");
-*/
+	raytracer.render(width, height, eye2, view2, up, fov, "view2.bmp", Point3D(0,0,-3));
+
 /*
 	// Trio of spheres with semi transparent glass and textured cube
 	fov = 105;
