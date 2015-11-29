@@ -111,7 +111,7 @@ public:
 	const bool ENABLE_SOFT_SHADOWS = true;
 
 	// Enable or disable antialiasing
-	const bool ENABLE_ANTI_ALIASING = true;
+	const bool ENABLE_ANTI_ALIASING = false;
 
 	// Number of points to multisample
 	const int NUM_ANTIALIASING_SAMPLES = 16;
