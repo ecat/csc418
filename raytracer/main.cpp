@@ -21,8 +21,10 @@ int main(int argc, char* argv[])
 	Raytracer raytracer;
 	//int width = 1920; 
 	//int height = 1080; 
-	int width = 480; 
-	int height = 360; 
+	int width = 960; 
+	int height = 720; 
+	//int width = 1600; 
+	//int height = 1080; 	
 
 	if (argc == 3) {
 		width = atoi(argv[1]);

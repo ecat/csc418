@@ -516,6 +516,7 @@ void Raytracer::segment(int thread_id, int row_start, int row_end, double factor
 
 	        	renderHelper(thread_id, factor, viewToWorld, _scrWidth, _scrHeight, i, j);
 			}
+			std::cout << "thread_id: " << thread_id << " " << ((double) i - row_start)/(row_end - row_start) * 100<< std::endl;
 		}
 	}
 }

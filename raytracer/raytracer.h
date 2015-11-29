@@ -102,7 +102,7 @@ public:
 	const int MAX_NUM_REFLECTIONS = 5;
 
 	// Number of points for calculating soft shadows
-	const int NUM_SOFT_SHADOW_SOURCES = 20;
+	const int NUM_SOFT_SHADOW_SOURCES = 30;
 
 	// Enable or disable parallelization
 	const bool ENABLE_MULTI_THREAD = true;
@@ -111,10 +111,10 @@ public:
 	const bool ENABLE_SOFT_SHADOWS = true;
 
 	// Enable or disable antialiasing
-	const bool ENABLE_ANTI_ALIASING = false;
+	const bool ENABLE_ANTI_ALIASING = true;
 
 	// Number of points to multisample
-	const int NUM_ANTIALIASING_SAMPLES = 8;
+	const int NUM_ANTIALIASING_SAMPLES = 16;
 
 	// Enable or disable depth of field, also requiers antialiasing is enabled
 	const bool ENABLE_DEPTH_OF_FIELD = false && ENABLE_ANTI_ALIASING;
